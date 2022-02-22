@@ -1,0 +1,31 @@
+﻿<Sql TableName="LUMForecaseUpload" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="LUMForecaseUpload">
+  <col name="CompanyID" type="Int" default="Zero" />
+  <col name="MRPType" type="NVarChar(20)" />
+  <col name="Revision" type="NVarChar(10)" />
+  <col name="SKU" type="NVarChar(10)" />
+  <col name="Company" type="NVarChar(5)" />
+  <col name="Country" type="NVarChar(5)" />
+  <col name="Warehouse" type="NVarChar(20)" />
+  <col name="Date" type="DateTime" />
+  <col name="Qty" type="Decimal(18,4)" />
+  <col name="Week" type="NVarChar(20)" />
+  <col name="QOH" type="Decimal(18,4)" />
+  <col name="NoteID" type="UniqueIdentifier" nullable="true" />
+  <col name="CreatedByID" type="UniqueIdentifier" />
+  <col name="CreatedByScreenID" type="Char(8)" />
+  <col name="CreatedDateTime" type="DateTime" />
+  <col name="LastModifiedByID" type="UniqueIdentifier" />
+  <col name="LastModifiedByScreenID" type="Char(8)" />
+  <col name="LastModifiedDateTime" type="DateTime" />
+  <col name="tstamp" type="Timestamp" />
+  <index name="PK_LUMForecaseUpload" clustered="true" primary="true" unique="true">
+    <col name="CompanyID" />
+    <col name="MRPType" />
+    <col name="Revision" />
+    <col name="SKU" />
+    <col name="Warehouse" />
+    <col name="Date" />
+  </index>
+</table>]]></CDATA>
+</Sql>
