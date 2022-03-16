@@ -1,0 +1,106 @@
+﻿<Sql TableName="Create_v_InventoryAllocationDetais" SqlScriptPriority="1" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'v_InventoryAllocationDetais' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[v_InventoryAllocationDetais]	
+GO
+CREATE VIEW v_InventoryAllocationDetais AS
+select p.CompanyID, 
+	CASE 
+		WHEN t.InclQtyFSSrvOrdBooked = 1 THEN 'InclQtyFSSrvOrdBooked'
+		WHEN t.InclQtyFSSrvOrdAllocated = 1 THEN 'InclQtyFSSrvOrdAllocated'
+		WHEN t.InclQtyFSSrvOrdPrepared = 1 THEN 'InclQtyFSSrvOrdPrepared'
+		WHEN t.InclQtySOBackOrdered = 1 THEN 'InclQtySOBackOrdered'
+		WHEN t.InclQtySOPrepared = 1 THEN 'InclQtySOPrepared'
+		WHEN t.InclQtySOBooked = 1 THEN 'InclQtySOBooked'
+		WHEN t.InclQtySOShipped = 1 THEN 'InclQtySOShipped'
+		WHEN t.InclQtySOShipping = 1 THEN 'InclQtySOShipping'
+		WHEN t.InclQtyInTransit = 1 THEN 'InclQtyInTransit'
+		WHEN t.InclQtyInTransitToSO = 1 THEN 'InclQtyInTransitToSO'
+		WHEN t.InclQtyPOReceipts = 1 THEN 'InclQtyPOReceipts'
+		WHEN t.InclQtyPOPrepared = 1 THEN 'InclQtyPOPrepared'
+		WHEN t.InclQtyPOOrders = 1 THEN 'InclQtyPOOrders'
+		WHEN t.InclQtyINIssues = 1 THEN 'InclQtyINIssues'
+		WHEN t.InclQtyINReceipts = 1 THEN 'InclQtyINReceipts'
+		WHEN t.InclQtyINAssemblyDemand = 1 THEN 'InclQtyINAssemblyDemand'
+		WHEN t.InclQtyINAssemblySupply = 1 THEN 'InclQtyINAssemblySupply'
+		WHEN t.InclQtyInTransitToProduction = 1 THEN 'InclQtyInTransitToProduction'
+		WHEN t.InclQtyProductionSupplyPrepared = 1 THEN 'InclQtyProductionSupplyPrepared'
+		WHEN t.InclQtyProductionSupply = 1 THEN 'InclQtyProductionSupply'
+		WHEN t.InclQtyPOFixedProductionPrepared = 1 THEN 'InclQtyPOFixedProductionPrepared'
+		WHEN t.InclQtyPOFixedProductionOrders = 1 THEN 'InclQtyPOFixedProductionOrders'
+		WHEN t.InclQtyProductionDemandPrepared = 1 THEN 'InclQtyProductionDemandPrepared'
+		WHEN t.InclQtyProductionDemand = 1 THEN 'InclQtyProductionDemand'
+		WHEN t.InclQtyProductionAllocated = 1 THEN 'InclQtyProductionAllocated'
+		WHEN t.InclQtySOFixedProduction = 1 THEN 'InclQtySOFixedProduction'
+		WHEN t.InclQtyProdFixedPurchase = 1 THEN 'InclQtyProdFixedPurchase'
+		WHEN t.InclQtyProdFixedProduction = 1 THEN 'InclQtyProdFixedProduction'
+		WHEN t.InclQtyProdFixedProdOrdersPrepared = 1 THEN 'InclQtyProdFixedProdOrdersPrepared'
+		WHEN t.InclQtyProdFixedProdOrders = 1 THEN 'InclQtyProdFixedProdOrders'
+		WHEN t.InclQtyProdFixedSalesOrdersPrepared = 1 THEN 'InclQtyProdFixedSalesOrdersPrepared'
+		WHEN t.InclQtyProdFixedSalesOrders = 1 THEN 'InclQtyProdFixedSalesOrders'
+		WHEN t.InclQtyINReplaned = 1 THEN 'InclQtyINReplaned'
+		WHEN t.InclQtyFixedFSSrvOrd = 1 THEN 'InclQtyFixedFSSrvOrd'
+		WHEN t.InclQtyPOFixedFSSrvOrd = 1 THEN 'InclQtyPOFixedFSSrvOrd'
+		WHEN t.InclQtyPOFixedFSSrvOrdPrepared = 1 THEN 'InclQtyPOFixedFSSrvOrdPrepared'
+		WHEN t.InclQtyPOFixedFSSrvOrdReceipts = 1 THEN 'InclQtyPOFixedFSSrvOrdReceipts'
+		WHEN t.InclQtySOFixed = 1 THEN 'InclQtySOFixed'
+		WHEN t.InclQtyPOFixedOrders = 1 THEN 'InclQtyPOFixedOrders'
+		WHEN t.InclQtyPOFixedPrepared = 1 THEN 'InclQtyPOFixedPrepared'
+		WHEN t.InclQtyPOFixedReceipts = 1 THEN 'InclQtyPOFixedReceipts'
+		WHEN t.InclQtySODropShip = 1 THEN 'InclQtySODropShip'
+		WHEN t.InclQtyPODropShipOrders = 1 THEN 'InclQtyPODropShipOrders'
+		WHEN t.InclQtyPODropShipPrepared = 1 THEN 'InclQtyPODropShipPrepared'
+		WHEN t.InclQtyPODropShipReceipts = 1 THEN 'InclQtyPODropShipReceipts'
+		ELSE 'Other' END AS AllocationType,
+	CASE
+		WHEN INAvailabilityScheme.InclQtyFSSrvOrdAllocated = 1 THEN 'InclQtyFSSrvOrdAllocated'
+		WHEN INAvailabilityScheme.InclQtyFSSrvOrdBooked = 1 THEN 'InclQtyFSSrvOrdBooked'
+		WHEN INAvailabilityScheme.InclQtyFSSrvOrdPrepared = 1 THEN 'InclQtyFSSrvOrdPrepared'
+		WHEN INAvailabilityScheme.InclQtyINAssemblyDemand = 1 THEN 'InclQtyINAssemblyDemand'
+		WHEN INAvailabilityScheme.InclQtyINAssemblySupply = 1 THEN 'InclQtyINAssemblySupply'
+		WHEN INAvailabilityScheme.InclQtyINIssues = 1 THEN 'InclQtyINIssues'
+		WHEN INAvailabilityScheme.InclQtyINReceipts = 1 THEN 'InclQtyINReceipts'
+		WHEN INAvailabilityScheme.InclQtyInTransit = 1 THEN 'InclQtyInTransit'
+		WHEN INAvailabilityScheme.InclQtyPOOrders = 1 THEN 'InclQtyPOOrders'
+		WHEN INAvailabilityScheme.InclQtyPOPrepared = 1 THEN 'InclQtyPOPrepared'
+		WHEN INAvailabilityScheme.InclQtyPOReceipts = 1 THEN 'InclQtyPOReceipts'
+		WHEN INAvailabilityScheme.InclQtyProductionAllocated = 1 THEN 'InclQtyProductionAllocated'
+		WHEN INAvailabilityScheme.InclQtyProductionDemand = 1 THEN 'InclQtyProductionDemand'
+		WHEN INAvailabilityScheme.InclQtyProductionDemandPrepared = 1 THEN 'InclQtyProductionDemandPrepared'
+		WHEN INAvailabilityScheme.InclQtyProductionSupply = 1 THEN 'InclQtyProductionSupply'
+		WHEN INAvailabilityScheme.InclQtyProductionSupplyPrepared = 1 THEN 'InclQtyProductionSupplyPrepared'
+		WHEN INAvailabilityScheme.InclQtySOBackOrdered = 1 THEN 'InclQtySOBackOrdered'
+		WHEN INAvailabilityScheme.InclQtySOBooked = 1 THEN 'InclQtySOBooked'
+		WHEN INAvailabilityScheme.InclQtySOPrepared = 1 THEN 'InclQtySOPrepared'
+		WHEN INAvailabilityScheme.InclQtySOReverse = 1 THEN 'InclQtySOReverse'
+		WHEN INAvailabilityScheme.InclQtySOShipped = 1 THEN 'InclQtySOShipped'
+		WHEN INAvailabilityScheme.InclQtySOShipping = 1 THEN 'InclQtySOShipping'
+		ELSE 'Other' END AS CalculateRule,
+		p.PlanDate AS Date,
+		p.InventoryID,
+		p.SiteID,
+		p.PlanQty AS Qty
+from INItemPlan p
+inner join INPlanType t on p.PlanType = t.PlanType
+left join INLocation loc on p.LocationID = loc.LocationID and p.CompanyID = loc.CompanyID
+left join INLotSerialStatus on p.CompanyID = INLotSerialStatus.CompanyID and p.LotSerialNbr = INLotSerialStatus.LotSerialNbr
+left join BAccount on p.CompanyID = BAccount.CompanyID and p.BAccountID = BAccount.BAccountID
+left join INSubItem on p.CompanyID = INSubItem.CompanyID and p.SubItemID = INSubItem.SubItemID
+inner join INSite on p.CompanyID = INSite.CompanyID and p.SiteID = INSite.SiteID
+left join SOShipment on p.CompanyID = SOShipment.CompanyID and p.RefNoteID = SOShipment.NoteID
+left join ARRegister on p.CompanyID = ARRegister.CompanyID and p.RefNoteID = ARRegister.NoteID
+left join INRegister on p.CompanyID = INRegister.CompanyID and p.RefNoteID = INRegister.NoteID
+left join SOOrder on p.CompanyID = SOOrder.CompanyID and p.RefNoteID = SOOrder.NoteID
+left join POOrder on p.CompanyID = POOrder.CompanyID and p.RefNoteID = POOrder.NoteID
+left join POReceipt on p.CompanyID = POReceipt.CompanyID and p.RefNoteID = POReceipt.NoteID
+left join INTransitLine on p.CompanyID = INTransitLine.CompanyID and p.RefNoteID = INTransitLine.NoteID
+inner join InventoryItem on p.CompanyID = InventoryItem.CompanyID and p.InventoryID = InventoryItem.InventoryID
+inner join INItemClass on p.CompanyID = INItemClass.CompanyID and InventoryItem.ItemClassID = INItemClass.ItemClassID
+inner join INAvailabilityScheme on p.CompanyID = INAvailabilityScheme.CompanyID and INItemClass.AvailabilitySchemeID = INAvailabilityScheme.AvailabilitySchemeID
+where p.PlanQty != 0 
+--order by Insubitem.SubItemCD,INSite.SiteCD,p.OrigPlanType,p.PlanType,loc.LocationCD]]></CDATA>
+</Sql>

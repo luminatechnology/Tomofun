@@ -27,6 +27,10 @@
                     <px:PXGridColumn DataField="Week" />
                     <px:PXGridColumn DataField="Qoh" />
                 </Columns>
+                <RowTemplate>
+                    <px:PXSelector runat="server" ID="edSku" DataField="Sku"></px:PXSelector>
+                    <px:PXSelector runat="server" ID="edWarehouse" DataField="Warehouse"></px:PXSelector>
+                </RowTemplate>
             </px:PXGridLevel>
         </Levels>
         <AutoSize Container="Window" Enabled="True" MinHeight="150" />

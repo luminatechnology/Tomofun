@@ -1,5 +1,7 @@
 using System;
 using PX.Data;
+using PX.Data.BQL.Fluent;
+using PX.Objects.IN;
 
 namespace LumTomofunCustomization.DAC
 {
@@ -22,17 +24,15 @@ namespace LumTomofunCustomization.DAC
         #endregion
 
         #region Sku
-        [PXDBString(10, IsKey = true, IsUnicode = true, InputMask = "")]
+        [PXDBInt(IsKey = true)]
+        //[StockItem]
+        [PXSelector(
+            typeof(SearchFor<InventoryItem.inventoryID>),
+            DescriptionField = typeof(InventoryItem.inventoryCD),
+            SubstituteKey = typeof(InventoryItem.inventoryCD))]
         [PXUIField(DisplayName = "SKU")]
-        public virtual string Sku { get; set; }
-        public abstract class sku : PX.Data.BQL.BqlString.Field<sku> { }
-        #endregion
-
-        #region Company
-        [PXDBString(5, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Company")]
-        public virtual string Company { get; set; }
-        public abstract class company : PX.Data.BQL.BqlString.Field<company> { }
+        public virtual int? Sku { get; set; }
+        public abstract class sku : PX.Data.BQL.BqlInt.Field<sku> { }
         #endregion
 
         #region Country
@@ -42,11 +42,21 @@ namespace LumTomofunCustomization.DAC
         public abstract class country : PX.Data.BQL.BqlString.Field<country> { }
         #endregion
 
+        #region Company
+        [PXDBString(5, IsUnicode = true, InputMask = "")]
+        [PXUIField(DisplayName = "Company")]
+        public virtual string Company { get; set; }
+        public abstract class company : PX.Data.BQL.BqlString.Field<company> { }
+        #endregion
+
         #region Warehouse
-        [PXDBString(20, IsKey = true, IsUnicode = true, InputMask = "")]
+        [PXDBInt(IsKey = true)]
+        [PXSelector(
+            typeof(SearchFor<INSite.siteID>),
+            SubstituteKey = typeof(INSite.siteCD))]
         [PXUIField(DisplayName = "Warehouse")]
-        public virtual string Warehouse { get; set; }
-        public abstract class warehouse : PX.Data.BQL.BqlString.Field<warehouse> { }
+        public virtual int? Warehouse { get; set; }
+        public abstract class warehouse : PX.Data.BQL.BqlInt.Field<warehouse> { }
         #endregion
 
         #region Date

@@ -1,0 +1,34 @@
+﻿<Sql TableName="LUMMRPProcessResult" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="LUMMRPProcessResult">
+  <col name="CompanyID" type="Int" default="Zero" />
+  <col name="Sku" type="Int" />
+  <col name="Warehouse" type="Int" />
+  <col name="Date" type="DateTime" />
+  <col name="Forecase" type="Int" nullable="true" />
+  <col name="ForecaseBase" type="Int" nullable="true" />
+  <col name="OpenSo" type="Int" nullable="true" />
+  <col name="PastOpenSo" type="Int" nullable="true" />
+  <col name="ForecastIntial" type="Int" nullable="true" />
+  <col name="ForecastComsumption" type="Int" nullable="true" />
+  <col name="ForecaseRemains" type="Int" nullable="true" />
+  <col name="DemandAdj" type="Int" nullable="true" />
+  <col name="NetDemand" type="Int" nullable="true" />
+  <col name="StockInitial" type="Int" nullable="true" />
+  <col name="Demand" type="Int" nullable="true" />
+  <col name="Supply" type="Int" nullable="true" />
+  <col name="StockAva" type="Int" nullable="true" />
+  <col name="CreatedByID" type="UniqueIdentifier" />
+  <col name="CreatedByScreenID" type="Char(8)" />
+  <col name="CreatedDateTime" type="DateTime" />
+  <col name="LastModifiedByID" type="UniqueIdentifier" />
+  <col name="LastModifiedByScreenID" type="Char(8)" />
+  <col name="LastModifiedDateTime" type="DateTime" />
+  <col name="tstamp" type="Timestamp" />
+  <index name="PK_LUMMRPProcessResult" clustered="true" primary="true" unique="true">
+    <col name="CompanyID" />
+    <col name="Sku" />
+    <col name="Warehouse" />
+    <col name="Date" />
+  </index>
+</table>]]></CDATA>
+</Sql>
