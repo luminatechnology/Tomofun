@@ -1,0 +1,22 @@
+﻿<Sql TableName="LUMAmazonSourceData" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="LUMAmazonSourceData">
+  <col name="CompanyID" type="Int" default="Zero" />
+  <col name="SequenceNumber" type="Int" identity="true" />
+  <col name="BranchID" type="Int" nullable="true" />
+  <col name="APIType" type="NVarChar(20)" nullable="true" />
+  <col name="TransactionType" type="NVarChar(20)" nullable="true" />
+  <col name="Marketplace" type="NVarChar(20)" nullable="true" />
+  <col name="JsonSource" type="NVarChar(MAX)" />
+  <col name="CreatedByID" type="UniqueIdentifier" />
+  <col name="CreatedByScreenID" type="Char(8)" />
+  <col name="CreatedDateTime" type="DateTime" />
+  <col name="LastModifiedByID" type="UniqueIdentifier" />
+  <col name="LastModifiedByScreenID" type="Char(8)" />
+  <col name="LastModifiedDateTime" type="DateTime" />
+  <col name="tstamp" type="Timestamp" />
+  <index name="PK_LUMAmazonSourceData" clustered="true" primary="true" unique="true">
+    <col name="CompanyID" />
+    <col name="SequenceNumber" />
+  </index>
+</table>]]></CDATA>
+</Sql>

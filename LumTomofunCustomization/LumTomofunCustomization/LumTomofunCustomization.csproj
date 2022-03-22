@@ -56,8 +56,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAC\LUMShopifySourceData.cs" />
     <Compile Include="Examples.cs" />
     <Compile Include="DAC\LUMForecaseUpload.cs" />
+    <Compile Include="Graph\LUMAmazonInterfaceMaint.cs" />
     <Compile Include="Graph\LUMMRPDataUploadProcess.cs" />
     <Compile Include="Graph\LUMForecaseUploadProcess.cs" />
     <Compile Include="DAC\LumMRPData.cs" />
@@ -66,6 +68,8 @@
     <Compile Include="Graph\LUMMRPProcess.cs" />
     <Compile Include="DAC\LUMMRPPreference.cs" />
     <Compile Include="DAC\v_MRPResultQuery.cs" />
+    <Compile Include="DAC\LUMAmazonSourceData.cs" />
+    <Compile Include="Graph\LUMShopifyInterfaceMaint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

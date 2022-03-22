@@ -1,0 +1,57 @@
+﻿<EntityEndpoint>
+    <Endpoint xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="TomofunApi" version="20.200.001" systemContractVersion="4" xmlns="http://www.acumatica.com/entity/maintenance/5.31">
+        <ExtendsEndpoint name="Default" version="20.200.001" />
+        <TopLevelEntity name="AmazonAPIInterface" screen="LM501010">
+            <Fields>
+                <Field name="APIType" type="StringValue" />
+                <Field name="Branch" type="StringValue" />
+                <Field name="JsonSource" type="StringValue" />
+                <Field name="Marketplace" type="StringValue" />
+                <Field name="TransactionType" type="StringValue" />
+            </Fields>
+            <Mappings>
+                <Mapping field="APIType">
+                    <To object="AmazonSourceData" field="APIType" />
+                </Mapping>
+                <Mapping field="Branch">
+                    <To object="AmazonSourceData" field="BranchID" />
+                </Mapping>
+                <Mapping field="JsonSource">
+                    <To object="AmazonSourceData" field="JsonSource" />
+                </Mapping>
+                <Mapping field="Marketplace">
+                    <To object="AmazonSourceData" field="Marketplace" />
+                </Mapping>
+                <Mapping field="TransactionType">
+                    <To object="AmazonSourceData" field="TransactionType" />
+                </Mapping>
+            </Mappings>
+        </TopLevelEntity>
+        <TopLevelEntity name="ShopifyAPIInterface" screen="LM501011">
+            <Fields>
+                <Field name="APIType" type="StringValue" />
+                <Field name="Branch" type="StringValue" />
+                <Field name="JsonSource" type="StringValue" />
+                <Field name="Marketplace" type="StringValue" />
+                <Field name="TransactionType" type="StringValue" />
+            </Fields>
+            <Mappings>
+                <Mapping field="APIType">
+                    <To object="ShopifySourceData" field="APIType" />
+                </Mapping>
+                <Mapping field="Branch">
+                    <To object="ShopifySourceData" field="BranchID" />
+                </Mapping>
+                <Mapping field="JsonSource">
+                    <To object="ShopifySourceData" field="JsonSource" />
+                </Mapping>
+                <Mapping field="Marketplace">
+                    <To object="ShopifySourceData" field="Marketplace" />
+                </Mapping>
+                <Mapping field="TransactionType">
+                    <To object="ShopifySourceData" field="TransactionType" />
+                </Mapping>
+            </Mappings>
+        </TopLevelEntity>
+    </Endpoint>
+</EntityEndpoint>

@@ -64,7 +64,7 @@ namespace LumTomofunCustomization.Graph
                                            .View.Select(this).RowCast<INSite>()
                                            .Where(x => filter.Warehouse == null || x.SiteID == filter?.Warehouse).ToList();
                     // 刪除預設資料
-                    DeleteData(GetFixInventoryItem(),GetFixSiteID());
+                    DeleteData(GetFixInventoryItem(), GetFixSiteID());
 
                     foreach (var actSku in allInventoryItem)
                     {
@@ -96,7 +96,11 @@ namespace LumTomofunCustomization.Graph
                             var storageGraph = PXGraph.CreateInstance<StoragePlaceEnq>();
                             storageGraph.Filter.Cache.SetValueExt<StoragePlaceEnq.StoragePlaceFilter.siteID>(storageGraph.Filter.Current, actWarehouse.SiteID);
                             storageGraph.Filter.Cache.SetValueExt<StoragePlaceEnq.StoragePlaceFilter.inventoryID>(storageGraph.Filter.Current, actSku.InventoryID);
-                            var storageSummary = storageGraph.storages.Select().RowCast<StoragePlaceStatus>().ToList();
+                            var storageSummary = storageGraph.storages.Select().RowCast<StoragePlaceStatus>();
+                            var inLocation = SelectFrom<INLocation>
+                                             .Where<INLocation.siteID.IsEqual<P.AsInt>
+                                               .And<INLocation.inclQtyAvail.IsEqual<True>>>.View.Select(this, actWarehouse.SiteID).RowCast<INLocation>().Select(x => x.LocationID).ToList();
+                            storageSummary = storageSummary.Where(x => inLocation.IndexOf(x.LocationID) > 0).ToList();
                             #endregion
 
                             #region Inventory Allocation Details
@@ -144,7 +148,7 @@ namespace LumTomofunCustomization.Graph
                                 {
                                     #region Last Stock Initial
 
-                                    lastDayStock = (int?)storageSummary.FirstOrDefault()?.Qty ?? 0;
+                                    lastDayStock = (int)storageSummary.Sum(x => x?.Qty ?? 0);
 
                                     #endregion
 
@@ -297,7 +301,7 @@ namespace LumTomofunCustomization.Graph
         public virtual void InitialData()
         {
             string screenIDWODot = this.Accessinfo.ScreenID.ToString().Replace(".", "");
-           
+
             PXDatabase.Insert<LUMMRPProcessResult>(
                                  new PXDataFieldAssign<LUMMRPProcessResult.sku>(GetFixInventoryItem()),
                                  new PXDataFieldAssign<LUMMRPProcessResult.warehouse>(GetFixSiteID()),
