@@ -1,29 +1,26 @@
 using System;
 using PX.Data;
-using PX.Data.ReferentialIntegrity.Attributes;
 using PX.Objects.GL;
 
 namespace LUMTomofunCustomization.DAC
 {
     [Serializable]
-    [PXCacheName("LUMAmazonSourceData")]
-    public class LUMAmazonSourceData : IBqlTable
+    [PXCacheName("LUMShopifyTransData")]
+    public class LUMShopifyTransData : IBqlTable
     {
-
-        public class PK : PrimaryKeyOf<LUMAmazonSourceData>.By<sequenceNumber>
+        public class FK
         {
-            public static LUMAmazonSourceData Find(PXGraph graph, int seqNo) => FindBy(graph, seqNo);
+            public class ShopifySourceData : LUMShopifySourceData.PK.ForeignKeyOf<LUMShopifyTransData>.By<sequenceNumber> { }
         }
 
-        #region Selected
-        [PXBool()]
-        [PXUIField(DisplayName = "Selected")]
-        public virtual bool? Selected { get; set; }
-        public abstract class selected : PX.Data.BQL.BqlBool.Field<selected> { }
+        #region TransSequenceNumber
+        [PXDBIdentity(IsKey = true)]
+        public virtual int? TransSequenceNumber { get; set; }
+        public abstract class transSequenceNumber : PX.Data.BQL.BqlInt.Field<transSequenceNumber> { }
         #endregion
 
         #region SequenceNumber
-        [PXDBIdentity(IsKey = true)]
+        [PXDBInt()]
         [PXUIField(DisplayName = "Sequence Number")]
         public virtual int? SequenceNumber { get; set; }
         public abstract class sequenceNumber : PX.Data.BQL.BqlInt.Field<sequenceNumber> { }
@@ -36,11 +33,11 @@ namespace LUMTomofunCustomization.DAC
         public abstract class branchID : PX.Data.BQL.BqlInt.Field<branchID> { }
         #endregion
 
-        #region APIType
+        #region Apitype
         [PXDBString(20, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "API Type")]
-        public virtual string APIType { get; set; }
-        public abstract class aPIType : PX.Data.BQL.BqlString.Field<aPIType> { }
+        [PXUIField(DisplayName = "Apitype")]
+        public virtual string Apitype { get; set; }
+        public abstract class apitype : PX.Data.BQL.BqlString.Field<apitype> { }
         #endregion
 
         #region TransactionType
@@ -57,18 +54,18 @@ namespace LUMTomofunCustomization.DAC
         public abstract class marketplace : PX.Data.BQL.BqlString.Field<marketplace> { }
         #endregion
 
-        #region JsonSource
-        [PXDBString(IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Json Source")]
-        public virtual string JsonSource { get; set; }
-        public abstract class jsonSource : PX.Data.BQL.BqlString.Field<jsonSource> { }
+        #region OrderID
+        [PXDBString(20, IsUnicode = true, InputMask = "")]
+        [PXUIField(DisplayName = "Shopify Order ID")]
+        public virtual string OrderID { get; set; }
+        public abstract class orderID : PX.Data.BQL.BqlString.Field<orderID> { }
         #endregion
 
-        #region IsProcessed
-        [PXDBBool]
-        [PXUIField(DisplayName = "IsProcessed")]
-        public virtual bool? IsProcessed { get; set; }
-        public abstract class isProcessed : PX.Data.BQL.BqlBool.Field<isProcessed> { }
+        #region TransJson
+        [PXDBString(IsUnicode = true, InputMask = "")]
+        [PXUIField(DisplayName = "Trans Json")]
+        public virtual string TransJson { get; set; }
+        public abstract class transJson : PX.Data.BQL.BqlString.Field<transJson> { }
         #endregion
 
         #region CreatedByID
@@ -85,7 +82,6 @@ namespace LUMTomofunCustomization.DAC
 
         #region CreatedDateTime
         [PXDBCreatedDateTime()]
-        [PXUIField(Enabled = false)]
         public virtual DateTime? CreatedDateTime { get; set; }
         public abstract class createdDateTime : PX.Data.BQL.BqlDateTime.Field<createdDateTime> { }
         #endregion

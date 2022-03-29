@@ -1,5 +1,6 @@
 ﻿using System;
 using PX.Data;
+using PX.Data.ReferentialIntegrity.Attributes;
 using PX.Objects.GL;
 
 namespace LUMTomofunCustomization.DAC
@@ -8,6 +9,17 @@ namespace LUMTomofunCustomization.DAC
     [PXCacheName("LUMShopifySourceData")]
     public class LUMShopifySourceData : IBqlTable
     {
+        public class PK : PrimaryKeyOf<LUMShopifySourceData>.By<sequenceNumber>
+        {
+            public static LUMShopifySourceData Find(PXGraph graph, int seqNo) => FindBy(graph, seqNo);
+        }
+
+        #region Selected
+        [PXBool()]
+        [PXUIField(DisplayName = "Selected")]
+        public virtual bool? Selected { get; set; }
+        public abstract class selected : PX.Data.BQL.BqlBool.Field<selected> { }
+        #endregion
 
         #region SequenceNumber
         [PXDBIdentity(IsKey = true)]
@@ -49,6 +61,13 @@ namespace LUMTomofunCustomization.DAC
         [PXUIField(DisplayName = "Json Source")]
         public virtual string JsonSource { get; set; }
         public abstract class jsonSource : PX.Data.BQL.BqlString.Field<jsonSource> { }
+        #endregion
+
+        #region IsProcessed
+        [PXDBBool]
+        [PXUIField(DisplayName = "IsProcessed")]
+        public virtual bool? IsProcessed { get; set; }
+        public abstract class isProcessed : PX.Data.BQL.BqlBool.Field<isProcessed> { }
         #endregion
 
         #region CreatedByID

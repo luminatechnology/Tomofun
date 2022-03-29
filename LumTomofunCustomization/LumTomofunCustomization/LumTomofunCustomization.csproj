@@ -56,10 +56,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API Entity\AmazonOrderEntity.cs" />
+    <Compile Include="API Entity\ShopifyOrderEntity.cs" />
+    <Compile Include="API Entity\ShopifyPaymentEntity.cs" />
+    <Compile Include="DAC\LUMAmazonTransData.cs" />
     <Compile Include="DAC\LUMShopifySourceData.cs" />
     <Compile Include="Examples.cs" />
     <Compile Include="DAC\LUMForecaseUpload.cs" />
     <Compile Include="Graph\LUMAmazonInterfaceMaint.cs" />
+    <Compile Include="Graph\LUMAmazonTransactionProcess.cs" />
     <Compile Include="Graph\LUMMRPDataUploadProcess.cs" />
     <Compile Include="Graph\LUMForecaseUploadProcess.cs" />
     <Compile Include="DAC\LumMRPData.cs" />
@@ -70,11 +75,17 @@
     <Compile Include="DAC\v_MRPResultQuery.cs" />
     <Compile Include="DAC\LUMAmazonSourceData.cs" />
     <Compile Include="Graph\LUMShopifyInterfaceMaint.cs" />
+    <Compile Include="DAC\LUMShopifyTransData.cs" />
+    <Compile Include="Graph\LUMShopifyTransactionProcess.cs" />
+    <Compile Include="DAC\LUMMarketplacePreference.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces">
       <Version>5.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
       <Version>5.0.0</Version>
