@@ -6,8 +6,8 @@ using PX.Objects.IN;
 namespace LumTomofunCustomization.DAC
 {
     [Serializable]
-    [PXCacheName("LUMForecaseUpload")]
-    public class LUMForecaseUpload : IBqlTable
+    [PXCacheName("LUMForecastUpload")]
+    public class LUMForecastUpload : IBqlTable
     {
         #region Mrptype
         [PXDBString(20, IsKey = true, IsUnicode = true, InputMask = "")]
@@ -43,7 +43,7 @@ namespace LumTomofunCustomization.DAC
         #endregion
 
         #region Company
-        [PXDBString(5, IsUnicode = true, InputMask = "")]
+        [PXDBString(5, IsUnicode = true, InputMask = "", IsKey = true)]
         [PXUIField(DisplayName = "Company")]
         public virtual string Company { get; set; }
         public abstract class company : PX.Data.BQL.BqlString.Field<company> { }

@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace LumTomofunCustomization.Graph
 {
-    public class LUMForecaseUploadProcess : PXGraph<LUMForecaseUploadProcess>, PXImportAttribute.IPXPrepareItems
+    public class LUMForecastUploadProcess : PXGraph<LUMForecastUploadProcess>, PXImportAttribute.IPXPrepareItems
     {
 
-        public PXSave<LUMForecaseUpload> Save;
-        public PXCancel<LUMForecaseUpload> Cancel;
+        public PXSave<LUMForecastUpload> Save;
+        public PXCancel<LUMForecastUpload> Cancel;
 
-        [PXImport(typeof(LUMForecaseUpload))]
-        public SelectFrom<LUMForecaseUpload>.View Transaction;
+        [PXImport(typeof(LUMForecastUpload))]
+        public SelectFrom<LUMForecastUpload>.View Transaction;
 
         public bool PrepareImportRow(string viewName, IDictionary keys, IDictionary values)
             => true;
@@ -25,7 +25,7 @@ namespace LumTomofunCustomization.Graph
         public void PrepareItems(string viewName, IEnumerable items) { }
 
         public bool RowImported(string viewName, object row, object oldRow)
-            => ((row as LUMForecaseUpload)?.Qty ?? 0) == 0 ? false : true;
+            => ((row as LUMForecastUpload)?.Qty ?? 0) == 0 ? false : true;
 
         public bool RowImporting(string viewName, object row)
             => true;

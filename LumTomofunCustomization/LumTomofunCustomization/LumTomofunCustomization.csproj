@@ -62,11 +62,11 @@
     <Compile Include="DAC\LUMAmazonTransData.cs" />
     <Compile Include="DAC\LUMShopifySourceData.cs" />
     <Compile Include="Examples.cs" />
-    <Compile Include="DAC\LUMForecaseUpload.cs" />
+    <Compile Include="DAC\LUMForecastUpload.cs" />
     <Compile Include="Graph\LUMAmazonInterfaceMaint.cs" />
     <Compile Include="Graph\LUMAmazonTransactionProcess.cs" />
     <Compile Include="Graph\LUMMRPDataUploadProcess.cs" />
-    <Compile Include="Graph\LUMForecaseUploadProcess.cs" />
+    <Compile Include="Graph\LUMForecastUploadProcess.cs" />
     <Compile Include="DAC\LumMRPData.cs" />
     <Compile Include="DAC\LUMMRPProcessResult.cs" />
     <Compile Include="Graph\LUMMRPPreferenceMaint.cs" />

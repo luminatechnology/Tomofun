@@ -49,18 +49,18 @@ namespace LumTomofunCustomization.DAC
         public abstract class date : PX.Data.BQL.BqlDateTime.Field<date> { }
         #endregion
 
-        #region Forecase
+        #region Forecast
         [PXDBInt()]
-        [PXUIField(DisplayName = "Forecase")]
-        public virtual int? Forecase { get; set; }
-        public abstract class forecase : PX.Data.BQL.BqlInt.Field<forecase> { }
+        [PXUIField(DisplayName = "Forecast")]
+        public virtual int? Forecast { get; set; }
+        public abstract class forecast : PX.Data.BQL.BqlInt.Field<forecast> { }
         #endregion
 
-        #region ForecaseBase
+        #region ForecastBase
         [PXDBInt()]
-        [PXUIField(DisplayName = "Forecase Base")]
-        public virtual int? ForecaseBase { get; set; }
-        public abstract class forecaseBase : PX.Data.BQL.BqlInt.Field<forecaseBase> { }
+        [PXUIField(DisplayName = "Forecast Base")]
+        public virtual int? ForecastBase { get; set; }
+        public abstract class forecastBase : PX.Data.BQL.BqlInt.Field<forecastBase> { }
         #endregion
 
         #region OpenSo
@@ -91,11 +91,11 @@ namespace LumTomofunCustomization.DAC
         public abstract class forecastComsumption : PX.Data.BQL.BqlInt.Field<forecastComsumption> { }
         #endregion
 
-        #region ForecaseRemains
+        #region ForecastRemains
         [PXDBInt()]
-        [PXUIField(DisplayName = "Forecase Remains")]
-        public virtual int? ForecaseRemains { get; set; }
-        public abstract class forecaseRemains : PX.Data.BQL.BqlInt.Field<forecaseRemains> { }
+        [PXUIField(DisplayName = "Forecast Remains")]
+        public virtual int? ForecastRemains { get; set; }
+        public abstract class forecastRemains : PX.Data.BQL.BqlInt.Field<forecastRemains> { }
         #endregion
 
         #region DemandAdj

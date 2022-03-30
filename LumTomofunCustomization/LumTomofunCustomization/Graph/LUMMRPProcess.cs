@@ -20,6 +20,10 @@ namespace LumTomofunCustomization.Graph
         [PXFilterable]
         public PXFilteredProcessing<LUMMRPProcessResult, MRPFilter> Transaction;
 
+        // ReSharper disable InconsistentNaming
+        [InjectDependency]
+        private ILegacyCompanyService _legacyCompanyService { get; set; }
+
         public LUMMRPProcess()
         {
             var filter = this.Filter.Current;
@@ -72,22 +76,23 @@ namespace LumTomofunCustomization.Graph
                         {
                             var startDate = filter.Date;             // MRP 起始日期
                             var actDate = startDate;                 // MRP 執行日
-                            var lastDayRemainForecase = 0;           // MRP 前一天剩餘 Forecase
+                            var lastDayRemainForecast = 0;           // MRP 前一天剩餘 Forecast
                             var lastDayStock = 0;                    // MRP 前一天剩餘的 Stock
                             var Sku = actSku.InventoryID;            // MRP Sku
                             var Warehouse = actWarehouse.SiteID;     // MRP Warehouse
                             var lastDate = actDate;                  // MRP 計算最後一天
-                            LUMForecaseUpload lastForecastData;      // 離計算日最新的Forecast資料
+                            LUMForecastUpload lastForecastData;      // 離計算日最新的Forecast資料
 
                             DeleteData(Sku, Warehouse);
-
-                            // Forecase upload data
-                            var forecaseData = SelectFrom<LUMForecaseUpload>
-                                               .Where<LUMForecaseUpload.sku.IsEqual<@P.AsInt>
-                                                 .And<LUMForecaseUpload.warehouse.IsEqual<@P.AsInt>>
-                                                 .And<LUMForecaseUpload.country.IsEqual<@P.AsString>>>
-                                               .View.Select(this, Sku, Warehouse, "US").RowCast<LUMForecaseUpload>().OrderBy(x => x.Date);
-                            lastForecastData = forecaseData.OrderBy(x => x.Date).LastOrDefault(x => x.Date.Value.Date < actDate.Value.Date && x.Mrptype == "Forecast");
+                            var actCompanyName = _legacyCompanyService.ExtractCompany(PX.Common.PXContext.PXIdentity.IdentityName);
+                            // Forecast upload data
+                            var forecastData = SelectFrom<LUMForecastUpload>
+                                               .Where<LUMForecastUpload.sku.IsEqual<@P.AsInt>
+                                                 .And<LUMForecastUpload.warehouse.IsEqual<@P.AsInt>>
+                                                 .And<LUMForecastUpload.country.IsEqual<@P.AsString>>
+                                                 .And<LUMForecastUpload.company.IsEqual<@P.AsString>>>
+                                               .View.Select(this, Sku, Warehouse, "US", actCompanyName).RowCast<LUMForecastUpload>().OrderBy(x => x.Date);
+                            lastForecastData = forecastData.OrderBy(x => x.Date).LastOrDefault(x => x.Date.Value.Date < actDate.Value.Date && x.Mrptype == "Forecast");
 
                             // MRPPreference
                             var mrpPreference = SelectFrom<LUMMRPPreference>.View.Select(this).RowCast<LUMMRPPreference>();
@@ -182,45 +187,45 @@ namespace LumTomofunCustomization.Graph
 
                                 #endregion
 
-                                // 如果ActDate有上傳Forecase
-                                var actDayExistsForecase = forecaseData.FirstOrDefault(x => x.Date.Value.Date == actDate.Value.Date && x.Mrptype == "Forecast") != null;
-                                // 計算第一天或 當天有上傳Forcase Forecase Base & Last Stock initial
-                                if (startDate.Value.Date == actDate.Value.Date || actDayExistsForecase)
+                                // 如果ActDate有上傳Forecast
+                                var actDayExistsForecast = forecastData.FirstOrDefault(x => x.Date.Value.Date == actDate.Value.Date && x.Mrptype == "Forecast") != null;
+                                // 計算第一天或 當天有上傳Forcase Forecast Base & Last Stock initial
+                                if (startDate.Value.Date == actDate.Value.Date || actDayExistsForecast)
                                 {
                                     #region 計算 Forecase & Forecase Base
-                                    result.Forecase = (int?)forecaseData.FirstOrDefault(x => x.Date.Value.Date == actDate.Value.Date && x.Mrptype == "Forecast")?.Qty;
+                                    result.Forecast = (int?)forecastData.FirstOrDefault(x => x.Date.Value.Date == actDate.Value.Date && x.Mrptype == "Forecast")?.Qty;
                                     // 如果當天有forecase 就用當天上傳資料; 
-                                    if (actDayExistsForecase)
-                                        result.ForecaseBase = (int?)forecaseData.FirstOrDefault(x => x.Date.Value.Date == actDate.Value.Date && x.Mrptype == "Forecast")?.Qty;
+                                    if (actDayExistsForecast)
+                                        result.ForecastBase = (int?)forecastData.FirstOrDefault(x => x.Date.Value.Date == actDate.Value.Date && x.Mrptype == "Forecast")?.Qty;
                                     // 過往無任何forecase則取0; 
-                                    else if (forecaseData.FirstOrDefault(x => x.Date.Value.Date < actDate.Value.Date && x.Mrptype == "Forecast") == null)
-                                        result.ForecaseBase = 0;
+                                    else if (forecastData.FirstOrDefault(x => x.Date.Value.Date < actDate.Value.Date && x.Mrptype == "Forecast") == null)
+                                        result.ForecastBase = 0;
                                     // 找最近的上傳forecase資料並扣除ActIssues
                                     else
                                     {
                                         // 最新一筆的forecase 資料
-                                        result.ForecaseBase = (int?)lastForecastData?.Qty - (int)inTransData?.Sum(x => x.Qty ?? 0);
-                                        result.ForecaseBase = result.ForecaseBase < 0 ? 0 : result.ForecaseBase;
+                                        result.ForecastBase = (int?)lastForecastData?.Qty - (int)inTransData?.Sum(x => x.Qty ?? 0);
+                                        result.ForecastBase = result.ForecastBase < 0 ? 0 : result.ForecastBase;
                                     }
                                     #endregion
                                 }
 
                                 #region Foreacse Initial
 
-                                result.ForecastIntial = result.ForecaseBase == null ? lastDayRemainForecase : result.ForecaseBase;
+                                result.ForecastIntial = result.ForecastBase == null ? lastDayRemainForecast : result.ForecastBase;
 
                                 #endregion
 
                                 #region Forecase Remains + LastDay Forecase Remains
 
-                                result.ForecaseRemains = Math.Max(result.ForecastIntial.Value - openSOAdj.Value, 0);
-                                lastDayRemainForecase = result.ForecaseRemains ?? 0;
+                                result.ForecastRemains = Math.Max(result.ForecastIntial.Value - openSOAdj.Value, 0);
+                                lastDayRemainForecast = result.ForecastRemains ?? 0;
 
                                 #endregion
 
                                 #region Forecase Comsumption
 
-                                result.ForecastComsumption = result?.ForecastIntial - result?.ForecaseRemains;
+                                result.ForecastComsumption = result?.ForecastIntial - result?.ForecastRemains;
 
                                 #endregion
 
@@ -232,7 +237,7 @@ namespace LumTomofunCustomization.Graph
 
                                 #region Net Demand
 
-                                result.NetDemand = result.ForecaseBase == null ? (result.Forecase ?? 0) + result.DemandAdj : Math.Max(openSOAdj.Value, result.ForecastIntial.Value);
+                                result.NetDemand = result.ForecastBase == null ? (result.Forecast ?? 0) + result.DemandAdj : Math.Max(openSOAdj.Value, result.ForecastIntial.Value);
 
                                 #endregion
 
