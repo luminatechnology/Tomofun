@@ -148,7 +148,7 @@ namespace LumTomofunCustomization.Graph
                             {
                                 var result = this.Transaction.Insert((LUMMRPProcessResult)this.Transaction.Cache.CreateInstance());
 
-                                // 計算第一天
+                                // 只計算第一天
                                 if (startDate.Value.Date == actDate.Value.Date)
                                 {
                                     #region Last Stock Initial
@@ -189,21 +189,21 @@ namespace LumTomofunCustomization.Graph
 
                                 // 如果ActDate有上傳Forecast
                                 var actDayExistsForecast = forecastData.FirstOrDefault(x => x.Date.Value.Date == actDate.Value.Date && x.Mrptype == "Forecast") != null;
-                                // 計算第一天或 當天有上傳Forcase Forecast Base & Last Stock initial
+                                // 計算第一天或 當天有上傳Forcast Forecast Base & Last Stock initial
                                 if (startDate.Value.Date == actDate.Value.Date || actDayExistsForecast)
                                 {
-                                    #region 計算 Forecase & Forecase Base
+                                    #region 計算 Forecast & Forecast Base
                                     result.Forecast = (int?)forecastData.FirstOrDefault(x => x.Date.Value.Date == actDate.Value.Date && x.Mrptype == "Forecast")?.Qty;
-                                    // 如果當天有forecase 就用當天上傳資料; 
+                                    // 如果當天有forecast 就用當天上傳資料; 
                                     if (actDayExistsForecast)
                                         result.ForecastBase = (int?)forecastData.FirstOrDefault(x => x.Date.Value.Date == actDate.Value.Date && x.Mrptype == "Forecast")?.Qty;
-                                    // 過往無任何forecase則取0; 
+                                    // 過往無任何forecast則取0; 
                                     else if (forecastData.FirstOrDefault(x => x.Date.Value.Date < actDate.Value.Date && x.Mrptype == "Forecast") == null)
                                         result.ForecastBase = 0;
-                                    // 找最近的上傳forecase資料並扣除ActIssues
+                                    // 找最近的上傳Forecast資料並扣除ActIssues
                                     else
                                     {
-                                        // 最新一筆的forecase 資料
+                                        // 最新一筆的forecast 資料
                                         result.ForecastBase = (int?)lastForecastData?.Qty - (int)inTransData?.Sum(x => x.Qty ?? 0);
                                         result.ForecastBase = result.ForecastBase < 0 ? 0 : result.ForecastBase;
                                     }
@@ -216,14 +216,14 @@ namespace LumTomofunCustomization.Graph
 
                                 #endregion
 
-                                #region Forecase Remains + LastDay Forecase Remains
+                                #region Forecast Remains + LastDay Forecast Remains
 
                                 result.ForecastRemains = Math.Max(result.ForecastIntial.Value - openSOAdj.Value, 0);
                                 lastDayRemainForecast = result.ForecastRemains ?? 0;
 
                                 #endregion
 
-                                #region Forecase Comsumption
+                                #region Forecast Comsumption
 
                                 result.ForecastComsumption = result?.ForecastIntial - result?.ForecastRemains;
 

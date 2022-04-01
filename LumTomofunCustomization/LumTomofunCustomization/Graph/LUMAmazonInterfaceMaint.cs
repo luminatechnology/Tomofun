@@ -69,7 +69,7 @@ namespace LumTomofunCustomization.Graph
                     {
                         case "Amazon Orders":
                             // 逐筆解析Json + 新增資料
-                            foreach (var item in JsonConvert.DeserializeObject<List<API_Entity.AmazonOrder.AmazonOrderEntity>>(data.JsonSource))
+                            foreach (var item in JsonConvert.DeserializeObject<API_Entity.AmazonOrder.AmazonOrderEntity>(data.JsonSource).Orders)
                             {
                                 var trans = graph.AmazonTransaction.Insert((LUMAmazonTransData)graph.AmazonTransaction.Cache.CreateInstance());
                                 trans.BranchID = data.BranchID;
@@ -77,6 +77,8 @@ namespace LumTomofunCustomization.Graph
                                 trans.TransactionType = data.TransactionType;
                                 trans.Marketplace = data.Marketplace;
                                 trans.SequenceNumber = data.SequenceNumber;
+                                trans.SalesChannel = item.SalesChannel;
+                                trans.OrderStatus = item.OrderStatus;
                                 trans.OrderID = item.OrderId.ToString();
                                 trans.TransJson = JsonConvert.SerializeObject(item);
                             }

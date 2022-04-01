@@ -61,10 +61,11 @@
     <Compile Include="API Entity\ShopifyPaymentEntity.cs" />
     <Compile Include="DAC\LUMAmazonTransData.cs" />
     <Compile Include="DAC\LUMShopifySourceData.cs" />
-    <Compile Include="Examples.cs" />
     <Compile Include="DAC\LUMForecastUpload.cs" />
     <Compile Include="Graph\LUMAmazonInterfaceMaint.cs" />
     <Compile Include="Graph\LUMAmazonTransactionProcess.cs" />
+    <Compile Include="Graph\LUMMarketplaceFeePreferenceMaint.cs" />
+    <Compile Include="Graph\LUMMarketplacePreferenceMaint.cs" />
     <Compile Include="Graph\LUMMRPDataUploadProcess.cs" />
     <Compile Include="Graph\LUMForecastUploadProcess.cs" />
     <Compile Include="DAC\LumMRPData.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="DAC\LUMShopifyTransData.cs" />
     <Compile Include="Graph\LUMShopifyTransactionProcess.cs" />
     <Compile Include="DAC\LUMMarketplacePreference.cs" />
+    <Compile Include="DAC\LUMMarketplaceFeePreference.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

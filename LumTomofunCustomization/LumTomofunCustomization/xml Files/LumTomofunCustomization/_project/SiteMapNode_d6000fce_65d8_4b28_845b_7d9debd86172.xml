@@ -25,20 +25,18 @@
         </layout>
         <data>
             <SiteMap>
-                <row Title="Upload Forecast" Url="~/Pages/LM/LM501000.aspx" ScreenID="LM501000" NodeID="e5e9e42e-ef53-4a03-a79f-2dce18e1f0a9" ParentID="00000000-0000-0000-0000-000000000000">
-                    <MUIScreen IsPortal="0" WorkspaceID="6557c1c6-747e-45bb-9072-54f096598d61" Order="70" SubcategoryID="32130442-2305-4394-9389-cf915b191d2a" />
+                <row Title="Amazon Transactions" Url="~/Pages/LM/LM501020.aspx" ScreenID="LM501020" NodeID="d6000fce-65d8-4b28-845b-7d9debd86172" ParentID="00000000-0000-0000-0000-000000000000">
+                    <MUIScreen IsPortal="0" WorkspaceID="b6902036-c01f-44cb-84ff-340da661381b" Order="50" SubcategoryID="32130442-2305-4394-9389-cf915b191d2a" />
                 </row>
             </SiteMap>
             <MUIWorkspace>
-                <row IsPortal="0" WorkspaceID="6557c1c6-747e-45bb-9072-54f096598d61" Order="284" Title="Inventory" Icon="local_shipping" AreaID="62cfd5dc-8eb9-4e92-bbcd-e0a99eb5e5df" ScreenID="WSIN0000" IsSystem="0">
-                    <MUIFavoriteWorkspace IsPortal="0" Username="" IsFavorite="1" />
-                </row>
+                <row IsPortal="0" WorkspaceID="b6902036-c01f-44cb-84ff-340da661381b" Order="148.625" Title="Customization" Icon="extension" AreaID="3635ea7d-0975-48ff-b4ac-a870f7e1e8b5" ScreenID="WSCS0000" IsSystem="0" />
             </MUIWorkspace>
             <MUISubcategory>
                 <row IsPortal="0" SubcategoryID="32130442-2305-4394-9389-cf915b191d2a" Order="820" Name="Processes" Icon="" IsSystem="0" />
             </MUISubcategory>
             <MUIArea>
-                <row IsPortal="0" AreaID="62cfd5dc-8eb9-4e92-bbcd-e0a99eb5e5df" Order="20" Name="Operations" />
+                <row IsPortal="0" AreaID="3635ea7d-0975-48ff-b4ac-a870f7e1e8b5" Order="30" Name="Configuration" />
             </MUIArea>
         </data>
     </data-set>

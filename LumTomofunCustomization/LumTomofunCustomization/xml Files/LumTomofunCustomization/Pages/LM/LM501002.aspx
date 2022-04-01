@@ -27,13 +27,13 @@
                     <px:PXGridColumn DataField="Sku"></px:PXGridColumn>
                     <px:PXGridColumn DataField="Warehouse" />
                     <px:PXGridColumn DataField="Date"></px:PXGridColumn>
-                    <px:PXGridColumn DataField="Forecase"></px:PXGridColumn>
-                    <px:PXGridColumn DataField="ForecaseBase"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="Forecast"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="ForecastBase"></px:PXGridColumn>
                     <px:PXGridColumn DataField="OpenSo"></px:PXGridColumn>
                     <px:PXGridColumn DataField="PastOpenSo" />
                     <px:PXGridColumn DataField="ForecastIntial" />
                     <px:PXGridColumn DataField="ForecastComsumption" />
-                    <px:PXGridColumn DataField="ForecaseRemains" />
+                    <px:PXGridColumn DataField="ForecastRemains" />
                     <px:PXGridColumn DataField="DemandAdj" />
                     <px:PXGridColumn DataField="NetDemand" />
                     <px:PXGridColumn DataField="StockInitial" />

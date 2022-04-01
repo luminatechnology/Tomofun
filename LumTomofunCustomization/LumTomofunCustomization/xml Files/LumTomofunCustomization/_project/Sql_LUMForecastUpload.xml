@@ -1,10 +1,9 @@
-﻿<Sql TableName="LUMForecaseUpload" TableSchemaXml="#CDATA">
-    <CDATA name="TableSchemaXml"><![CDATA[<table name="LUMForecaseUpload">
-  <col name="CompanyID" type="Int" default="Zero" />
+﻿<Sql TableName="LUMForecastUpload" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="LUMForecastUpload">
+  <col name="Company" type="NVarChar(5)" />
   <col name="MRPType" type="NVarChar(20)" />
   <col name="Revision" type="NVarChar(10)" />
   <col name="SKU" type="Int" />
-  <col name="Company" type="NVarChar(5)" />
   <col name="Country" type="NVarChar(5)" />
   <col name="Warehouse" type="Int" />
   <col name="Date" type="DateTime" />
@@ -19,12 +18,8 @@
   <col name="LastModifiedByScreenID" type="Char(8)" />
   <col name="LastModifiedDateTime" type="DateTime" />
   <col name="tstamp" type="Timestamp" />
-  <index name="LUMForecaseUpload_NoteID" unique="true">
-    <col name="NoteID" />
-    <col name="CompanyID" />
-  </index>
-  <index name="PK_LUMForecaseUpload" clustered="true" primary="true" unique="true">
-    <col name="CompanyID" />
+  <index name="PK_LUMForecastUpload" clustered="true" primary="true" unique="true">
+    <col name="Company" />
     <col name="MRPType" />
     <col name="Revision" />
     <col name="SKU" />

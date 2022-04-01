@@ -4,13 +4,13 @@
   <col name="Sku" type="Int" />
   <col name="Warehouse" type="Int" />
   <col name="Date" type="DateTime" />
-  <col name="Forecase" type="Int" nullable="true" />
-  <col name="ForecaseBase" type="Int" nullable="true" />
+  <col name="Forecast" type="Int" nullable="true" />
+  <col name="ForecastBase" type="Int" nullable="true" />
   <col name="OpenSo" type="Int" nullable="true" />
   <col name="PastOpenSo" type="Int" nullable="true" />
   <col name="ForecastIntial" type="Int" nullable="true" />
   <col name="ForecastComsumption" type="Int" nullable="true" />
-  <col name="ForecaseRemains" type="Int" nullable="true" />
+  <col name="ForecastRemains" type="Int" nullable="true" />
   <col name="DemandAdj" type="Int" nullable="true" />
   <col name="NetDemand" type="Int" nullable="true" />
   <col name="StockInitial" type="Int" nullable="true" />

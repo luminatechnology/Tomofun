@@ -9,16 +9,6 @@ namespace LumTomofunCustomization.API_Entity.AmazonOrder
     // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
     public class Item
     {
-        public double PromotionDiscountAmount { get; set; }
-        public string ItemTaxCurrencyCode { get; set; }
-        public double GiftWrapTaxAmount { get; set; }
-        public string ItemId { get; set; }
-        public string ASIN { get; set; }
-        public double ItemTaxAmount { get; set; }
-        public string GiftWrapTaxCurrencyCode { get; set; }
-        public int QuantityOrdered { get; set; }
-        public string SellerSKU { get; set; }
-        public string ShippingDiscountCurrencyCode { get; set; }
         public int QuantityShipped { get; set; }
         public string ShippingPriceCurrencyCode { get; set; }
         public double ShippingDiscountAmount { get; set; }
@@ -33,24 +23,21 @@ namespace LumTomofunCustomization.API_Entity.AmazonOrder
         public double ItemPriceAmount { get; set; }
         public double GiftWrapPriceAmount { get; set; }
         public string PromotionDiscountCurrencyCode { get; set; }
+        public string ItemTaxCurrencyCode { get; set; }
         public string GiftWrapPriceCurrencyCode { get; set; }
+        public string ItemId { get; set; }
+        public double PromotionDiscountAmount { get; set; }
+        public double ItemTaxAmount { get; set; }
+        public double GiftWrapTaxAmount { get; set; }
+        public int QuantityOrdered { get; set; }
+        public string ASIN { get; set; }
+        public string ShippingDiscountCurrencyCode { get; set; }
+        public string GiftWrapTaxCurrencyCode { get; set; }
+        public string SellerSKU { get; set; }
     }
 
-    public class AmazonOrderEntity
+    public class Order
     {
-        public string OrderId { get; set; }
-        public string OrderStatus { get; set; }
-        public int IsPremiumOrder { get; set; }
-        public string PostalCode { get; set; }
-        public string Country { get; set; }
-        public int LatestShipDate { get; set; }
-        public string SalesChannel { get; set; }
-        public int EarliestShipDate { get; set; }
-        public object Name { get; set; }
-        public string OrderType { get; set; }
-        public int IsBusinessOrder { get; set; }
-        public string MarketplaceId { get; set; }
-        public object AddressLine1 { get; set; }
         public int PurchaseDate { get; set; }
         public int NumberOfItemsUnshipped { get; set; }
         public string FulfillmentChannel { get; set; }
@@ -67,9 +54,27 @@ namespace LumTomofunCustomization.API_Entity.AmazonOrder
         public double? Amount { get; set; }
         public string City { get; set; }
         public int IsFilled { get; set; }
+        public string OrderId { get; set; }
         public int NumberOfItemsShipped { get; set; }
+        public int IsPremiumOrder { get; set; }
         public string CountryCode { get; set; }
+        public string Country { get; set; }
+        public int LatestShipDate { get; set; }
+        public string OrderStatus { get; set; }
+        public int EarliestShipDate { get; set; }
+        public string PostalCode { get; set; }
+        public string OrderType { get; set; }
+        public string SalesChannel { get; set; }
+        public string MarketplaceId { get; set; }
+        public object Name { get; set; }
+        public int IsBusinessOrder { get; set; }
+        public object AddressLine1 { get; set; }
         public List<Item> Items { get; set; }
+    }
+
+    public class AmazonOrderEntity
+    {
+        public List<Order> Orders { get; set; }
     }
 
 

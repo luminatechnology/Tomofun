@@ -4,7 +4,7 @@
 
 <asp:Content ID="cont1" ContentPlaceHolderID="phDS" runat="Server">
     <px:PXDataSource ID="ds" runat="server" Visible="True" Width="100%"
-        TypeName="LumTomofunCustomization.Graph.LUMForecaseUploadProcess"
+        TypeName="LumTomofunCustomization.Graph.LUMForecastUploadProcess"
         PrimaryView="Transaction">
         <CallbackCommands>
         </CallbackCommands>

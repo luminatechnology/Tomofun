@@ -1,33 +1,32 @@
 using System;
 using PX.Data;
 using PX.Data.BQL.Fluent;
-using PX.Data.ReferentialIntegrity.Attributes;
-using PX.Objects.AR;
-using PX.Objects.CR;
+using PX.Objects.IN;
+using static PX.Objects.IN.INItemTypes;
 
 namespace LUMTomofunCustomization.DAC
 {
     [Serializable]
-    [PXCacheName("LUMMarketplacePreference")]
-    public class LUMMarketplacePreference : IBqlTable
+    [PXCacheName("LUMMarketplaceFeePreference")]
+    public class LUMMarketplaceFeePreference : IBqlTable
     {
-        #region BAccount
-        [PXDBInt(IsKey = true)]
-        [PXSelector(typeof(Search<Customer.bAccountID>),
-            typeof(Customer.acctCD),
-            typeof(Customer.acctName),
-            DescriptionField = typeof(Customer.acctName),
-            SubstituteKey = typeof(Customer.acctCD))]
-        [PXUIField(DisplayName = "CustomerID")]
-        public virtual int? BAccountID { get; set; }
-        public abstract class bAccountID : PX.Data.BQL.BqlInt.Field<bAccountID> { }
+        #region Fee
+        [PXDBString(100, IsKey = true, IsUnicode = true, InputMask = "")]
+        [PXUIField(DisplayName = "Fee")]
+        public virtual string Fee { get; set; }
+        public abstract class fee : PX.Data.BQL.BqlString.Field<fee> { }
         #endregion
 
-        #region Marketplace
-        [PXDBString(20, IsKey = true, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Marketplace")]
-        public virtual string Marketplace { get; set; }
-        public abstract class marketplace : PX.Data.BQL.BqlString.Field<marketplace> { }
+        #region InventoryID
+        [PXDBInt()]
+        [PXSelector(typeof(SelectFrom<InventoryItem>.Where<InventoryItem.itemType.IsEqual<NonStockTypeAttr>>.SearchFor<InventoryItem.inventoryID>),
+            typeof(InventoryItem.inventoryCD),
+            typeof(InventoryItem.descr),
+            DescriptionField = typeof(InventoryItem.descr),
+            SubstituteKey = typeof(InventoryItem.inventoryCD))]
+        [PXUIField(DisplayName = "Non-Stock Item")]
+        public virtual int? InventoryID { get; set; }
+        public abstract class inventoryID : PX.Data.BQL.BqlInt.Field<inventoryID> { }
         #endregion
 
         #region Noteid
@@ -78,5 +77,10 @@ namespace LUMTomofunCustomization.DAC
         public virtual byte[] Tstamp { get; set; }
         public abstract class tstamp : PX.Data.BQL.BqlByteArray.Field<tstamp> { }
         #endregion
+    }
+
+    public class NonStockTypeAttr : PX.Data.BQL.BqlString.Constant<NonStockTypeAttr>
+    {
+        public NonStockTypeAttr() : base("N") { }
     }
 }

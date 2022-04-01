@@ -1,13 +1,18 @@
-﻿<Sql TableName="LUMAmazonSourceData" TableSchemaXml="#CDATA">
-    <CDATA name="TableSchemaXml"><![CDATA[<table name="LUMAmazonSourceData">
+﻿<Sql TableName="LUMAmazonTransData" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="LUMAmazonTransData">
   <col name="CompanyID" type="Int" default="Zero" />
-  <col name="SequenceNumber" type="Int" identity="true" />
+  <col name="TransSequenceNumber" type="Int" identity="true" />
+  <col name="SequenceNumber" type="Int" />
   <col name="BranchID" type="Int" nullable="true" />
   <col name="APIType" type="NVarChar(20)" nullable="true" />
   <col name="TransactionType" type="NVarChar(20)" nullable="true" />
   <col name="Marketplace" type="NVarChar(20)" nullable="true" />
-  <col name="JsonSource" type="NVarChar(MAX)" />
+  <col name="OrderID" type="NVarChar(20)" nullable="true" />
+  <col name="SalesChannel" type="NVarChar(50)" nullable="true" />
+  <col name="OrderStatus" type="NVarChar(50)" nullable="true" />
+  <col name="TransJson" type="NVarChar(MAX)" nullable="true" />
   <col name="IsProcessed" type="Bit" nullable="true" />
+  <col name="ErrorMessage" type="NVarChar(200)" nullable="true" />
   <col name="CreatedByID" type="UniqueIdentifier" />
   <col name="CreatedByScreenID" type="Char(8)" />
   <col name="CreatedDateTime" type="DateTime" />
@@ -15,9 +20,9 @@
   <col name="LastModifiedByScreenID" type="Char(8)" />
   <col name="LastModifiedDateTime" type="DateTime" />
   <col name="tstamp" type="Timestamp" />
-  <index name="PK_LUMAmazonSourceData" clustered="true" primary="true" unique="true">
+  <index name="PK_LUMAmazonTransData" clustered="true" primary="true" unique="true">
     <col name="CompanyID" />
-    <col name="SequenceNumber" />
+    <col name="TransSequenceNumber" />
   </index>
 </table>]]></CDATA>
 </Sql>
