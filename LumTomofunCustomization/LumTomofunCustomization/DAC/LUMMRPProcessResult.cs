@@ -27,7 +27,7 @@ namespace LumTomofunCustomization.DAC
             typeof(SearchFor<InventoryItem.inventoryID>),
             DescriptionField = typeof(InventoryItem.inventoryCD),
             SubstituteKey = typeof(InventoryItem.inventoryCD))]
-        [PXUIField(DisplayName = "Sku")]
+        [PXUIField(DisplayName = "Stock Item")]
         public virtual int? Sku { get; set; }
         public abstract class sku : PX.Data.BQL.BqlInt.Field<sku> { }
         #endregion
@@ -107,7 +107,7 @@ namespace LumTomofunCustomization.DAC
 
         #region NetDemand
         [PXDBInt()]
-        [PXUIField(DisplayName = "Net Demand")]
+        [PXUIField(DisplayName = "Net Sales Demand")]
         public virtual int? NetDemand { get; set; }
         public abstract class netDemand : PX.Data.BQL.BqlInt.Field<netDemand> { }
         #endregion
@@ -138,6 +138,20 @@ namespace LumTomofunCustomization.DAC
         [PXUIField(DisplayName = "Stock Ava")]
         public virtual int? StockAva { get; set; }
         public abstract class stockAva : PX.Data.BQL.BqlInt.Field<stockAva> { }
+        #endregion
+
+        #region SafetyStock
+        [PXDBDecimal()]
+        [PXUIField(DisplayName = "Safety Stock")]
+        public virtual decimal? SafetyStock { get; set; }
+        public abstract class safetyStock : PX.Data.BQL.BqlDecimal.Field<safetyStock> { }
+        #endregion
+
+        #region FinalStockAvaliable
+        [PXDBInt()]
+        [PXUIField(DisplayName = "Stock Available - SS")]
+        public virtual int? FinalStockAvaliable { get; set; }
+        public abstract class finalStockAvaliable : PX.Data.BQL.BqlInt.Field<finalStockAvaliable> { }
         #endregion
 
         #region CreatedByID

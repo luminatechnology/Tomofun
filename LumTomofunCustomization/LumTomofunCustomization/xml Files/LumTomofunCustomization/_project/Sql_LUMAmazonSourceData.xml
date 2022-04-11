@@ -8,6 +8,7 @@
   <col name="Marketplace" type="NVarChar(20)" nullable="true" />
   <col name="JsonSource" type="NVarChar(MAX)" />
   <col name="IsProcessed" type="Bit" nullable="true" />
+  <col name="IsSkippedProcess" type="Bit" nullable="true" />
   <col name="CreatedByID" type="UniqueIdentifier" />
   <col name="CreatedByScreenID" type="Char(8)" />
   <col name="CreatedDateTime" type="DateTime" />

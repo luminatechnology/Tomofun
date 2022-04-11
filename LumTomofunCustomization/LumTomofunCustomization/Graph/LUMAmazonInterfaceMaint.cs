@@ -65,12 +65,16 @@ namespace LumTomofunCustomization.Graph
             {
                 try
                 {
+                    var isAllSkipped = true;
                     switch (data.TransactionType)
                     {
                         case "Amazon Orders":
                             // 逐筆解析Json + 新增資料
                             foreach (var item in JsonConvert.DeserializeObject<API_Entity.AmazonOrder.AmazonOrderEntity>(data.JsonSource).Orders)
                             {
+                                if(item.OrderStatus.ToLower() != "shipped")
+                                    continue;
+                                isAllSkipped = false;
                                 var trans = graph.AmazonTransaction.Insert((LUMAmazonTransData)graph.AmazonTransaction.Cache.CreateInstance());
                                 trans.BranchID = data.BranchID;
                                 trans.Apitype = data.APIType;
@@ -84,7 +88,8 @@ namespace LumTomofunCustomization.Graph
                             }
                             break;
                     }
-                    data.IsProcessed = true;
+                    data.IsProcessed = !isAllSkipped;
+                    data.IsSkippedProcess = isAllSkipped;
                     this.AmazonSourceData.Update(data);
                     graph.Actions.PressSave();
                 }

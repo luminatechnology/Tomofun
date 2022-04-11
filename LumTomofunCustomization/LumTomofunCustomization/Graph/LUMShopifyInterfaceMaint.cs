@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using LumTomofunCustomization.API_Entity;
 
 namespace LumTomofunCustomization.Graph
 {
@@ -24,7 +23,7 @@ namespace LumTomofunCustomization.Graph
         {
             ShopifySourceData.Cache.AllowInsert = ShopifySourceData.Cache.AllowUpdate = ShopifySourceData.Cache.AllowDelete = true;
 
-            PXUIFieldAttribute.SetEnabled<LUMShopifySourceData.branchID>(ShopifySourceData.Cache,null,true);
+            PXUIFieldAttribute.SetEnabled<LUMShopifySourceData.branchID>(ShopifySourceData.Cache, null, true);
             PXUIFieldAttribute.SetEnabled<LUMShopifySourceData.aPIType>(ShopifySourceData.Cache, null, true);
             PXUIFieldAttribute.SetEnabled<LUMShopifySourceData.transactionType>(ShopifySourceData.Cache, null, true);
             PXUIFieldAttribute.SetEnabled<LUMShopifySourceData.marketplace>(ShopifySourceData.Cache, null, true);
@@ -65,21 +64,25 @@ namespace LumTomofunCustomization.Graph
             {
                 try
                 {
+                    var isAllSkipped = true;
                     switch (data.TransactionType)
                     {
                         case "Shopify Orders":
                             // 逐筆解析Json + 新增資料
-                            foreach (var item in JsonConvert.DeserializeObject<ShopifyOrderEntity>(data.JsonSource).orders)
-                            {
-                                var trans = graph.ShopifyTransaction.Insert((LUMShopifyTransData)graph.ShopifyTransaction.Cache.CreateInstance());
-                                trans.BranchID = data.BranchID;
-                                trans.Apitype = data.APIType;
-                                trans.TransactionType = data.TransactionType;
-                                trans.Marketplace = data.Marketplace;
-                                trans.SequenceNumber = data.SequenceNumber;
-                                trans.OrderID = item.id.ToString();
-                                trans.TransJson = JsonConvert.SerializeObject(item);
-                            }
+                            var order = JsonConvert.DeserializeObject<API_Entity.ShopifyOrder.ShopifyOrderEntity>(data.JsonSource);
+                            if (order.financial_status.ToLower() != "paid")
+                                continue;
+                            isAllSkipped = false;
+                            var orderTrans = graph.ShopifyTransaction.Insert((LUMShopifyTransData)graph.ShopifyTransaction.Cache.CreateInstance());
+                            orderTrans.BranchID = data.BranchID;
+                            orderTrans.Apitype = data.APIType;
+                            orderTrans.TransactionType = data.TransactionType;
+                            orderTrans.Marketplace = data.Marketplace;
+                            orderTrans.SequenceNumber = data.SequenceNumber;
+                            orderTrans.OrderID = order.id.ToString();
+                            orderTrans.FullfillmentStatus = order.fulfillment_status ?? string.Empty;
+                            orderTrans.FinancialStatus = order.financial_status;
+                            orderTrans.TransJson = JsonConvert.SerializeObject(order);
                             break;
                         case "Shopify Payment":
                             // 逐筆解析Json + 新增資料
@@ -96,7 +99,8 @@ namespace LumTomofunCustomization.Graph
                             }
                             break;
                     }
-                    data.IsProcessed = true;
+                    data.IsProcessed = !isAllSkipped;
+                    data.IsSkippedProcess = isAllSkipped;
                     this.ShopifySourceData.Update(data);
                     graph.Actions.PressSave();
                 }

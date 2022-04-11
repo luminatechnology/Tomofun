@@ -35,13 +35,6 @@ namespace LumTomofunCustomization.DAC
         public abstract class sku : PX.Data.BQL.BqlInt.Field<sku> { }
         #endregion
 
-        #region Country
-        [PXDBString(5, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Country")]
-        public virtual string Country { get; set; }
-        public abstract class country : PX.Data.BQL.BqlString.Field<country> { }
-        #endregion
-
         #region Company
         [PXDBString(5, IsUnicode = true, InputMask = "", IsKey = true)]
         [PXUIField(DisplayName = "Company")]

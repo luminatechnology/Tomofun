@@ -60,6 +60,7 @@
     <Compile Include="API Entity\ShopifyOrderEntity.cs" />
     <Compile Include="API Entity\ShopifyPaymentEntity.cs" />
     <Compile Include="DAC\LUMAmazonTransData.cs" />
+    <Compile Include="DAC\LUMShopifyMarketplacePreference.cs" />
     <Compile Include="DAC\LUMShopifySourceData.cs" />
     <Compile Include="DAC\LUMForecastUpload.cs" />
     <Compile Include="Graph\LUMAmazonInterfaceMaint.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="DAC\LUMAmazonSourceData.cs" />
     <Compile Include="Graph\LUMShopifyInterfaceMaint.cs" />
     <Compile Include="DAC\LUMShopifyTransData.cs" />
+    <Compile Include="Graph\LUMShopifyMarketplacePreferenceMaint.cs" />
     <Compile Include="Graph\LUMShopifyTransactionProcess.cs" />
     <Compile Include="DAC\LUMMarketplacePreference.cs" />
     <Compile Include="DAC\LUMMarketplaceFeePreference.cs" />

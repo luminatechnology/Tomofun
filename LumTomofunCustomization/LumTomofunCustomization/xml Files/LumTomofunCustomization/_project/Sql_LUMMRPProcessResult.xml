@@ -17,6 +17,8 @@
   <col name="Demand" type="Int" nullable="true" />
   <col name="Supply" type="Int" nullable="true" />
   <col name="StockAva" type="Int" nullable="true" />
+  <col name="SafetyStock" type="Decimal(18,5)" nullable="true" />
+  <col name="FinalStockAvaliable" type="Int" nullable="true" />
   <col name="CreatedByID" type="UniqueIdentifier" />
   <col name="CreatedByScreenID" type="Char(8)" />
   <col name="CreatedDateTime" type="DateTime" />

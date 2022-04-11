@@ -12,7 +12,7 @@
 </asp:Content>
 
 <asp:Content ID="cont3" ContentPlaceHolderID="phG" runat="Server">
-    <px:PXGrid SyncPosition="True" ID="grid" runat="server" DataSourceID="ds" Width="100%" Height="150px" SkinID="PrimaryInquire" AllowAutoHide="false">
+    <px:PXGrid SyncPosition="True" ID="grid" runat="server" DataSourceID="ds" Width="100%" Height="150px" SkinID="Primary" AllowAutoHide="false">
         <Levels>
             <px:PXGridLevel DataMember="Transaction">
                 <Columns>
@@ -20,7 +20,6 @@
                     <px:PXGridColumn DataField="Revision"></px:PXGridColumn>
                     <px:PXGridColumn DataField="Sku"></px:PXGridColumn>
                     <px:PXGridColumn DataField="Company"></px:PXGridColumn>
-                    <px:PXGridColumn DataField="Country"></px:PXGridColumn>
                     <px:PXGridColumn DataField="Warehouse" />
                     <px:PXGridColumn DataField="Date" />
                     <px:PXGridColumn DataField="Qty" />
@@ -36,7 +35,7 @@
         <AutoSize Container="Window" Enabled="True" MinHeight="150" />
         <ActionBar>
         </ActionBar>
-        <Mode AllowUpdate="True" AllowUpload="True" />
+        <Mode AllowUpdate="True" AllowUpload="True" AllowDelete="True" />
     </px:PXGrid>
 
 </asp:Content>

@@ -63,7 +63,7 @@ namespace LUMTomofunCustomization.DAC
 
         #region OrderID
         [PXDBString(20, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Shopify Order ID")]
+        [PXUIField(DisplayName = "Amazon Order ID")]
         public virtual string OrderID { get; set; }
         public abstract class orderID : PX.Data.BQL.BqlString.Field<orderID> { }
         #endregion
@@ -84,7 +84,7 @@ namespace LUMTomofunCustomization.DAC
 
         #region TransJson
         [PXDBString(IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Trans Json")]
+        [PXUIField(DisplayName = "Transaction Json")]
         public virtual string TransJson { get; set; }
         public abstract class transJson : PX.Data.BQL.BqlString.Field<transJson> { }
         #endregion

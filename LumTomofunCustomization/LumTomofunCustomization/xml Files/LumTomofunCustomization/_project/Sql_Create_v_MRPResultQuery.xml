@@ -73,23 +73,23 @@ INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
 WHERE result.StockInitial is not null and result.CompanyID > 0
 -- MRP Result (Demand)
 UNION
-SELECT 'Demand' AS MRPType,
+SELECT 'Net Sales Demand' AS MRPType,
 	   item.InventoryCD AS Sku,
 	   comp.CompanyCD AS Company,
 	   comp.CompanyCD AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   Date,
-	   Demand AS Qty
+	   NetDemand AS Qty
 FROM LUMMRPProcessResult result
 INNER JOIN Company comp  ON result.CompanyID = comp.CompanyID
 INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
 						AND result.Warehouse = insite.SiteID
 INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
 							 AND result.SKU = item.InventoryID
-WHERE result.Demand is not null and result.CompanyID > 0
+WHERE result.NetDemand is not null and result.CompanyID > 0
 -- MRP Result (StockAva)
 UNION
-SELECT 'Stock Ava.' AS MRPType,
+SELECT 'Stock Available' AS MRPType,
 	   item.InventoryCD AS Sku,
 	   comp.CompanyCD AS Company,
 	   comp.CompanyCD AS Country,
@@ -103,6 +103,38 @@ INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
 INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
 							 AND result.SKU = item.InventoryID
 WHERE result.StockAva is not null and result.CompanyID > 0
+-- MRP Result (Safety Stock)
+UNION
+SELECT 'Stock Available' AS MRPType,
+	   item.InventoryCD AS Sku,
+	   comp.CompanyCD AS Company,
+	   comp.CompanyCD AS Country,
+	   insite.SiteCD  AS Warehouse,
+	   Date,
+	   SafetyStock AS Qty
+FROM LUMMRPProcessResult result
+INNER JOIN Company comp  ON result.CompanyID = comp.CompanyID
+INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
+						AND result.Warehouse = insite.SiteID
+INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
+							 AND result.SKU = item.InventoryID
+WHERE result.SafetyStock is not null and result.CompanyID > 0
+-- MRP Result (Safety Stock)
+UNION
+SELECT 'Stock Available - SS' AS MRPType,
+	   item.InventoryCD AS Sku,
+	   comp.CompanyCD AS Company,
+	   comp.CompanyCD AS Country,
+	   insite.SiteCD  AS Warehouse,
+	   Date,
+	   FinalStockAvaliable AS Qty
+FROM LUMMRPProcessResult result
+INNER JOIN Company comp  ON result.CompanyID = comp.CompanyID
+INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
+						AND result.Warehouse = insite.SiteID
+INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
+							 AND result.SKU = item.InventoryID
+WHERE result.FinalStockAvaliable is not null and result.CompanyID > 0
 -- Inventory Allocate Details
 UNION
 SELECT LUMMRPPreference.GroupingType,
@@ -120,5 +152,7 @@ INNER JOIN InventoryItem item ON invDetails.CompanyID = item.CompanyID
 							 AND invDetails.InventoryID = item.InventoryID
 INNER JOIN LUMMRPPreference ON invDetails.CompanyID = LUMMRPPreference.CompanyID
 						   AND LOWER(invDetails.AllocationType) = LOWER(LUMMRPPreference.AllocationType)
+						   AND LUMMRPPreference.GroupingType is not null
+						   AND LUMMRPPreference.GroupingType != ''
 WHERE invDetails.CompanyID > 0]]></CDATA>
 </Sql>

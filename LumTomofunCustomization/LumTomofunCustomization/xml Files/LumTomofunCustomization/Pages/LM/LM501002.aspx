@@ -10,12 +10,13 @@
     </px:PXDataSource>
 </asp:Content>
 <asp:Content ID="cont3" ContentPlaceHolderID="phF" runat="Server">
-    <px:PXFormView ID="form" runat="server" DataSourceID="ds" DataMember="Filter" Width="100%" Height="100px" AllowAutoHide="false">
+    <px:PXFormView ID="form" runat="server" DataSourceID="ds" DataMember="Filter" Width="100%" Height="150px" AllowAutoHide="false">
         <Template>
             <px:PXDateTimeEdit runat="server" ID="edDate" DataField="Date" CommitChanges="True" />
             <px:PXSelector runat="server" ID="edSku" DataField="Sku" Size="M"></px:PXSelector>
             <px:PXSelector runat="server" ID="edWarehouse" DataField="Warehouse" Size="M"></px:PXSelector>
             <px:PXSelector runat="server" ID="edItemClassID" DataField="ItemClassID" Size="M"></px:PXSelector>
+            <px:PXSelector runat="server" ID="edRevision" DataField="Revision" Size="M"></px:PXSelector>
         </Template>
     </px:PXFormView>
 </asp:Content>
@@ -39,6 +40,8 @@
                     <px:PXGridColumn DataField="StockInitial" />
                     <px:PXGridColumn DataField="Supply" />
                     <px:PXGridColumn DataField="StockAva" />
+                    <px:PXGridColumn DataField="SafetyStock"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="FinalStockAvaliable"></px:PXGridColumn>
                 </Columns>
             </px:PXGridLevel>
         </Levels>

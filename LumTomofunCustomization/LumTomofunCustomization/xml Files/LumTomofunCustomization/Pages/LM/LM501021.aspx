@@ -21,12 +21,16 @@
         <Levels>
             <px:PXGridLevel DataMember="ShopifyTransaction">
                 <Columns>
-                    <%--<px:PXGridColumn AllowCheckAll="True" DataField="Selected" Width="40" Type="CheckBox" TextAlign="Center" CommitChanges="True" ></px:PXGridColumn>--%>
+                    <px:PXGridColumn AllowCheckAll="True" DataField="Selected" Width="40" Type="CheckBox" TextAlign="Center" CommitChanges="True" ></px:PXGridColumn>
                     <px:PXGridColumn DataField="BranchID" Width="120"></px:PXGridColumn>
                     <px:PXGridColumn DataField="APIType" Width="120"></px:PXGridColumn>
                     <px:PXGridColumn DataField="TransactionType" Width="120"></px:PXGridColumn>
                     <px:PXGridColumn DataField="Marketplace" Width="120"></px:PXGridColumn>
                     <px:PXGridColumn DataField="OrderID" Width="120"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="FinancialStatus" Width="120"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="FullfillmentStatus" Width="120"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="IsProcessed" Width="120" Type="CheckBox"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="ErrorMessage" Width="200"></px:PXGridColumn>
                     <px:PXGridColumn DataField="TransJson" Width="400"></px:PXGridColumn>
                     <px:PXGridColumn DataField="CreatedDateTime" Width="130" DisplayFormat="g"></px:PXGridColumn>
                 </Columns>

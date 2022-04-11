@@ -1,8 +1,8 @@
-﻿<Sql TableName="LUMMarketplaceFeePreference" TableSchemaXml="#CDATA">
-    <CDATA name="TableSchemaXml"><![CDATA[<table name="LUMMarketplaceFeePreference">
+﻿<Sql TableName="LUMShopifyMarketplacePreference" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="LUMShopifyMarketplacePreference">
   <col name="CompanyID" type="Int" default="Zero" />
-  <col name="Fee" type="NVarChar(100)" />
-  <col name="InventoryID" type="Int" />
+  <col name="BAccountID" type="Int" />
+  <col name="Marketplace" type="NVarChar(20)" />
   <col name="NoteID" type="UniqueIdentifier" nullable="true" />
   <col name="CreatedByID" type="UniqueIdentifier" />
   <col name="CreatedByScreenID" type="Char(8)" />
@@ -11,13 +11,14 @@
   <col name="LastModifiedByScreenID" type="Char(8)" />
   <col name="LastModifiedDateTime" type="DateTime" />
   <col name="tstamp" type="Timestamp" />
-  <index name="LUMMarketplaceFeePreference_NoteID" unique="true">
+  <index name="LUMShopifyMarketplacePreference_NoteID" unique="true">
     <col name="NoteID" />
     <col name="CompanyID" />
   </index>
-  <index name="PK_LUMMarketplaceFeePreference_1" clustered="true" primary="true" unique="true">
+  <index name="PK_LUMShopifyMarketplacePreference" clustered="true" primary="true" unique="true">
     <col name="CompanyID" />
-    <col name="Fee" />
+    <col name="BAccountID" />
+    <col name="Marketplace" />
   </index>
 </table>]]></CDATA>
 </Sql>

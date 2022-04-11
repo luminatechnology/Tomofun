@@ -13,6 +13,13 @@ namespace LUMTomofunCustomization.DAC
             public class ShopifySourceData : LUMShopifySourceData.PK.ForeignKeyOf<LUMShopifyTransData>.By<sequenceNumber> { }
         }
 
+        #region Selected
+        [PXBool()]
+        [PXUIField(DisplayName = "Selected")]
+        public virtual bool? Selected { get; set; }
+        public abstract class selected : PX.Data.BQL.BqlBool.Field<selected> { }
+        #endregion
+
         #region TransSequenceNumber
         [PXDBIdentity(IsKey = true)]
         public virtual int? TransSequenceNumber { get; set; }
@@ -61,11 +68,39 @@ namespace LUMTomofunCustomization.DAC
         public abstract class orderID : PX.Data.BQL.BqlString.Field<orderID> { }
         #endregion
 
+        #region FinancialStatus
+        [PXDBString(20, IsUnicode = true, InputMask = "")]
+        [PXUIField(DisplayName = "Financial Status")]
+        public virtual string FinancialStatus { get; set; }
+        public abstract class financialStatus : PX.Data.BQL.BqlString.Field<financialStatus> { }
+        #endregion
+
+        #region FullfillmentStatus
+        [PXDBString(20, IsUnicode = true, InputMask = "")]
+        [PXUIField(DisplayName = "Fullfillment Status")]
+        public virtual string FullfillmentStatus { get; set; }
+        public abstract class fullfillmentStatus : PX.Data.BQL.BqlString.Field<fullfillmentStatus> { }
+        #endregion
+
         #region TransJson
         [PXDBString(IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Trans Json")]
+        [PXUIField(DisplayName = "Transaction Json")]
         public virtual string TransJson { get; set; }
         public abstract class transJson : PX.Data.BQL.BqlString.Field<transJson> { }
+        #endregion
+
+        #region IsProcessed
+        [PXDBBool]
+        [PXUIField(DisplayName = "IsProcessed")]
+        public virtual bool? IsProcessed { get; set; }
+        public abstract class isProcessed : PX.Data.BQL.BqlBool.Field<isProcessed> { }
+        #endregion
+
+        #region ErrorMessage
+        [PXDBString(200, IsUnicode = true, InputMask = "")]
+        [PXUIField(DisplayName = "Error Message")]
+        public virtual string ErrorMessage { get; set; }
+        public abstract class errorMessage : PX.Data.BQL.BqlString.Field<errorMessage> { }
         #endregion
 
         #region CreatedByID

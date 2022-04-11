@@ -1,9 +1,9 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/MasterPages/ListView.master" AutoEventWireup="true" ValidateRequest="false" CodeFile="LM201000.aspx.cs" Inherits="Pages_LM201000" Title="Untitled Page" %>
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPages/ListView.master" AutoEventWireup="true" ValidateRequest="false" CodeFile="LM201002.aspx.cs" Inherits="Pages_LM201002" Title="Untitled Page" %>
 
 <%@ MasterType VirtualPath="~/MasterPages/ListView.master" %>
 
 <asp:Content ID="cont1" ContentPlaceHolderID="phDS" runat="Server">
-    <px:PXDataSource ID="ds" runat="server" Visible="True" Width="100%" TypeName="LumTomofunCustomization.Graph.LUMMarketplacePreferenceMaint" PrimaryView="Transactions">
+    <px:PXDataSource ID="ds" runat="server" Visible="True" Width="100%" TypeName="LumTomofunCustomization.Graph.LUMShopifyMarketplacePreferenceMaint" PrimaryView="Transactions">
         <CallbackCommands>
         </CallbackCommands>
     </px:PXDataSource>

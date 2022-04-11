@@ -4,7 +4,6 @@
   <col name="MRPType" type="NVarChar(20)" />
   <col name="Revision" type="NVarChar(10)" />
   <col name="SKU" type="Int" />
-  <col name="Country" type="NVarChar(5)" />
   <col name="Warehouse" type="Int" />
   <col name="Date" type="DateTime" />
   <col name="Qty" type="Decimal(18,4)" />

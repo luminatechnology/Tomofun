@@ -8,7 +8,11 @@
   <col name="TransactionType" type="NVarChar(20)" nullable="true" />
   <col name="Marketplace" type="NVarChar(20)" nullable="true" />
   <col name="OrderID" type="NVarChar(20)" nullable="true" />
+  <col name="FinancialStatus" type="NVarChar(20)" nullable="true" />
+  <col name="FullfillmentStatus" type="NVarChar(20)" nullable="true" />
   <col name="TransJson" type="NVarChar(MAX)" nullable="true" />
+  <col name="IsProcessed" type="Bit" nullable="true" />
+  <col name="ErrorMessage" type="NVarChar(200)" nullable="true" />
   <col name="CreatedByID" type="UniqueIdentifier" />
   <col name="CreatedByScreenID" type="Char(8)" />
   <col name="CreatedDateTime" type="DateTime" />

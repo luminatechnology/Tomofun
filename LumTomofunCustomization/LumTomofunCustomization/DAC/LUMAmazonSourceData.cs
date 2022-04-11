@@ -71,6 +71,13 @@ namespace LUMTomofunCustomization.DAC
         public abstract class isProcessed : PX.Data.BQL.BqlBool.Field<isProcessed> { }
         #endregion
 
+        #region IsSkippedProcess
+        [PXDBBool]
+        [PXUIField(DisplayName = "IsSkipped")]
+        public virtual bool? IsSkippedProcess { get; set; }
+        public abstract class isSkippedProcess : PX.Data.BQL.BqlBool.Field<isSkippedProcess> { }
+        #endregion
+
         #region CreatedByID
         [PXDBCreatedByID()]
         public virtual Guid? CreatedByID { get; set; }
