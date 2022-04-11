@@ -151,6 +151,9 @@ namespace LumTomofunCustomization.Graph
                         soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + (row.Marketplace == "US" ? 0 : amzTotalTax));
                         #endregion
 
+                        // Write json into note
+                        PXNoteAttribute.SetNote(soGraph.Document.Cache, soGraph.Document.Current, row.TransJson);
+                        // Sales Order Save
                         soGraph.Save.Press();
 
                         // Prepare Invoice
@@ -190,12 +193,12 @@ namespace LumTomofunCustomization.Graph
                                 invoiceGraph.Document.SetValueExt<ARInvoice.curyDocBal>(invoiceGraph.Document.Current, invoiceGraph.Document.Current.CuryDocBal + (soTax.CuryTaxAmt ?? 0));
                                 invoiceGraph.Document.SetValueExt<ARInvoice.curyOrigDocAmt>(invoiceGraph.Document.Current, invoiceGraph.Document.Current.CuryOrigDocAmt + (soTax.CuryTaxAmt ?? 0));
                                 invoiceGraph.Document.Update(invoiceGraph.Document.Current);
-                                // Save
-                                invoiceGraph.Save.Press();
-                                // Release Invoice
-                                invoiceGraph.releaseFromCreditHold.Press();
-                                // invoiceGraph.release.Press();
                             }
+                            // Save
+                            invoiceGraph.Save.Press();
+                            // Release Invoice
+                            invoiceGraph.releaseFromCreditHold.Press();
+                            // invoiceGraph.release.Press();
                             #endregion
                         }
                         row.IsProcessed = true;

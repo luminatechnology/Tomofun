@@ -119,7 +119,7 @@ namespace LumTomofunCustomization.Graph
                             var invAllocDetails = invGraph.ResultRecords.Select().RowCast<InventoryAllocDetEnqResult>().ToList();
                             // 如果沒有Inventory Allocation 則取 Forecast最新一筆作為截止日。如果都沒有則不跑
                             lastDate = invAllocDetails.Count > 0 ? invAllocDetails.Max(x => x.PlanDate).Value.Date :
-                                       forecastData.Count() > 0 ? forecastData.Max(x => x.Date) :startDate.Value.Date.AddDays(-1);
+                                       forecastData.Count() > 0 ? forecastData.Max(x => x.Date) : startDate.Value.Date.AddDays(-1);
                             #endregion
 
                             #region Act Issue (Release INTran)
@@ -127,11 +127,15 @@ namespace LumTomofunCustomization.Graph
                             var inTransData = firstForecastData == null ? null :
                                               SelectFrom<INTran>
                                               .InnerJoin<INLocation>.On<INTran.siteID.IsEqual<INLocation.siteID>
-                                                                   .And<INLocation.inclQtyAvail.IsEqual<True>>>
+                                                                   .And<INLocation.inclQtyAvail.IsEqual<True>>
+                                                                   .And<INTran.locationID.IsEqual<INLocation.locationID>>>
                                               .Where<INTran.sOShipmentType.IsEqual<P.AsString>
-                                                .And<INTran.releasedDateTime.IsBetween<P.AsDateTime, P.AsDateTime>>
-                                                .And<INTran.released.IsEqual<True>>>
-                                              .View.Select(this, "I", firstForecastData.Date.Value.Date, actDate).RowCast<INTran>().ToList();
+                                                .And<INTran.released.IsEqual<True>>
+                                                .And<INTran.siteID.IsEqual<P.AsInt>>
+                                                .And<INTran.inventoryID.IsEqual<P.AsInt>>>
+                                              .View.Select(this, "I", actWarehouse.SiteID, actSku.InventoryID).RowCast<INTran>()
+                                              .Where(x => x.ReleasedDateTime.Value.Date >= firstForecastData.Date.Value.Date && x.ReleasedDateTime.Value.Date <= actDate.Value.Date)
+                                              .ToList();
 
                             #endregion
 
@@ -309,13 +313,15 @@ namespace LumTomofunCustomization.Graph
                             }
 
                             // Save data
-                            this.Actions.PressSave();
+                            //this.Actions.PressSave();
                         }
                     }
 
                     #region Stock Available - SafetyStock
                     this.Transaction.Cache.Inserted.RowCast<LUMMRPProcessResult>().ToList()
                         .ForEach(x => { x.FinalStockAvaliable = x.StockAva - Decimal.ToInt32(x.SafetyStock ?? 0); });
+                    // Save data
+                    this.Actions.PressSave();
                     #endregion
                 });
             }

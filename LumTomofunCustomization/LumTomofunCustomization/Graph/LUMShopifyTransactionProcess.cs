@@ -62,7 +62,7 @@ namespace LumTomofunCustomization.Graph
                                          .Where<SOOrder.customerOrderNbr.IsEqual<P.AsString>>
                                          .View.Select(this, spOrder.id).TopFirst;
                         // Create Sales Order
-                        if(!GoPrepareInvoice || (GoPrepareInvoice && order == null))
+                        if (order == null && row.FinancialStatus == "paid")
                         {
                             #region Create Sales Order Header
                             order = soGraph.Document.Cache.CreateInstance() as SOOrder;
@@ -131,25 +131,29 @@ namespace LumTomofunCustomization.Graph
                             soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + decimal.Parse(spOrder.current_total_tax));
                             #endregion
 
-                            // Save Sales Order
+                            // Write json into note
+                            PXNoteAttribute.SetNote(soGraph.Document.Cache, soGraph.Document.Current, row.TransJson);
+                            // Sales Order Save
                             soGraph.Save.Press();
                         }
                         // Assign Document Current
-                        else if(GoPrepareInvoice && order != null)
+                        else if (GoPrepareInvoice && order != null)
                             soGraph.Document.Current = order;
                         // Prepare Invocie
                         try
                         {
-                            var newAdapter = new PXAdapter(soGraph.Document)
+                            if (GoPrepareInvoice)
                             {
-                                Searches = new Object[]
+                                var newAdapter = new PXAdapter(soGraph.Document)
+                                {
+                                    Searches = new Object[]
                                {
                                     soGraph.Document.Current.OrderType,
                                     soGraph.Document.Current.OrderNbr
                                }
-                            };
-                            if (GoPrepareInvoice)
+                                };
                                 soGraph.PrepareInvoice(newAdapter);
+                            }
                         }
                         // Prepare invoice Success
                         catch (PXRedirectRequiredException ex)
@@ -173,12 +177,12 @@ namespace LumTomofunCustomization.Graph
                                 invoiceGraph.Document.SetValueExt<ARInvoice.curyDocBal>(invoiceGraph.Document.Current, invoiceGraph.Document.Current.CuryDocBal + (soTax.CuryTaxAmt ?? 0));
                                 invoiceGraph.Document.SetValueExt<ARInvoice.curyOrigDocAmt>(invoiceGraph.Document.Current, invoiceGraph.Document.Current.CuryOrigDocAmt + (soTax.CuryTaxAmt ?? 0));
                                 invoiceGraph.Document.Update(invoiceGraph.Document.Current);
-                                // Save
-                                invoiceGraph.Save.Press();
-                                // Release Invoice
-                                invoiceGraph.releaseFromCreditHold.Press();
-                                // invoiceGraph.release.Press();
                             }
+                            // Save
+                            invoiceGraph.Save.Press();
+                            // Release Invoice
+                            invoiceGraph.releaseFromCreditHold.Press();
+                            // invoiceGraph.release.Press();
                         }
                         row.IsProcessed = true;
                         row.ErrorMessage = string.Empty;

@@ -105,7 +105,7 @@ INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
 WHERE result.StockAva is not null and result.CompanyID > 0
 -- MRP Result (Safety Stock)
 UNION
-SELECT 'Stock Available' AS MRPType,
+SELECT 'Safety Stock' AS MRPType,
 	   item.InventoryCD AS Sku,
 	   comp.CompanyCD AS Company,
 	   comp.CompanyCD AS Country,
