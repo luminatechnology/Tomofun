@@ -84,7 +84,7 @@ namespace LumTomofunCustomization.Graph
                             // UserDefined - ORDTAAMT
                             soGraph.Document.Cache.SetValueExt(order, PX.Objects.CS.Messages.Attribute + "ORDTAXAMT", spOrder.current_total_tax);
                             // UserDefined - TAXCOLLECT
-                            soGraph.Document.Cache.SetValueExt(order, PX.Objects.CS.Messages.Attribute + "TAXCOLLECT", row.Marketplace == "US" ? decimal.Parse(spOrder.current_total_tax) : 0);
+                            soGraph.Document.Cache.SetValueExt(order, PX.Objects.CS.Messages.Attribute + "TAXCOLLECT", 0);
                             #endregion 
                             // Insert Sales Order
                             soGraph.Document.Insert(order);
@@ -92,7 +92,7 @@ namespace LumTomofunCustomization.Graph
                             var soAddress = soGraph.Shipping_Address.Current;
                             soAddress.OverrideAddress = true;
                             soAddress.PostalCode = spOrder.shipping_address.zip;
-                            soAddress.CountryID = spOrder.shipping_address.country;
+                            soAddress.CountryID = spOrder.shipping_address.country_code;
                             soAddress.State = spOrder.shipping_address.province;
                             soAddress.City = spOrder.shipping_address.city;
                             soAddress.RevisionID = 1;

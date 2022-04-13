@@ -115,9 +115,9 @@ namespace LumTomofunCustomization.Graph
                             line.ManualPrice = true;
                             line.OrderQty = item.QuantityShipped;
                             line.CuryUnitPrice =
-                                (row.Marketplace == "US" || row.Marketplace == "CA") ?
+                                 (row.Marketplace == "US" || row.Marketplace == "CA") ?
                                  (decimal?)(item.ItemPriceAmount - item.PromotionDiscountAmount) / item.QuantityShipped :
-                                 (decimal?)(item.ItemPriceAmount - item.PromotionDiscountAmount - item.ItemTaxAmount - item.GiftWrapTaxAmount + item.PromotionDiscountTaxAmount - (item.ShippingPriceAmount - item.ShippingDiscountAmount == 0 ? 0 : item.ShippingTaxAmount / item.QuantityShipped));
+                                 (decimal?)(item.ItemPriceAmount - item.PromotionDiscountAmount - item.ItemTaxAmount + item.PromotionDiscountTaxAmount / item.QuantityShipped);
                             soGraph.Transactions.Insert(line);
                             // Non-stock Item(Shipping) 
                             if (item.ShippingPriceAmount - item.ShippingDiscountAmount != 0)
@@ -125,7 +125,10 @@ namespace LumTomofunCustomization.Graph
                                 var soShipLine = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                 soShipLine.InventoryID = GetFeeNonStockItem("Shipping");
                                 soShipLine.OrderQty = 1;
-                                soShipLine.CuryUnitPrice = (decimal?)(item.ShippingPriceAmount - item.ShippingDiscountAmount);
+                                soShipLine.CuryUnitPrice =
+                                    (row.Marketplace == "US" || row.Marketplace == "CA") ? 
+                                    (decimal?)(item.ShippingPriceAmount - item.ShippingDiscountAmount) :
+                                    (decimal?)(item.ShippingPriceAmount - item.ShippingDiscountAmount - (item.ShippingPriceAmount - item.ShippingDiscountAmount == 0 ? 0 : item.ShippingTaxAmount));
                                 soGraph.Transactions.Insert(soShipLine);
                             }
 
@@ -135,7 +138,10 @@ namespace LumTomofunCustomization.Graph
                                 var soGiftLine = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                 soGiftLine.InventoryID = GetFeeNonStockItem("Giftwrap");
                                 soGiftLine.OrderQty = 1;
-                                soGiftLine.CuryUnitPrice = (decimal?)item.GiftWrapPriceAmount;
+                                soGiftLine.CuryUnitPrice =
+                                    (row.Marketplace == "US" || row.Marketplace == "CA") ? 
+                                    (decimal?)item.GiftWrapPriceAmount :
+                                    (decimal?)(item.GiftWrapPriceAmount - item.GiftWrapTaxAmount);
                                 soGraph.Transactions.Insert(soGiftLine);
                             }
                         }

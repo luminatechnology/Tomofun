@@ -12,7 +12,7 @@ CREATE VIEW v_MRPResultQuery AS
 SELECT MRPType,
 	   item.InventoryCD AS SKU,
 	   comp.CompanyCD AS Company,
-	   comp.CompanyCD AS Country,
+	   address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   Date,
 	   Qty
@@ -22,13 +22,15 @@ INNER JOIN INSite insite ON comp.CompanyID = insite.CompanyID
 						AND forecast.Warehouse = insite.SiteID
 INNER JOIN InventoryItem item ON comp.CompanyID = item.CompanyID
 							 AND forecast.SKU = item.InventoryID
+INNER JOIN Address address ON insite.CompanyID = address.CompanyID
+						  AND insite.AddressID = address.AddressID
 WHERE comp.CompanyID > 0
 -- MRP Result (Open SO Date-1)
 UNION
 SELECT 'OPEN SO(Date-1)' AS MRPType,
 	   item.InventoryCD AS Sku,
 	   comp.CompanyCD AS Company,
-	   comp.CompanyCD AS Country,
+	  address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   Date,
 	   PastOpenSo AS Qty
@@ -38,13 +40,15 @@ INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
 						AND result.Warehouse = insite.SiteID
 INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
 							 AND result.SKU = item.InventoryID
+INNER JOIN Address address ON insite.CompanyID = address.CompanyID
+						  AND insite.AddressID = address.AddressID
 WHERE result.PastOpenSo is not null and result.CompanyID > 0
 -- MRP Result (Forecast Initial)
 UNION
 SELECT 'Forecast Initial' AS MRPType,
 	   item.InventoryCD AS Sku,
 	   comp.CompanyCD AS Company,
-	   comp.CompanyCD AS Country,
+	   address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   Date,
 	   ForecastIntial AS Qty
@@ -54,13 +58,15 @@ INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
 						AND result.Warehouse = insite.SiteID
 INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
 							 AND result.SKU = item.InventoryID
+INNER JOIN Address address ON insite.CompanyID = address.CompanyID
+						  AND insite.AddressID = address.AddressID
 WHERE result.ForecastIntial is not null and result.CompanyID > 0
 -- MRP Result (SotckInitial)
 UNION
 SELECT 'Stock Initial' AS MRPType,
 	   item.InventoryCD AS Sku,
 	   comp.CompanyCD AS Company,
-	   comp.CompanyCD AS Country,
+	   address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   Date,
 	   StockInitial AS Qty
@@ -70,13 +76,15 @@ INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
 						AND result.Warehouse = insite.SiteID
 INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
 							 AND result.SKU = item.InventoryID
+INNER JOIN Address address ON insite.CompanyID = address.CompanyID
+						  AND insite.AddressID = address.AddressID
 WHERE result.StockInitial is not null and result.CompanyID > 0
 -- MRP Result (Demand)
 UNION
 SELECT 'Net Sales Demand' AS MRPType,
 	   item.InventoryCD AS Sku,
 	   comp.CompanyCD AS Company,
-	   comp.CompanyCD AS Country,
+	   address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   Date,
 	   NetDemand AS Qty
@@ -86,13 +94,15 @@ INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
 						AND result.Warehouse = insite.SiteID
 INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
 							 AND result.SKU = item.InventoryID
+INNER JOIN Address address ON insite.CompanyID = address.CompanyID
+						  AND insite.AddressID = address.AddressID
 WHERE result.NetDemand is not null and result.CompanyID > 0
 -- MRP Result (StockAva)
 UNION
 SELECT 'Stock Available' AS MRPType,
 	   item.InventoryCD AS Sku,
 	   comp.CompanyCD AS Company,
-	   comp.CompanyCD AS Country,
+	   address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   Date,
 	   StockAva AS Qty
@@ -102,13 +112,15 @@ INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
 						AND result.Warehouse = insite.SiteID
 INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
 							 AND result.SKU = item.InventoryID
+INNER JOIN Address address ON insite.CompanyID = address.CompanyID
+						  AND insite.AddressID = address.AddressID
 WHERE result.StockAva is not null and result.CompanyID > 0
 -- MRP Result (Safety Stock)
 UNION
 SELECT 'Safety Stock' AS MRPType,
 	   item.InventoryCD AS Sku,
 	   comp.CompanyCD AS Company,
-	   comp.CompanyCD AS Country,
+	   address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   Date,
 	   SafetyStock AS Qty
@@ -118,13 +130,15 @@ INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
 						AND result.Warehouse = insite.SiteID
 INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
 							 AND result.SKU = item.InventoryID
+INNER JOIN Address address ON insite.CompanyID = address.CompanyID
+						  AND insite.AddressID = address.AddressID
 WHERE result.SafetyStock is not null and result.CompanyID > 0
 -- MRP Result (Safety Stock)
 UNION
 SELECT 'Stock Available - SS' AS MRPType,
 	   item.InventoryCD AS Sku,
 	   comp.CompanyCD AS Company,
-	   comp.CompanyCD AS Country,
+	   address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   Date,
 	   FinalStockAvaliable AS Qty
@@ -134,13 +148,15 @@ INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
 						AND result.Warehouse = insite.SiteID
 INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
 							 AND result.SKU = item.InventoryID
+INNER JOIN Address address ON insite.CompanyID = address.CompanyID
+						  AND insite.AddressID = address.AddressID
 WHERE result.FinalStockAvaliable is not null and result.CompanyID > 0
 -- Inventory Allocate Details
 UNION
 SELECT LUMMRPPreference.GroupingType,
 	   item.InventoryCD AS Sku,
 	   comp.CompanyCD AS Company,
-	   comp.CompanyCD AS Country,
+	   address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   invDetails.Date,
 	   invDetails.Qty
@@ -154,5 +170,7 @@ INNER JOIN LUMMRPPreference ON invDetails.CompanyID = LUMMRPPreference.CompanyID
 						   AND LOWER(invDetails.AllocationType) = LOWER(LUMMRPPreference.AllocationType)
 						   AND LUMMRPPreference.GroupingType is not null
 						   AND LUMMRPPreference.GroupingType != ''
+INNER JOIN Address address ON insite.CompanyID = address.CompanyID
+						  AND insite.AddressID = address.AddressID
 WHERE invDetails.CompanyID > 0]]></CDATA>
 </Sql>

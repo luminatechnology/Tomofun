@@ -118,8 +118,10 @@ namespace LumTomofunCustomization.Graph
                             invGraph.Filter.Cache.SetValueExt<InventoryAllocDetEnqFilter.siteID>(invGraph.Filter.Current, actWarehouse.SiteID);
                             var invAllocDetails = invGraph.ResultRecords.Select().RowCast<InventoryAllocDetEnqResult>().ToList();
                             // 如果沒有Inventory Allocation 則取 Forecast最新一筆作為截止日。如果都沒有則不跑
-                            lastDate = invAllocDetails.Count > 0 ? invAllocDetails.Max(x => x.PlanDate).Value.Date :
-                                       forecastData.Count() > 0 ? forecastData.Max(x => x.Date) : startDate.Value.Date.AddDays(-1);
+                            var invAllocDateailsLastDate = invAllocDetails.Count > 0 ? invAllocDetails.Max(x => x.PlanDate).Value.Date : startDate.Value.Date.AddDays(-1);
+                            var forecastLastDate = forecastData.Count() > 0 ? forecastData.Max(x => x.Date) : startDate.Value.Date.AddDays(-1);
+                            // 兩者取最大
+                            lastDate = invAllocDateailsLastDate.Date > forecastLastDate.Value.Date ? invAllocDateailsLastDate : forecastLastDate;
                             #endregion
 
                             #region Act Issue (Release INTran)
