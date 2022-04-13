@@ -12,7 +12,7 @@
   <col name="OrderStatus" type="NVarChar(50)" nullable="true" />
   <col name="TransJson" type="NVarChar(MAX)" nullable="true" />
   <col name="IsProcessed" type="Bit" nullable="true" />
-  <col name="ErrorMessage" type="NVarChar(200)" nullable="true" />
+  <col name="ErrorMessage" type="NVarChar(500)" nullable="true" />
   <col name="CreatedByID" type="UniqueIdentifier" />
   <col name="CreatedByScreenID" type="Char(8)" />
   <col name="CreatedDateTime" type="DateTime" />

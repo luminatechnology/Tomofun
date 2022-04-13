@@ -37,11 +37,11 @@ namespace LumTomofunCustomization.Graph
         public static void GoProcessing(List<LUMShopifyTransData> list)
         {
             var graph = CreateInstance<LUMShopifyTransactionProcess>();
-            graph.CreateSalesOrder(list);
+            graph.CreateSalesOrder(graph,list);
         }
 
         /// <summary> Create Sales Order </summary>
-        public virtual void CreateSalesOrder(List<LUMShopifyTransData> shopifyList)
+        public virtual void CreateSalesOrder(LUMShopifyTransactionProcess baseGraph, List<LUMShopifyTransData> shopifyList)
         {
             PXUIFieldAttribute.SetEnabled<LUMShopifyTransData.isProcessed>(ShopifyTransaction.Cache, null, true);
             foreach (var row in shopifyList)
@@ -186,7 +186,6 @@ namespace LumTomofunCustomization.Graph
                         }
                         row.IsProcessed = true;
                         row.ErrorMessage = string.Empty;
-                        this.ShopifyTransaction.Update(row);
                         sc.Complete();
                     }
                 }
@@ -202,10 +201,10 @@ namespace LumTomofunCustomization.Graph
                 {
                     if (!string.IsNullOrEmpty(row.ErrorMessage))
                         PXProcessing.SetError(row.ErrorMessage);
-                    this.ShopifyTransaction.Update(row);
+                    baseGraph.ShopifyTransaction.Update(row);
                 }
             }
-            this.Actions.PressSave();
+            baseGraph.Actions.PressSave();
         }
 
         /// <summary> 邏輯檢核 </summary>

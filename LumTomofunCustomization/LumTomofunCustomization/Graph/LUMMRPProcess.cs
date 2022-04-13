@@ -315,16 +315,9 @@ namespace LumTomofunCustomization.Graph
                             }
 
                             // Save data
-                            //this.Actions.PressSave();
+                            this.Actions.PressSave();
                         }
                     }
-
-                    #region Stock Available - SafetyStock
-                    this.Transaction.Cache.Inserted.RowCast<LUMMRPProcessResult>().ToList()
-                        .ForEach(x => { x.FinalStockAvaliable = x.StockAva - Decimal.ToInt32(x.SafetyStock ?? 0); });
-                    // Save data
-                    this.Actions.PressSave();
-                    #endregion
                 });
             }
             catch (Exception ex)

@@ -36,11 +36,11 @@ namespace LumTomofunCustomization.Graph
         public static void GoProcessing(List<LUMAmazonTransData> list)
         {
             var graph = CreateInstance<LUMAmazonTransactionProcess>();
-            graph.CreateSalesOrder(list);
+            graph.CreateSalesOrder(graph, list);
         }
 
         /// <summary> Create Sales Order </summary>
-        public virtual void CreateSalesOrder(List<LUMAmazonTransData> amazonList)
+        public virtual void CreateSalesOrder(LUMAmazonTransactionProcess baseGraph, List<LUMAmazonTransData> amazonList)
         {
             PXUIFieldAttribute.SetEnabled<LUMAmazonTransData.isProcessed>(AmazonTransaction.Cache, null, true);
             foreach (var row in amazonList)
@@ -126,7 +126,7 @@ namespace LumTomofunCustomization.Graph
                                 soShipLine.InventoryID = GetFeeNonStockItem("Shipping");
                                 soShipLine.OrderQty = 1;
                                 soShipLine.CuryUnitPrice =
-                                    (row.Marketplace == "US" || row.Marketplace == "CA") ? 
+                                    (row.Marketplace == "US" || row.Marketplace == "CA") ?
                                     (decimal?)(item.ShippingPriceAmount - item.ShippingDiscountAmount) :
                                     (decimal?)(item.ShippingPriceAmount - item.ShippingDiscountAmount - (item.ShippingPriceAmount - item.ShippingDiscountAmount == 0 ? 0 : item.ShippingTaxAmount));
                                 soGraph.Transactions.Insert(soShipLine);
@@ -139,7 +139,7 @@ namespace LumTomofunCustomization.Graph
                                 soGiftLine.InventoryID = GetFeeNonStockItem("Giftwrap");
                                 soGiftLine.OrderQty = 1;
                                 soGiftLine.CuryUnitPrice =
-                                    (row.Marketplace == "US" || row.Marketplace == "CA") ? 
+                                    (row.Marketplace == "US" || row.Marketplace == "CA") ?
                                     (decimal?)item.GiftWrapPriceAmount :
                                     (decimal?)(item.GiftWrapPriceAmount - item.GiftWrapTaxAmount);
                                 soGraph.Transactions.Insert(soGiftLine);
@@ -209,7 +209,6 @@ namespace LumTomofunCustomization.Graph
                         }
                         row.IsProcessed = true;
                         row.ErrorMessage = string.Empty;
-                        this.AmazonTransaction.Update(row);
                         sc.Complete();
                     }
                 }
@@ -224,11 +223,11 @@ namespace LumTomofunCustomization.Graph
                 finally
                 {
                     if (!string.IsNullOrEmpty(row.ErrorMessage))
-                        PXProcessing.SetError(row.ErrorMessage);
-                    this.AmazonTransaction.Update(row);
+                        PXProcessing.SetError<LUMAmazonTransData>(row.ErrorMessage);
+                    baseGraph.AmazonTransaction.Update(row);
                 }
             }
-            this.Actions.PressSave();
+            baseGraph.Actions.PressSave();
         }
 
         /// <summary> 邏輯檢核 </summary>

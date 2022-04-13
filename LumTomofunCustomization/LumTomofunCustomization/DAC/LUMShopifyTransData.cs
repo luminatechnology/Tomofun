@@ -97,7 +97,7 @@ namespace LUMTomofunCustomization.DAC
         #endregion
 
         #region ErrorMessage
-        [PXDBString(200, IsUnicode = true, InputMask = "")]
+        [PXDBString(500, IsUnicode = true, InputMask = "")]
         [PXUIField(DisplayName = "Error Message")]
         public virtual string ErrorMessage { get; set; }
         public abstract class errorMessage : PX.Data.BQL.BqlString.Field<errorMessage> { }
