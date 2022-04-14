@@ -26,7 +26,6 @@
                     <px:PXGridColumn DataField="APIType" Width="120"></px:PXGridColumn>
                     <px:PXGridColumn DataField="TransactionType" Width="120"></px:PXGridColumn>
                     <px:PXGridColumn DataField="Marketplace" Width="120"></px:PXGridColumn>
-                    <%--<px:PXGridColumn DataField="JsonSource" Width="400"></px:PXGridColumn>--%>
                     <px:PXGridColumn DataField="IsProcessed" Width="130" Type="CheckBox"></px:PXGridColumn>
                     <px:PXGridColumn DataField="IsSkippedProcess" Width="130" Type="CheckBox"></px:PXGridColumn>
                     <px:PXGridColumn DataField="CreatedDateTime" Width="130" DisplayFormat="g"></px:PXGridColumn>

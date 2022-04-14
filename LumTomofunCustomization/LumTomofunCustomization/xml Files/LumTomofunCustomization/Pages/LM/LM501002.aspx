@@ -40,8 +40,9 @@
                     <px:PXGridColumn DataField="StockInitial" />
                     <px:PXGridColumn DataField="Supply" />
                     <px:PXGridColumn DataField="StockAva" />
-                    <px:PXGridColumn DataField="SafetyStock"></px:PXGridColumn>
-                    <px:PXGridColumn DataField="FinalStockAvaliable"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="SafetyStock" />
+                    <px:PXGridColumn DataField="LastModifiedByID" />
+                    <px:PXGridColumn DataField="LastModifiedDateTime" />
                 </Columns>
             </px:PXGridLevel>
         </Levels>

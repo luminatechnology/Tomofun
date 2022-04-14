@@ -188,6 +188,10 @@ namespace LumTomofunCustomization.Graph
                                                                invRules.IndexOf(preference.PlanType) > 0
                                                          select inv.PlanQty).Sum(x => x.Value) ?? 0;
                                     #endregion
+
+                                    #region Safety Stock
+                                    result.SafetyStock = safetyStock;
+                                    #endregion
                                 }
 
                                 #region Open SO
@@ -294,7 +298,7 @@ namespace LumTomofunCustomization.Graph
 
                                 #region Stock Ava
 
-                                result.StockAva = result.StockInitial - result.Demand + result.Supply;
+                                result.StockAva = result.StockInitial - result.Demand + result.Supply - decimal.ToInt32(result.SafetyStock ?? 0);
                                 lastDayStock = result.StockAva ?? 0;
 
                                 #endregion
@@ -306,11 +310,6 @@ namespace LumTomofunCustomization.Graph
                                 result.Date = actDate;
 
                                 #endregion
-
-                                #region Safety Stock
-                                result.SafetyStock = safetyStock;
-                                #endregion
-
                                 actDate = actDate.Value.AddDays(1);
                             }
 
@@ -320,11 +319,14 @@ namespace LumTomofunCustomization.Graph
                     }
                 });
             }
+            catch (PXOuterException ex)
+            {
+                throw new PXOperationCompletedWithErrorException(ex.Message);
+            }
             catch (Exception ex)
             {
                 throw new PXOperationCompletedWithErrorException(ex.Message);
             }
-
         }
 
         /// <summary> 產生一筆固定資料 </summary>

@@ -5,12 +5,18 @@
 <asp:Content ID="cont1" ContentPlaceHolderID="phDS" runat="Server">
     <px:PXDataSource ID="ds" runat="server" Visible="True" Width="100%"
         TypeName="LumTomofunCustomization.Graph.LUMForecastUploadProcess"
-        PrimaryView="Transaction">
+        PrimaryView="Filter">
         <CallbackCommands>
         </CallbackCommands>
     </px:PXDataSource>
 </asp:Content>
-
+<asp:Content ID="cont2" ContentPlaceHolderID="phF" runat="Server">
+    <px:PXFormView ID="form" runat="server" DataSourceID="ds" DataMember="Filter" Width="100%" Height="50px" AllowAutoHide="false">
+        <Template>
+            <px:PXCheckBox runat="server" ID="edWithAttachment" DataField="WithAttachment" CommitChanges="true"></px:PXCheckBox>
+        </Template>
+    </px:PXFormView>
+</asp:Content>
 <asp:Content ID="cont3" ContentPlaceHolderID="phG" runat="Server">
     <px:PXGrid SyncPosition="True" ID="grid" runat="server" DataSourceID="ds" Width="100%" Height="150px" SkinID="Primary" AllowAutoHide="false">
         <Levels>
@@ -25,6 +31,9 @@
                     <px:PXGridColumn DataField="Qty" />
                     <px:PXGridColumn DataField="Week" />
                     <px:PXGridColumn DataField="Qoh" />
+                    <px:PXGridColumn DataField="CreatedDateTime" Width="130" DisplayFormat="g"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="CreatedByID" Width="130" DisplayFormat="g"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="LastModifiedDateTime" Width="130" DisplayFormat="g"></px:PXGridColumn>
                 </Columns>
                 <RowTemplate>
                     <px:PXSelector runat="server" ID="edSku" DataField="Sku"></px:PXSelector>

@@ -117,7 +117,7 @@ namespace LumTomofunCustomization.Graph
                             line.CuryUnitPrice =
                                  (row.Marketplace == "US" || row.Marketplace == "CA") ?
                                  (decimal?)(item.ItemPriceAmount - item.PromotionDiscountAmount) / item.QuantityShipped :
-                                 (decimal?)(item.ItemPriceAmount - item.PromotionDiscountAmount - item.ItemTaxAmount + item.PromotionDiscountTaxAmount / item.QuantityShipped);
+                                 (decimal?)((item.ItemPriceAmount - item.PromotionDiscountAmount - item.ItemTaxAmount + item.PromotionDiscountTaxAmount) / item.QuantityShipped);
                             soGraph.Transactions.Insert(line);
                             // Non-stock Item(Shipping) 
                             if (item.ShippingPriceAmount - item.ShippingDiscountAmount != 0)
@@ -225,9 +225,10 @@ namespace LumTomofunCustomization.Graph
                     if (!string.IsNullOrEmpty(row.ErrorMessage))
                         PXProcessing.SetError<LUMAmazonTransData>(row.ErrorMessage);
                     baseGraph.AmazonTransaction.Update(row);
+                    // Save
+                    baseGraph.Actions.PressSave();
                 }
             }
-            baseGraph.Actions.PressSave();
         }
 
         /// <summary> 邏輯檢核 </summary>

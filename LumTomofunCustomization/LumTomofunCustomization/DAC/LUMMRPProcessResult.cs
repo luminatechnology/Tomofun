@@ -174,6 +174,7 @@ namespace LumTomofunCustomization.DAC
 
         #region LastModifiedByID
         [PXDBLastModifiedByID()]
+        [PXUIField(Enabled = false)]
         public virtual Guid? LastModifiedByID { get; set; }
         public abstract class lastModifiedByID : PX.Data.BQL.BqlGuid.Field<lastModifiedByID> { }
         #endregion
@@ -186,6 +187,7 @@ namespace LumTomofunCustomization.DAC
 
         #region LastModifiedDateTime
         [PXDBLastModifiedDateTime()]
+        [PXUIField(Enabled = false)]
         public virtual DateTime? LastModifiedDateTime { get; set; }
         public abstract class lastModifiedDateTime : PX.Data.BQL.BqlDateTime.Field<lastModifiedDateTime> { }
         #endregion

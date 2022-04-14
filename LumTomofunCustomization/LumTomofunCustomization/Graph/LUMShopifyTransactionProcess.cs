@@ -111,14 +111,34 @@ namespace LumTomofunCustomization.Graph
                             #region Create Sales Order Line
                             foreach (var item in spOrder.line_items)
                             {
+                                // requires_shipping <> True (Do not import this item)
+                                if(!item.requires_shipping)
+                                    continue;
                                 var line = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                 line.InventoryID = GetInvetoryitemID(soGraph, item.sku);
                                 if (line.InventoryID == null)
-                                    continue;
+                                    throw new Exception("can not find Inventory item ID");
                                 line.ManualPrice = true;
                                 line.OrderQty = item.quantity;
                                 line.CuryUnitPrice = decimal.Parse(item.pre_tax_price) / item.quantity;
                                 soGraph.Transactions.Insert(line);
+                            }
+                            // IF SOLine is empty, do not create Sales Order
+                            if (soGraph.Transactions.Cache.Inserted.RowCast<SOLine>().Count() == 0)
+                                throw new Exception("can not find andy SOLine Item");
+                            #endregion
+
+                            #region Create Slaes Order Line for Shipping
+                            if(spOrder.shipping_lines.Any(x => decimal.Parse(x.price) > 0))
+                            {
+                                var soShipLine = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+                                soShipLine.InventoryID = GetFeeNonStockItem("Shipping");
+                                soShipLine.OrderQty = 1;
+                                soShipLine.CuryUnitPrice =
+                                    (row.Marketplace == "US" || row.Marketplace == "CA") ?
+                                    (decimal?)spOrder.shipping_lines.Sum(x => decimal.Parse(x.price)) :
+                                    (decimal?)spOrder.shipping_lines.Sum(x => decimal.Parse(x.price) - x.tax_lines.Sum(y => decimal.Parse(y.price)));
+                                soGraph.Transactions.Insert(soShipLine);
                             }
                             #endregion
 
@@ -202,9 +222,10 @@ namespace LumTomofunCustomization.Graph
                     if (!string.IsNullOrEmpty(row.ErrorMessage))
                         PXProcessing.SetError(row.ErrorMessage);
                     baseGraph.ShopifyTransaction.Update(row);
+                    // Save 
+                    baseGraph.Actions.PressSave();
                 }
             }
-            baseGraph.Actions.PressSave();
         }
 
         /// <summary> 邏輯檢核 </summary>
@@ -227,6 +248,12 @@ namespace LumTomofunCustomization.Graph
                SelectFrom<INItemXRef>
                .Where<INItemXRef.alternateID.IsEqual<P.AsString>>
                .View.SelectSingleBound(graph, null, sku).TopFirst?.InventoryID;
+
+        /// <summary> 取Fee 對應 Non-Stock item ID </summary>
+        public int? GetFeeNonStockItem(string fee)
+            => SelectFrom<LUMMarketplaceFeePreference>
+               .Where<LUMMarketplaceFeePreference.fee.IsEqual<P.AsString>>
+               .View.Select(this, fee).TopFirst?.InventoryID;
 
         #endregion
     }
