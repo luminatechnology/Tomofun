@@ -55,5 +55,19 @@ namespace LUMTomofunCustomization.DAC
         public virtual Decimal? Qty { get; set; }
         public abstract class qty : PX.Data.BQL.BqlDecimal.Field<qty> { }
         #endregion
+
+        #region QtyWeek
+        [PXDBDecimal()]
+        [PXUIField(DisplayName = "QtyWeek")]
+        public virtual Decimal? QtyWeek { get; set; }
+        public abstract class qtyWeek : PX.Data.BQL.BqlDecimal.Field<qtyWeek> { }
+        #endregion
+
+        #region QtyMonth
+        [PXDBDecimal()]
+        [PXUIField(DisplayName = "QtyMonth")]
+        public virtual Decimal? QtyMonth { get; set; }
+        public abstract class qtyMonth : PX.Data.BQL.BqlDecimal.Field<qtyMonth> { }
+        #endregion
     }
 }

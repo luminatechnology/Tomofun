@@ -8,6 +8,11 @@
 DROP VIEW [dbo].[v_MRPResultQuery]	
 GO
 CREATE VIEW v_MRPResultQuery AS
+WITH FirstRecordTmpTable AS (
+	SELECT CompanyID, SKU, Warehouse,MIN(Date) AS FirstRecordTime
+	FROM LUMMRPProcessResult
+	GROUP BY CompanyID, SKU, Warehouse
+)
 -- Forecast
 SELECT MRPType,
 	   item.InventoryCD AS SKU,
@@ -15,7 +20,9 @@ SELECT MRPType,
 	   address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   Date,
-	   Qty
+	   Qty,
+	   Qty AS QtyWeek,
+	   Qty AS QtyMonth
 FROM LUMForecastUpload forecast
 INNER JOIN Company comp  ON forecast.Company = comp.CompanyCD
 INNER JOIN INSite insite ON comp.CompanyID = insite.CompanyID
@@ -33,7 +40,9 @@ SELECT 'OPEN SO(Date-1)' AS MRPType,
 	  address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   Date,
-	   PastOpenSo AS Qty
+	   PastOpenSo AS Qty,
+	   PastOpenSo AS QtyWeek,
+	   PastOpenSo AS QtyMonth
 FROM LUMMRPProcessResult result
 INNER JOIN Company comp  ON result.CompanyID = comp.CompanyID
 INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
@@ -51,7 +60,15 @@ SELECT 'Forecast Initial' AS MRPType,
 	   address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   Date,
-	   ForecastIntial AS Qty
+	   ForecastIntial AS Qty,
+	   CASE 
+		WHEN tmp.FirstRecordTime IS NOT NULL THEN ForecastIntial
+		WHEN tmp.FirstRecordTime IS NULL AND DatePart(WeekDay,Date)-1 = 1 THEN ForecastIntial
+	   ELSE null END AS QtyWeek,
+	   CASE
+		WHEN tmp.FirstRecordTime IS NOT NULL THEN ForecastIntial
+		WHEN tmp.FirstRecordTime IS NULL AND CAST(result.DATE AS Date) = CAST(DATEADD(MM,DATEDIFF(MM, 0, result.Date),0) AS Date) THEN ForecastIntial
+	   ELSE null END AS QtyMonth
 FROM LUMMRPProcessResult result
 INNER JOIN Company comp  ON result.CompanyID = comp.CompanyID
 INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
@@ -60,6 +77,10 @@ INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
 							 AND result.SKU = item.InventoryID
 INNER JOIN Address address ON insite.CompanyID = address.CompanyID
 						  AND insite.AddressID = address.AddressID
+LEFT JOIN FirstRecordTmpTable tmp ON result.CompanyID = tmp.CompanyID
+							     AND result.Sku = tmp.Sku
+								 AND result.Warehouse = tmp.Warehouse
+								 AND result.Date = tmp.FirstRecordTime
 WHERE result.ForecastIntial is not null and result.CompanyID > 0
 -- MRP Result (SotckInitial)
 UNION
@@ -69,7 +90,15 @@ SELECT 'Stock Initial' AS MRPType,
 	   address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   Date,
-	   StockInitial AS Qty
+	   StockInitial AS Qty,
+	   CASE 
+		WHEN tmp.FirstRecordTime IS NOT NULL THEN StockInitial
+		WHEN tmp.FirstRecordTime IS NULL AND DatePart(WeekDay,Date)-1 = 1 THEN StockInitial
+	   ELSE null END AS QtyWeek,
+	   CASE
+		WHEN tmp.FirstRecordTime IS NOT NULL THEN StockInitial
+		WHEN tmp.FirstRecordTime IS NULL AND CAST(result.DATE AS Date) = CAST(DATEADD(MM,DATEDIFF(MM, 0, result.Date),0) AS Date) THEN StockInitial
+	   ELSE null END AS QtyMonth
 FROM LUMMRPProcessResult result
 INNER JOIN Company comp  ON result.CompanyID = comp.CompanyID
 INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
@@ -78,6 +107,10 @@ INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
 							 AND result.SKU = item.InventoryID
 INNER JOIN Address address ON insite.CompanyID = address.CompanyID
 						  AND insite.AddressID = address.AddressID
+LEFT JOIN FirstRecordTmpTable tmp ON result.CompanyID = tmp.CompanyID
+							     AND result.Sku = tmp.Sku
+								 AND result.Warehouse = tmp.Warehouse
+								 AND result.Date = tmp.FirstRecordTime
 WHERE result.StockInitial is not null and result.CompanyID > 0
 -- MRP Result (Demand)
 UNION
@@ -87,7 +120,9 @@ SELECT 'Net Sales Demand' AS MRPType,
 	   address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   Date,
-	   NetDemand AS Qty
+	   NetDemand AS Qty,
+	   NetDemand AS QtyWeek,
+	   NetDemand AS QtyMonth
 FROM LUMMRPProcessResult result
 INNER JOIN Company comp  ON result.CompanyID = comp.CompanyID
 INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
@@ -105,7 +140,13 @@ SELECT 'Stock Available' AS MRPType,
 	   address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   Date,
-	   StockAva AS Qty
+	   StockAva AS Qty,
+	   CASE 
+		WHEN tmp.FirstRecordTime IS NULL AND DatePart(WeekDay,Date)-1 = 0 THEN StockInitial
+	   ELSE null END AS QtyWeek,
+	   CASE
+		WHEN tmp.FirstRecordTime IS NULL AND CAST(result.DATE AS Date) = CAST(DATEADD(MM,DATEDIFF(MM, -1, result.Date),-1) AS Date) THEN StockInitial
+	   ELSE null END AS QtyMonth
 FROM LUMMRPProcessResult result
 INNER JOIN Company comp  ON result.CompanyID = comp.CompanyID
 INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
@@ -114,6 +155,10 @@ INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
 							 AND result.SKU = item.InventoryID
 INNER JOIN Address address ON insite.CompanyID = address.CompanyID
 						  AND insite.AddressID = address.AddressID
+LEFT JOIN FirstRecordTmpTable tmp ON result.CompanyID = tmp.CompanyID
+							     AND result.Sku = tmp.Sku
+								 AND result.Warehouse = tmp.Warehouse
+								 AND result.Date = tmp.FirstRecordTime
 WHERE result.StockAva is not null and result.CompanyID > 0
 -- MRP Result (Safety Stock)
 UNION
@@ -123,7 +168,9 @@ SELECT 'Safety Stock' AS MRPType,
 	   address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   Date,
-	   SafetyStock AS Qty
+	   SafetyStock AS Qty,
+	   SafetyStock AS QtyWeek,
+	   SafetyStock AS QtyMonth
 FROM LUMMRPProcessResult result
 INNER JOIN Company comp  ON result.CompanyID = comp.CompanyID
 INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
@@ -141,7 +188,9 @@ SELECT LUMMRPPreference.GroupingType,
 	   address.CountryID AS Country,
 	   insite.SiteCD  AS Warehouse,
 	   invDetails.Date,
-	   invDetails.Qty
+	   invDetails.Qty,
+	   invDetails.Qty AS QtyWeek,
+	   invDetails.Qty AS QtyMonth
 FROM v_InventoryAllocationDetais invDetails
 INNER JOIN Company comp  ON invDetails.CompanyID = comp.CompanyID
 INNER JOIN INSite insite ON invDetails.CompanyID = insite.CompanyID
