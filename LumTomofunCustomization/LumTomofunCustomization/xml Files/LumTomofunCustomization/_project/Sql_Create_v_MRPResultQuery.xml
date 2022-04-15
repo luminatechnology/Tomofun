@@ -12,6 +12,11 @@ WITH FirstRecordTmpTable AS (
 	SELECT CompanyID, SKU, Warehouse,MIN(Date) AS FirstRecordTime
 	FROM LUMMRPProcessResult
 	GROUP BY CompanyID, SKU, Warehouse
+),
+LastRecordTmpTable AS (
+	SELECT CompanyID, SKU, Warehouse,MAX(Date) AS LastRecordTime
+	FROM LUMMRPProcessResult
+	GROUP BY CompanyID, SKU, Warehouse
 )
 -- Forecast
 SELECT MRPType,
@@ -142,10 +147,12 @@ SELECT 'Stock Available' AS MRPType,
 	   Date,
 	   StockAva AS Qty,
 	   CASE 
-		WHEN tmp.FirstRecordTime IS NULL AND DatePart(WeekDay,Date)-1 = 0 THEN StockInitial
+	    WHEN tmp.LastRecordTime IS NOT NULL THEN StockInitial
+		WHEN tmp.LastRecordTime IS NULL AND DatePart(WeekDay,Date)-1 = 0 THEN StockInitial
 	   ELSE null END AS QtyWeek,
 	   CASE
-		WHEN tmp.FirstRecordTime IS NULL AND CAST(result.DATE AS Date) = CAST(DATEADD(MM,DATEDIFF(MM, -1, result.Date),-1) AS Date) THEN StockInitial
+	   WHEN tmp.LastRecordTime IS NOT NULL THEN StockInitial
+		WHEN tmp.LastRecordTime IS NULL AND CAST(result.DATE AS Date) = CAST(DATEADD(MM,DATEDIFF(MM, -1, result.Date),-1) AS Date) THEN StockInitial
 	   ELSE null END AS QtyMonth
 FROM LUMMRPProcessResult result
 INNER JOIN Company comp  ON result.CompanyID = comp.CompanyID
@@ -155,10 +162,10 @@ INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
 							 AND result.SKU = item.InventoryID
 INNER JOIN Address address ON insite.CompanyID = address.CompanyID
 						  AND insite.AddressID = address.AddressID
-LEFT JOIN FirstRecordTmpTable tmp ON result.CompanyID = tmp.CompanyID
+LEFT JOIN LastRecordTmpTable tmp ON result.CompanyID = tmp.CompanyID
 							     AND result.Sku = tmp.Sku
 								 AND result.Warehouse = tmp.Warehouse
-								 AND result.Date = tmp.FirstRecordTime
+								 AND result.Date = tmp.LastRecordTime
 WHERE result.StockAva is not null and result.CompanyID > 0
 -- MRP Result (Safety Stock)
 UNION
