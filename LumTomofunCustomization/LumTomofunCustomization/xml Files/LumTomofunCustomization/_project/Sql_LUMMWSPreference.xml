@@ -1,0 +1,24 @@
+﻿<Sql TableName="LUMMWSPreference" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="LUMMWSPreference">
+  <col name="AccessKey" type="NVarChar(200)" />
+  <col name="SecretKey" type="NVarChar(200)" />
+  <col name="RoleArn" type="NVarChar(200)" />
+  <col name="ClientID" type="NVarChar(200)" />
+  <col name="ClientSecret" type="NVarChar(200)" />
+  <col name="USMarketplaceID" type="NVarChar(200)" nullable="true" />
+  <col name="USRefreshToken" type="NVarChar(400)" nullable="true" />
+  <col name="EUMarketplaceID" type="NVarChar(200)" nullable="true" />
+  <col name="EURefreshToken" type="NVarChar(400)" nullable="true" />
+  <col name="JPMarketplaceID" type="NVarChar(200)" nullable="true" />
+  <col name="JPRefreshToken" type="NVarChar(400)" nullable="true" />
+  <col name="AUMarketplaceID" type="NVarChar(200)" nullable="true" />
+  <col name="AURefreshToken" type="NVarChar(400)" nullable="true" />
+  <col name="CreatedByID" type="UniqueIdentifier" />
+  <col name="CreatedByScreenID" type="Char(8)" />
+  <col name="CreatedDateTime" type="DateTime" />
+  <col name="LastModifiedByID" type="UniqueIdentifier" />
+  <col name="LastModifiedByScreenID" type="Char(8)" />
+  <col name="LastModifiedDateTime" type="DateTime" />
+  <col name="tstamp" type="Timestamp" />
+</table>]]></CDATA>
+</Sql>

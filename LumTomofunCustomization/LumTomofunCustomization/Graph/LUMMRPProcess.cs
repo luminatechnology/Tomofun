@@ -68,7 +68,7 @@ namespace LumTomofunCustomization.Graph
                                            .View.Select(this).RowCast<INSite>()
                                            .Where(x => filter.Warehouse == null || x.SiteID == filter?.Warehouse).ToList();
                     // 刪除預設資料
-                    DeleteData(GetFixInventoryItem(), GetFixSiteID());
+                    DeleteData();
 
                     // 執行每一個Inventory Item
                     foreach (var actSku in allInventoryItem)
@@ -87,12 +87,14 @@ namespace LumTomofunCustomization.Graph
                             var revision = filter.Revision;          // MRP Revision
                             LUMForecastUpload firstForecastData;      // 離計算日最新的Forecast資料
 
-                            DeleteData(Sku, Warehouse);
+                            DeleteData();
                             var actCompanyName = _legacyCompanyService.ExtractCompany(PX.Common.PXContext.PXIdentity.IdentityName);
                             // Forecast upload data
                             var forecastData = SelectFrom<LUMForecastUpload>
-                                               .Where<LUMForecastUpload.sku.IsEqual<@P.AsInt>
-                                                 .And<LUMForecastUpload.warehouse.IsEqual<@P.AsInt>>
+                                               .InnerJoin<InventoryItem>.On<LUMForecastUpload.sku.IsEqual<InventoryItem.inventoryCD>>
+                                               .InnerJoin<INSite>.On<LUMForecastUpload.warehouse.IsEqual<INSite.siteCD>>
+                                               .Where<InventoryItem.inventoryID.IsEqual<@P.AsInt>
+                                                 .And<INSite.siteID.IsEqual<@P.AsInt>>
                                                  .And<LUMForecastUpload.company.IsEqual<@P.AsString>>
                                                  .And<LUMForecastUpload.revision.IsEqual<@P.AsString>>>
                                                .View.Select(this, Sku, Warehouse, actCompanyName, revision).RowCast<LUMForecastUpload>().OrderBy(x => x.Date);
@@ -362,11 +364,9 @@ namespace LumTomofunCustomization.Graph
                    .View.Select(this).RowCast<INSite>().FirstOrDefault(x => x.SiteCD.Trim().ToUpper() != "INTR").SiteID;
         }
 
-        public void DeleteData(int? _sku, int? _warehouse)
+        public void DeleteData()
         {
-            PXDatabase.Delete<LUMMRPProcessResult>(
-                   new PXDataFieldRestrict<LUMMRPProcessResult.sku>(_sku),
-                   new PXDataFieldRestrict<LUMMRPProcessResult.warehouse>(_warehouse));
+            PXDatabase.Delete<LUMMRPProcessResult>();
             this.Transaction.Cache.Clear();
         }
     }

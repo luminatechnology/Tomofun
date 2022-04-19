@@ -31,6 +31,22 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AWSSDK.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Bin\AWSSDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK.SecurityToken, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Bin\AWSSDK.SecurityToken.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK.SQS, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Bin\AWSSDK.SQS.dll</HintPath>
+    </Reference>
+    <Reference Include="FikaAmazonAPI, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Bin\FikaAmazonAPI.dll</HintPath>
+    </Reference>
     <Reference Include="PX.Common">
       <HintPath>..\..\..\..\Bin\PX.Common.dll</HintPath>
     </Reference>
@@ -49,6 +65,10 @@
     <Reference Include="PX.Objects">
       <HintPath>..\..\..\..\Bin\PX.Objects.DLL</HintPath>
     </Reference>
+    <Reference Include="RestSharp, Version=106.8.10.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Bin\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -59,11 +79,13 @@
     <Compile Include="API Entity\AmazonOrderEntity.cs" />
     <Compile Include="API Entity\ShopifyOrderEntity.cs" />
     <Compile Include="API Entity\ShopifyPaymentEntity.cs" />
+    <Compile Include="DAC\LUMAmazonSettlementTransData.cs" />
     <Compile Include="DAC\LUMAmazonTransData.cs" />
     <Compile Include="DAC\LUMShopifyMarketplacePreference.cs" />
     <Compile Include="DAC\LUMShopifySourceData.cs" />
     <Compile Include="DAC\LUMForecastUpload.cs" />
     <Compile Include="Graph\LUMAmazonInterfaceMaint.cs" />
+    <Compile Include="Graph\LUMAmazonSettlementTransactionProcess.cs" />
     <Compile Include="Graph\LUMAmazonTransactionProcess.cs" />
     <Compile Include="Graph\LUMMarketplaceFeePreferenceMaint.cs" />
     <Compile Include="Graph\LUMMarketplacePreferenceMaint.cs" />
@@ -76,12 +98,14 @@
     <Compile Include="DAC\LUMMRPPreference.cs" />
     <Compile Include="DAC\v_MRPResultQuery.cs" />
     <Compile Include="DAC\LUMAmazonSourceData.cs" />
+    <Compile Include="Graph\LUMMWSSetup.cs" />
     <Compile Include="Graph\LUMShopifyInterfaceMaint.cs" />
     <Compile Include="DAC\LUMShopifyTransData.cs" />
     <Compile Include="Graph\LUMShopifyMarketplacePreferenceMaint.cs" />
     <Compile Include="Graph\LUMShopifyTransactionProcess.cs" />
     <Compile Include="DAC\LUMMarketplacePreference.cs" />
     <Compile Include="DAC\LUMMarketplaceFeePreference.cs" />
+    <Compile Include="DAC\LUMMWSPreference.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

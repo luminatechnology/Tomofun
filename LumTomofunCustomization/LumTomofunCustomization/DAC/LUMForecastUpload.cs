@@ -24,15 +24,15 @@ namespace LumTomofunCustomization.DAC
         #endregion
 
         #region Sku
-        [PXDBInt(IsKey = true)]
+        [PXDBString(100, InputMask = "", IsUnicode = true, IsKey = true)]
         //[StockItem]
-        [PXSelector(
-            typeof(SearchFor<InventoryItem.inventoryID>),
-            DescriptionField = typeof(InventoryItem.inventoryCD),
-            SubstituteKey = typeof(InventoryItem.inventoryCD))]
+        //[PXSelector(
+        //    typeof(SearchFor<InventoryItem.inventoryID>),
+        //    DescriptionField = typeof(InventoryItem.inventoryCD),
+        //    SubstituteKey = typeof(InventoryItem.inventoryCD))]
         [PXUIField(DisplayName = "SKU")]
-        public virtual int? Sku { get; set; }
-        public abstract class sku : PX.Data.BQL.BqlInt.Field<sku> { }
+        public virtual string Sku { get; set; }
+        public abstract class sku : PX.Data.BQL.BqlString.Field<sku> { }
         #endregion
 
         #region Company
@@ -43,13 +43,13 @@ namespace LumTomofunCustomization.DAC
         #endregion
 
         #region Warehouse
-        [PXDBInt(IsKey = true)]
-        [PXSelector(
-            typeof(SearchFor<INSite.siteID>),
-            SubstituteKey = typeof(INSite.siteCD))]
+        [PXDBString(30,IsUnicode = true, InputMask = "",IsKey = true)]
+        //[PXSelector(
+        //    typeof(SearchFor<INSite.siteID>),
+        //    SubstituteKey = typeof(INSite.siteCD))]
         [PXUIField(DisplayName = "Warehouse")]
-        public virtual int? Warehouse { get; set; }
-        public abstract class warehouse : PX.Data.BQL.BqlInt.Field<warehouse> { }
+        public virtual string Warehouse { get; set; }
+        public abstract class warehouse : PX.Data.BQL.BqlString.Field<warehouse> { }
         #endregion
 
         #region Date

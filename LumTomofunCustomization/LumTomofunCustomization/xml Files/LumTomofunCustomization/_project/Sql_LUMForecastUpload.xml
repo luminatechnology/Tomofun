@@ -3,8 +3,8 @@
   <col name="Company" type="NVarChar(5)" />
   <col name="MRPType" type="NVarChar(20)" />
   <col name="Revision" type="NVarChar(10)" />
-  <col name="SKU" type="Int" />
-  <col name="Warehouse" type="Int" />
+  <col name="SKU" type="NVarChar(100)" />
+  <col name="Warehouse" type="NVarChar(30)" />
   <col name="Date" type="DateTime" />
   <col name="Qty" type="Decimal(18,4)" />
   <col name="Week" type="NVarChar(20)" />

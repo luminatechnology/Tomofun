@@ -35,10 +35,6 @@
                     <px:PXGridColumn DataField="CreatedByID" Width="130" DisplayFormat="g"></px:PXGridColumn>
                     <px:PXGridColumn DataField="LastModifiedDateTime" Width="130" DisplayFormat="g"></px:PXGridColumn>
                 </Columns>
-                <RowTemplate>
-                    <px:PXSelector runat="server" ID="edSku" DataField="Sku"></px:PXSelector>
-                    <px:PXSelector runat="server" ID="edWarehouse" DataField="Warehouse"></px:PXSelector>
-                </RowTemplate>
             </px:PXGridLevel>
         </Levels>
         <AutoSize Container="Window" Enabled="True" MinHeight="150" />
