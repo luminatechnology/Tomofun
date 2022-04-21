@@ -5,15 +5,16 @@
 <asp:Content ID="cont1" ContentPlaceHolderID="phDS" runat="Server">
     <px:PXDataSource ID="ds" runat="server" Visible="True" Width="100%"
         TypeName="LumTomofunCustomization.Graph.LUMForecastUploadProcess"
-        PrimaryView="Filter">
+        PrimaryView="Setup">
         <CallbackCommands>
         </CallbackCommands>
     </px:PXDataSource>
 </asp:Content>
 <asp:Content ID="cont2" ContentPlaceHolderID="phF" runat="Server">
-    <px:PXFormView ID="form" runat="server" DataSourceID="ds" DataMember="Filter" Width="100%" Height="50px" AllowAutoHide="false">
+    <px:PXFormView ID="form" runat="server" DataSourceID="ds" DataMember="Setup" Width="100%" Height="50px" AllowAutoHide="false">
         <Template>
             <px:PXCheckBox runat="server" ID="edWithAttachment" DataField="WithAttachment" CommitChanges="true"></px:PXCheckBox>
+            <px:PXSelector runat="server" ID="edRevision" DataField="Revision" Width="150px"></px:PXSelector>
         </Template>
     </px:PXFormView>
 </asp:Content>

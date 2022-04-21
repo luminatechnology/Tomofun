@@ -63,7 +63,8 @@ namespace LumTomofunCustomization.Graph
                 foreach (var dic in amzConnObjs)
                 {
                     ReportManager reportManager = new ReportManager(dic.Value);
-                    foreach (var item in reportManager.GetSettlementOrderAsync(new DateTime(2022, 4, 16), new DateTime(2022, 4, 20)).Result)
+                    foreach (var item in reportManager.GetSettlementOrderAsync(filter.FromDate == null ? DateTime.Now.AddDays(-1).Date : filter.FromDate.Value.Date,
+                                                                               filter.ToDate == null ? DateTime.Now.Date : filter.ToDate.Value.Date).Result)
                     {
                         var trans = baseGraph.SettlementTransaction.Cache.CreateInstance() as LUMAmazonSettlementTransData;
                         trans.Marketplace = dic.Key;
@@ -146,6 +147,16 @@ namespace LumTomofunCustomization.Graph
     [Serializable]
     public class SettlementFilter : IBqlTable
     {
+        [PXDBDate]
+        [PXUIField(DisplayName = "From Date")]
+        public virtual DateTime? FromDate { get; set; }
+        public abstract class fromDate : PX.Data.BQL.BqlDateTime.Field<fromDate> { }
+
+        [PXDBDate]
+        [PXUIField(DisplayName = "To Date")]
+        public virtual DateTime? ToDate { get; set; }
+        public abstract class toDate : PX.Data.BQL.BqlDateTime.Field<toDate> { }
+
         [PXDBString(50, IsUnicode = true, InputMask = "")]
         [PXDefault("Prepare Data")]
         [PXUIField(DisplayName = "Process type")]

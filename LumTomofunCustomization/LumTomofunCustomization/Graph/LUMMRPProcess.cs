@@ -1,7 +1,10 @@
 ﻿using LumTomofunCustomization.DAC;
+using PX.Common;
 using PX.Data;
 using PX.Data.BQL;
 using PX.Data.BQL.Fluent;
+using PX.Data.Licensing;
+using PX.Objects.CS;
 using PX.Objects.IN;
 using System;
 using System.Collections;
@@ -18,11 +21,13 @@ namespace LumTomofunCustomization.Graph
 
         public PXFilter<MRPFilter> Filter;
         [PXFilterable]
-        public PXFilteredProcessing<LUMMRPProcessResult, MRPFilter> Transaction;
+        public PXFilteredProcessing<LUMMRPProcessResult,MRPFilter> Transaction;
 
         // ReSharper disable InconsistentNaming
         [InjectDependency]
         private ILegacyCompanyService _legacyCompanyService { get; set; }
+
+        #region Constructor
 
         public LUMMRPProcess()
         {
@@ -34,42 +39,73 @@ namespace LumTomofunCustomization.Graph
                 {
                     GoProcessing(filter);
                 });
-            if (this.Transaction.Select().Count == 0)
+            if (this.Transaction.Select().Count == 0 && SelectFrom<LUMMRPProcessResult>.View.Select(this).TopFirst == null)
                 InitialData();
+        } 
+
+        #endregion
+
+        public IEnumerable transaction()
+        {
+            PXView select = new PXView(this, false, Transaction.View.BqlSelect);
+            Int32 totalrow = 1;
+            Int32 startrow = PXView.StartRow;
+            return select.Select(PXView.Currents, PXView.Parameters,
+                   PXView.Searches, PXView.SortColumns, PXView.Descendings,
+                   PXView.Filters, ref startrow, 1, ref totalrow);
         }
 
+        #region Event
+        public virtual void _(Events.FieldDefaulting<MRPFilter.revision> e)
+            => e.NewValue = SelectFrom<LUMForecastUploadPreference>.View.Select(this).TopFirst?.Revision;
+        #endregion
+
+        #region Method
+        /// <summary> 非同步執行程序 </summary>
         public static void GoProcessing(MRPFilter filter)
         {
-            var graph = CreateInstance<LUMMRPProcess>();
-            graph.LumMRPProcess(filter);
+            var baseGraph = CreateInstance<LUMMRPProcess>();
+            baseGraph.LumMRPProcess(baseGraph, filter);
         }
 
-        public virtual void LumMRPProcess(MRPFilter filter)
+        /// <summary> 執行MRP </summary>
+        public virtual void LumMRPProcess(LUMMRPProcess baseGraph, MRPFilter filter)
         {
             try
             {
                 PXLongOperation.StartOperation(this, delegate ()
                 {
-                    // Valid ItemClass
+
+                    #region Valid
                     if (filter.ItemClassID == null)
                     {
                         PXProcessing.SetError<LUMMRPProcessResult>("Item classID can not be empty!!");
                         throw new Exception();
                     }
+                    if (filter.Revision == null)
+                    {
+                        PXProcessing.SetError<LUMMRPProcessResult>("Revision can not be empty!!");
+                        throw new Exception();
+                    }
+                    #endregion
+
+                    // Initial parameter
+                    var invGraph = PXGraph.CreateInstance<InventoryAllocDetEnq>();
+                    var lastDate = GetProcessLastDate(filter.Revision);                                         // MRP 計算最後一天
+
                     // 全部StockItem
                     var allInventoryItem = SelectFrom<InventoryItem>
                                            .Where<InventoryItem.itemClassID.IsEqual<P.AsInt>
                                              .And<InventoryItem.itemStatus.IsEqual<P.AsString>>>
-                                           .View.Select(this, filter.ItemClassID, "AC").RowCast<InventoryItem>()
+                                           .View.Select(baseGraph, filter.ItemClassID, "AC").RowCast<InventoryItem>()
                                            .Where(x => filter.Sku == null || x.InventoryID == filter?.Sku).ToList();
                     // 全部Warehouse
                     var allWarehouseData = SelectFrom<INSite>
                                            .Where<INSite.active.IsEqual<True>>
-                                           .View.Select(this).RowCast<INSite>()
+                                           .View.Select(baseGraph).RowCast<INSite>()
                                            .Where(x => filter.Warehouse == null || x.SiteID == filter?.Warehouse).ToList();
                     // 刪除預設資料
                     DeleteData();
-
                     // 執行每一個Inventory Item
                     foreach (var actSku in allInventoryItem)
                     {
@@ -83,11 +119,9 @@ namespace LumTomofunCustomization.Graph
                             decimal safetyStock = 0;                 // 安全庫存
                             var Sku = actSku.InventoryID;            // MRP Sku
                             var Warehouse = actWarehouse.SiteID;     // MRP Warehouse
-                            var lastDate = actDate;                  // MRP 計算最後一天
                             var revision = filter.Revision;          // MRP Revision
-                            LUMForecastUpload firstForecastData;      // 離計算日最新的Forecast資料
+                            LUMForecastUpload firstForecastData;     // 離計算日最新的Forecast資料
 
-                            DeleteData();
                             var actCompanyName = _legacyCompanyService.ExtractCompany(PX.Common.PXContext.PXIdentity.IdentityName);
                             // Forecast upload data
                             var forecastData = SelectFrom<LUMForecastUpload>
@@ -97,11 +131,11 @@ namespace LumTomofunCustomization.Graph
                                                  .And<INSite.siteID.IsEqual<@P.AsInt>>
                                                  .And<LUMForecastUpload.company.IsEqual<@P.AsString>>
                                                  .And<LUMForecastUpload.revision.IsEqual<@P.AsString>>>
-                                               .View.Select(this, Sku, Warehouse, actCompanyName, revision).RowCast<LUMForecastUpload>().OrderBy(x => x.Date);
+                                               .View.Select(baseGraph, Sku, Warehouse, actCompanyName, revision).RowCast<LUMForecastUpload>().OrderBy(x => x.Date);
                             firstForecastData = forecastData.OrderBy(x => x.Date).LastOrDefault(x => x.Date.Value.Date < actDate.Value.Date && x.Mrptype == "Forecast");
 
                             // MRPPreference
-                            var mrpPreference = SelectFrom<LUMMRPPreference>.View.Select(this).RowCast<LUMMRPPreference>();
+                            var mrpPreference = SelectFrom<LUMMRPPreference>.View.Select(baseGraph).RowCast<LUMMRPPreference>();
 
                             #region Storage Summary(當下庫存)
                             var storageGraph = PXGraph.CreateInstance<StoragePlaceEnq>();
@@ -110,20 +144,14 @@ namespace LumTomofunCustomization.Graph
                             var storageSummary = storageGraph.storages.Select().RowCast<StoragePlaceStatus>();
                             var inLocation = SelectFrom<INLocation>
                                              .Where<INLocation.siteID.IsEqual<P.AsInt>
-                                               .And<INLocation.inclQtyAvail.IsEqual<True>>>.View.Select(this, actWarehouse.SiteID).RowCast<INLocation>().Select(x => x.LocationID).ToList();
+                                               .And<INLocation.inclQtyAvail.IsEqual<True>>>.View.Select(baseGraph, actWarehouse.SiteID).RowCast<INLocation>().Select(x => x.LocationID).ToList();
                             storageSummary = storageSummary.Where(x => inLocation.IndexOf(x.LocationID) > -1).ToList();
                             #endregion
 
                             #region Inventory Allocation Details
-                            var invGraph = PXGraph.CreateInstance<InventoryAllocDetEnq>();
                             invGraph.Filter.Cache.SetValueExt<InventoryAllocDetEnqFilter.inventoryID>(invGraph.Filter.Current, actSku.InventoryID);
                             invGraph.Filter.Cache.SetValueExt<InventoryAllocDetEnqFilter.siteID>(invGraph.Filter.Current, actWarehouse.SiteID);
                             var invAllocDetails = invGraph.ResultRecords.Select().RowCast<InventoryAllocDetEnqResult>().ToList();
-                            // 如果沒有Inventory Allocation 則取 Forecast最新一筆作為截止日。如果都沒有則不跑
-                            var invAllocDateailsLastDate = invAllocDetails.Count > 0 ? invAllocDetails.Max(x => x.PlanDate).Value.Date : startDate.Value.Date.AddDays(-1);
-                            var forecastLastDate = forecastData.Count() > 0 ? forecastData.Max(x => x.Date) : startDate.Value.Date.AddDays(-1);
-                            // 兩者取最大
-                            lastDate = invAllocDateailsLastDate.Date > forecastLastDate.Value.Date ? invAllocDateailsLastDate : forecastLastDate;
                             #endregion
 
                             #region Act Issue (Release INTran)
@@ -137,7 +165,7 @@ namespace LumTomofunCustomization.Graph
                                                 .And<INTran.released.IsEqual<True>>
                                                 .And<INTran.siteID.IsEqual<P.AsInt>>
                                                 .And<INTran.inventoryID.IsEqual<P.AsInt>>>
-                                              .View.Select(this, "I", actWarehouse.SiteID, actSku.InventoryID).RowCast<INTran>()
+                                              .View.Select(baseGraph, "I", actWarehouse.SiteID, actSku.InventoryID).RowCast<INTran>()
                                               .Where(x => x.ReleasedDateTime.Value.Date >= firstForecastData.Date.Value.Date && x.ReleasedDateTime.Value.Date <= actDate.Value.Date)
                                               .ToList();
 
@@ -149,7 +177,7 @@ namespace LumTomofunCustomization.Graph
                                           .InnerJoin<INItemClass>.On<InventoryItem.itemClassID.IsEqual<INItemClass.itemClassID>>
                                           .InnerJoin<INAvailabilityScheme>.On<INItemClass.availabilitySchemeID.IsEqual<INAvailabilityScheme.availabilitySchemeID>>
                                           .Where<InventoryItem.inventoryID.IsEqual<P.AsInt>>
-                                          .View.Select(this, actSku.InventoryID);
+                                          .View.Select(baseGraph, actSku.InventoryID);
                             var invSchema = invInfo.RowCast<INAvailabilityScheme>().FirstOrDefault();
                             foreach (var item in invSchema.GetType().GetProperties())
                             {
@@ -163,13 +191,13 @@ namespace LumTomofunCustomization.Graph
                                          .Where<INItemSite.inventoryID.IsEqual<P.AsInt>
                                            .And<INItemSite.siteID.IsEqual<P.AsInt>>
                                            .And<INItemSite.siteStatus.IsEqual<P.AsString>>>
-                                         .View.Select(this, actSku.InventoryID, actWarehouse.SiteID, "AC").TopFirst?.SafetyStock ?? 0;
+                                         .View.Select(baseGraph, actSku.InventoryID, actWarehouse.SiteID, "AC").TopFirst?.SafetyStock ?? 0;
                             #endregion 
 
                             // initial 
-                            while (actDate.Value.Date <= lastDate.Value.Date)
+                            while (actDate.Value.Date <= lastDate.Date)
                             {
-                                var result = this.Transaction.Insert((LUMMRPProcessResult)this.Transaction.Cache.CreateInstance());
+                                var result = baseGraph.Transaction.Insert((LUMMRPProcessResult)baseGraph.Transaction.Cache.CreateInstance());
 
                                 // 只計算第一天
                                 if (startDate.Value.Date == actDate.Value.Date)
@@ -316,7 +344,7 @@ namespace LumTomofunCustomization.Graph
                             }
 
                             // Save data
-                            this.Actions.PressSave();
+                            baseGraph.Actions.PressSave();
                         }
                     }
                 });
@@ -364,24 +392,98 @@ namespace LumTomofunCustomization.Graph
                    .View.Select(this).RowCast<INSite>().FirstOrDefault(x => x.SiteCD.Trim().ToUpper() != "INTR").SiteID;
         }
 
+        /// <summary> 刪除所有資料 </summary>
         public void DeleteData()
         {
             PXDatabase.Delete<LUMMRPProcessResult>();
             this.Transaction.Cache.Clear();
         }
+
+        /// <summary> 找出所有Tenant 中最後一筆交易/Forecast日期 </summary>
+        public DateTime GetProcessLastDate(string revision)
+        {
+            var compArray = new string[] { "US", "TW", "JP" };
+            var FinalProcessLastDate = new DateTime();
+            var actUserName = _legacyCompanyService.ExtractUsername(PXContext.PXIdentity.IdentityName);
+            // 找出所有Tenant中 InventoryAllocateDetail 最後一筆交易日期
+            foreach (var comp in compArray)
+            {
+                using (new PXLoginScope($"{actUserName}@{comp}", PXAccess.GetAdministratorRoles()))
+                {
+                    var invGraph = PXGraph.CreateInstance<InventoryAllocDetEnq>();
+                    #region CMD
+                    PXSelectBase<InventoryAllocDetEnq.INItemPlan> cmd = new PXSelectJoin<InventoryAllocDetEnq.INItemPlan,
+                                                InnerJoin<INPlanType,
+                                                    On<InventoryAllocDetEnq.INItemPlan.FK.PlanType>,
+                                                LeftJoin<InventoryAllocDetEnq.INLocation,
+                                                    On<InventoryAllocDetEnq.INItemPlan.FK.Location>,
+                                                LeftJoin<INLotSerialStatus,
+                                                    On<InventoryAllocDetEnq.INItemPlan.FK.LotSerialStatus>,
+                                                LeftJoin<InventoryAllocDetEnq.BAccount,
+                                                    On<InventoryAllocDetEnq.INItemPlan.FK.BAccount>,
+                                                LeftJoin<INSubItem,
+                                                    On<InventoryAllocDetEnq.INItemPlan.FK.SubItem>,
+                                                InnerJoin<InventoryAllocDetEnq.INSite,
+                                                    On<InventoryAllocDetEnq.INItemPlan.FK.Site>,
+                                                LeftJoin<InventoryAllocDetEnq.SOShipment,
+                                                    On<InventoryAllocDetEnq.SOShipment.noteID, Equal<InventoryAllocDetEnq.INItemPlan.refNoteID>>,
+                                                LeftJoin<InventoryAllocDetEnq.ARRegister,
+                                                    On<InventoryAllocDetEnq.ARRegister.noteID, Equal<InventoryAllocDetEnq.INItemPlan.refNoteID>>,
+                                                LeftJoin<InventoryAllocDetEnq.INRegister,
+                                                    On<InventoryAllocDetEnq.INRegister.noteID, Equal<InventoryAllocDetEnq.INItemPlan.refNoteID>>,
+                                                LeftJoin<InventoryAllocDetEnq.SOOrder,
+                                                    On<InventoryAllocDetEnq.SOOrder.noteID, Equal<InventoryAllocDetEnq.INItemPlan.refNoteID>>,
+                                                LeftJoin<InventoryAllocDetEnq.POOrder,
+                                                    On<InventoryAllocDetEnq.POOrder.noteID, Equal<InventoryAllocDetEnq.INItemPlan.refNoteID>>,
+                                                LeftJoin<InventoryAllocDetEnq.POReceipt,
+                                                    On<InventoryAllocDetEnq.POReceipt.noteID, Equal<InventoryAllocDetEnq.INItemPlan.refNoteID>>,
+                                                LeftJoin<InventoryAllocDetEnq.INTransitLine,
+                                                    On<InventoryAllocDetEnq.INTransitLine.noteID, Equal<InventoryAllocDetEnq.INItemPlan.refNoteID>>
+                                                >>>>>>>>>>>>>,
+                                            Where<InventoryAllocDetEnq.INItemPlan.planQty, NotEqual<decimal0>,
+                                                And<Match<InventoryAllocDetEnq.INSite, Current<AccessInfo.userName>>>>,
+                                            OrderBy<Asc<INSubItem.subItemCD, // sorting must be done with PlanType preceding location
+                                                    Asc<InventoryAllocDetEnq.INSite.siteCD,
+                                                    Asc<InventoryAllocDetEnq.INItemPlan.origPlanType,
+                                                    Asc<InventoryAllocDetEnq.INItemPlan.planType,
+                                                    Asc<InventoryAllocDetEnq.INLocation.locationCD>>>>>>>(invGraph);
+                    #endregion
+                    PXResultset<InventoryAllocDetEnq.INItemPlan> itemPlansWithExtraInfo = cmd.Select();
+                    var resultList = new List<InventoryAllocDetEnqResult>();
+                    foreach (InventoryAllocDetEnq.ItemPlanWithExtraInfo ip in invGraph.UnwrapAndGroup(itemPlansWithExtraInfo))
+                    {
+                        Type inclQtyField = INPlanConstants.ToInclQtyField(ip.ItemPlan.PlanType);
+                        if (inclQtyField != null && inclQtyField != typeof(INPlanType.inclQtyINReplaned))
+                            invGraph.ProcessItemPlanRecAs(inclQtyField, resultList, ip);
+                    }
+                    FinalProcessLastDate = new DateTime(Math.Max(FinalProcessLastDate.Ticks, resultList.Max(x => x.PlanDate).Value.Ticks));
+                }
+            }
+            // 找出所有Forecast Revision中最後一筆日期
+            var forecastData = SelectFrom<LUMForecastUpload>
+                               .InnerJoin<InventoryItem>.On<LUMForecastUpload.sku.IsEqual<InventoryItem.inventoryCD>>
+                               .InnerJoin<INSite>.On<LUMForecastUpload.warehouse.IsEqual<INSite.siteCD>>
+                               .Where<LUMForecastUpload.revision.IsEqual<@P.AsString>>
+                               .View.Select(this, revision).RowCast<LUMForecastUpload>().OrderByDescending(x => x.Date).FirstOrDefault();
+            if (forecastData != null)
+                FinalProcessLastDate = new DateTime(Math.Max(FinalProcessLastDate.Ticks, forecastData.Date.Value.Ticks));
+            return FinalProcessLastDate;
+        }
+        #endregion
     }
 
     [Serializable]
     public class MRPFilter : IBqlTable
     {
         [PXDBDate]
+        [PXDefault(typeof(AccessInfo.businessDate))]
         [PXUIField(DisplayName = "Start Date")]
         public virtual DateTime? Date { get; set; }
         public abstract class date : PX.Data.BQL.BqlDateTime.Field<date> { }
 
         [PXDBInt]
         [StockItem(Required = true)]
-        [PXDefault]
+        [PXDefault()]
         [PXUIField(DisplayName = "Stock item", Required = true)]
         public virtual int? Sku { get; set; }
         public abstract class sku : PX.Data.BQL.BqlInt.Field<sku> { }
@@ -394,7 +496,7 @@ namespace LumTomofunCustomization.Graph
         public abstract class warehouse : PX.Data.BQL.BqlInt.Field<warehouse> { }
 
         [PXDBInt]
-        [PXDefault]
+        [PXDefault("MERCHAN")]
         [PXUIField(DisplayName = "Item ClassID", Required = true)]
         [PXSelector(typeof(SearchFor<INItemClass.itemClassID>),
             DescriptionField = typeof(INItemClass.itemClassCD),

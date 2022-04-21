@@ -89,7 +89,6 @@
     <Compile Include="Graph\LUMAmazonTransactionProcess.cs" />
     <Compile Include="Graph\LUMMarketplaceFeePreferenceMaint.cs" />
     <Compile Include="Graph\LUMMarketplacePreferenceMaint.cs" />
-    <Compile Include="Graph\LUMMRPDataUploadProcess.cs" />
     <Compile Include="Graph\LUMForecastUploadProcess.cs" />
     <Compile Include="DAC\LumMRPData.cs" />
     <Compile Include="DAC\LUMMRPProcessResult.cs" />
@@ -106,6 +105,7 @@
     <Compile Include="DAC\LUMMarketplacePreference.cs" />
     <Compile Include="DAC\LUMMarketplaceFeePreference.cs" />
     <Compile Include="DAC\LUMMWSPreference.cs" />
+    <Compile Include="DAC\LUMForecastUploadPreference.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

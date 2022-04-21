@@ -41,6 +41,8 @@
                     <px:PXGridColumn DataField="Supply" />
                     <px:PXGridColumn DataField="StockAva" />
                     <px:PXGridColumn DataField="SafetyStock" />
+                    <px:PXGridColumn DataField="CreatedByID" />
+                    <px:PXGridColumn DataField="CreatedDateTime" />
                     <px:PXGridColumn DataField="LastModifiedByID" />
                     <px:PXGridColumn DataField="LastModifiedDateTime" />
                 </Columns>

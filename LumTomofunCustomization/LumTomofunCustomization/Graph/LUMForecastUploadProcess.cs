@@ -12,17 +12,17 @@ namespace LumTomofunCustomization.Graph
 {
     public class LUMForecastUploadProcess : PXGraph<LUMForecastUploadProcess>, PXImportAttribute.IPXPrepareItems
     {
-        public PXSave<UploadForecastFilter> Save;
-        public PXCancel<UploadForecastFilter> Cancel;
+        public PXSave<LUMForecastUploadPreference> Save;
+        public PXCancel<LUMForecastUploadPreference> Cancel;
 
-        public PXFilter<UploadForecastFilter> Filter;
+        public SelectFrom<LUMForecastUploadPreference>.View Setup;
 
-        [PXImport(typeof(UploadForecastFilter))]
+        [PXImport(typeof(LUMForecastUploadPreference))]
         public SelectFrom<LUMForecastUpload>.View Transaction;
 
         public IEnumerable transaction()
         {
-            var filter = this.Filter.Current;
+            var filter = this.Setup.Current;
             var newBql = new SelectFrom<LUMForecastUpload>
                              .InnerJoin<NoteDoc>.On<LUMForecastUpload.noteid.IsEqual<NoteDoc.noteID>>.View(this);
             PXView select = (filter.WithAttachment ?? false) ?
@@ -36,7 +36,17 @@ namespace LumTomofunCustomization.Graph
         }
 
         public bool PrepareImportRow(string viewName, IDictionary keys, IDictionary values)
-            => true;
+        {
+            try
+            {
+                var qty = Convert.ToInt32(values["Qty"]);
+                return qty == 0 ? false : true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         public void PrepareItems(string viewName, IEnumerable items) { }
 
@@ -47,13 +57,13 @@ namespace LumTomofunCustomization.Graph
             => true;
     }
 
-    [Serializable]
-    public class UploadForecastFilter : IBqlTable
-    {
-        [PXBool]
-        [PXDefault(false)]
-        [PXUIField(DisplayName = "With Attachment")]
-        public virtual bool? WithAttachment { get; set; }
-        public abstract class withAttachment : PX.Data.BQL.BqlBool.Field<withAttachment> { }
-    }
+    //[Serializable]
+    //public class UploadForecastFilter : IBqlTable
+    //{
+    //    [PXBool]
+    //    [PXDefault(false)]
+    //    [PXUIField(DisplayName = "With Attachment")]
+    //    public virtual bool? WithAttachment { get; set; }
+    //    public abstract class withAttachment : PX.Data.BQL.BqlBool.Field<withAttachment> { }
+    //}
 }

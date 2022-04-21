@@ -156,6 +156,7 @@ namespace LumTomofunCustomization.DAC
 
         #region CreatedByID
         [PXDBCreatedByID()]
+        [PXUIField(Enabled = false)]
         public virtual Guid? CreatedByID { get; set; }
         public abstract class createdByID : PX.Data.BQL.BqlGuid.Field<createdByID> { }
         #endregion
@@ -168,6 +169,7 @@ namespace LumTomofunCustomization.DAC
 
         #region CreatedDateTime
         [PXDBCreatedDateTime()]
+        [PXUIField(Enabled = false)]
         public virtual DateTime? CreatedDateTime { get; set; }
         public abstract class createdDateTime : PX.Data.BQL.BqlDateTime.Field<createdDateTime> { }
         #endregion
