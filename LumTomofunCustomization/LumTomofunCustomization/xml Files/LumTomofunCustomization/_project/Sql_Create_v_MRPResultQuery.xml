@@ -31,9 +31,9 @@ SELECT MRPType,
 FROM LUMForecastUpload forecast
 INNER JOIN Company comp  ON forecast.Company = comp.CompanyCD
 INNER JOIN INSite insite ON comp.CompanyID = insite.CompanyID
-						AND forecast.Warehouse = insite.SiteID
+						AND forecast.Warehouse = insite.SiteCD
 INNER JOIN InventoryItem item ON comp.CompanyID = item.CompanyID
-							 AND forecast.SKU = item.InventoryID
+							 AND forecast.SKU = item.InventoryCD
 INNER JOIN Address address ON insite.CompanyID = address.CompanyID
 						  AND insite.AddressID = address.AddressID
 WHERE comp.CompanyID > 0
@@ -109,8 +109,8 @@ LEFT JOIN FirstRecordTmpTable tmp ON result.CompanyID = tmp.CompanyID
 								 AND result.Warehouse = tmp.Warehouse
 								 AND result.Date = tmp.FirstRecordTime
 LEFT JOIN LUMForecastUpload forecast ON comp.CompanyCD = forecast.Company
-								    AND result.Sku = forecast.SKU
-									AND result.Warehouse = forecast.Warehouse
+								    AND item.InventoryCD = forecast.SKU
+									AND insite.SiteCD = forecast.Warehouse
 									AND result.Date = forecast.Date
 WHERE result.ForecastIntial is not null and result.CompanyID > 0
 -- MRP Result (SotckInitial)
