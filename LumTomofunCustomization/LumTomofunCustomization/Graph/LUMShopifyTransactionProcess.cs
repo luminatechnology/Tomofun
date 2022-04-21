@@ -117,7 +117,7 @@ namespace LumTomofunCustomization.Graph
                                 var line = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                 line.InventoryID = GetInvetoryitemID(soGraph, item.sku);
                                 if (line.InventoryID == null)
-                                    throw new Exception("can not find Inventory item ID");
+                                    throw new Exception($"can not find Inventory item ID({item.sku})");
                                 line.ManualPrice = true;
                                 line.OrderQty = item.quantity;
                                 line.CuryUnitPrice = decimal.Parse(item.pre_tax_price) / item.quantity;

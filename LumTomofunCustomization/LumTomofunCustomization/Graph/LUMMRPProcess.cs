@@ -21,7 +21,7 @@ namespace LumTomofunCustomization.Graph
 
         public PXFilter<MRPFilter> Filter;
         [PXFilterable]
-        public PXFilteredProcessing<LUMMRPProcessResult,MRPFilter> Transaction;
+        public PXFilteredProcessing<LUMMRPProcessResult, MRPFilter> Transaction;
 
         // ReSharper disable InconsistentNaming
         [InjectDependency]
@@ -41,7 +41,7 @@ namespace LumTomofunCustomization.Graph
                 });
             if (this.Transaction.Select().Count == 0 && SelectFrom<LUMMRPProcessResult>.View.Select(this).TopFirst == null)
                 InitialData();
-        } 
+        }
 
         #endregion
 
@@ -89,23 +89,35 @@ namespace LumTomofunCustomization.Graph
                     }
                     #endregion
 
-                    // Initial parameter
-                    var invGraph = PXGraph.CreateInstance<InventoryAllocDetEnq>();
-                    var lastDate = GetProcessLastDate(filter.Revision);                                         // MRP 計算最後一天
-
-                    // 全部StockItem
-                    var allInventoryItem = SelectFrom<InventoryItem>
-                                           .Where<InventoryItem.itemClassID.IsEqual<P.AsInt>
-                                             .And<InventoryItem.itemStatus.IsEqual<P.AsString>>>
-                                           .View.Select(baseGraph, filter.ItemClassID, "AC").RowCast<InventoryItem>()
-                                           .Where(x => filter.Sku == null || x.InventoryID == filter?.Sku).ToList();
-                    // 全部Warehouse
-                    var allWarehouseData = SelectFrom<INSite>
-                                           .Where<INSite.active.IsEqual<True>>
-                                           .View.Select(baseGraph).RowCast<INSite>()
-                                           .Where(x => filter.Warehouse == null || x.SiteID == filter?.Warehouse).ToList();
                     // 刪除預設資料
                     DeleteData();
+
+                    #region Variable
+                    // Initial parameter
+                    var actCompanyName = _legacyCompanyService.ExtractCompany(PX.Common.PXContext.PXIdentity.IdentityName);
+                    // MRPPreference
+                    var mrpPreference = SelectFrom<LUMMRPPreference>.View.Select(baseGraph).RowCast<LUMMRPPreference>();
+                    // 執行截止日期
+                    var lastDate = GetProcessLastDate(filter.Revision);
+                    #endregion                               // MRP 計算最後一天
+
+                    #region 準備前置資料
+                    // Get All Process Stock Item
+                    var allInventoryItem = GetAllProcessItem(baseGraph, filter);
+                    // Get All Process Warehouse
+                    var allWarehouseData = GetAllProcessWarehouse(baseGraph, filter);
+                    // Get All Upload Forecast Data
+                    var allForecastData = GetAllForecastData(baseGraph, actCompanyName, filter.Revision);
+                    // Get All INLocation Data
+                    var allINlocationData = GetAllINlocationData(baseGraph);
+                    // Get All INTran Data
+                    var allINTranData = GetAllINTranData(baseGraph);
+                    // Get All Available Inventory Data
+                    var allInvInfoData = GetAllInventoryInfoData(baseGraph);
+                    // Get All Safety Stock Data
+                    var allSafetyStockData = GetAllSafetyStockData(baseGraph);
+                    #endregion
+
                     // 執行每一個Inventory Item
                     foreach (var actSku in allInventoryItem)
                     {
@@ -122,62 +134,42 @@ namespace LumTomofunCustomization.Graph
                             var revision = filter.Revision;          // MRP Revision
                             LUMForecastUpload firstForecastData;     // 離計算日最新的Forecast資料
 
-                            var actCompanyName = _legacyCompanyService.ExtractCompany(PX.Common.PXContext.PXIdentity.IdentityName);
                             // Forecast upload data
-                            var forecastData = SelectFrom<LUMForecastUpload>
-                                               .InnerJoin<InventoryItem>.On<LUMForecastUpload.sku.IsEqual<InventoryItem.inventoryCD>>
-                                               .InnerJoin<INSite>.On<LUMForecastUpload.warehouse.IsEqual<INSite.siteCD>>
-                                               .Where<InventoryItem.inventoryID.IsEqual<@P.AsInt>
-                                                 .And<INSite.siteID.IsEqual<@P.AsInt>>
-                                                 .And<LUMForecastUpload.company.IsEqual<@P.AsString>>
-                                                 .And<LUMForecastUpload.revision.IsEqual<@P.AsString>>>
-                                               .View.Select(baseGraph, Sku, Warehouse, actCompanyName, revision).RowCast<LUMForecastUpload>().OrderBy(x => x.Date);
+                            var forecastData = allForecastData.Where(x => x.GetItem<InventoryItem>().InventoryID == Sku &&
+                                                                          x.GetItem<INSite>().SiteID == Warehouse)
+                                                              .RowCast<LUMForecastUpload>();
+                            // 執行日期前的最新一筆Forecast Upload 資料
                             firstForecastData = forecastData.OrderBy(x => x.Date).LastOrDefault(x => x.Date.Value.Date < actDate.Value.Date && x.Mrptype == "Forecast");
 
-                            // MRPPreference
-                            var mrpPreference = SelectFrom<LUMMRPPreference>.View.Select(baseGraph).RowCast<LUMMRPPreference>();
-
                             #region Storage Summary(當下庫存)
+                            // 庫存Graph
                             var storageGraph = PXGraph.CreateInstance<StoragePlaceEnq>();
                             storageGraph.Filter.Cache.SetValueExt<StoragePlaceEnq.StoragePlaceFilter.siteID>(storageGraph.Filter.Current, actWarehouse.SiteID);
                             storageGraph.Filter.Cache.SetValueExt<StoragePlaceEnq.StoragePlaceFilter.inventoryID>(storageGraph.Filter.Current, actSku.InventoryID);
                             var storageSummary = storageGraph.storages.Select().RowCast<StoragePlaceStatus>();
-                            var inLocation = SelectFrom<INLocation>
-                                             .Where<INLocation.siteID.IsEqual<P.AsInt>
-                                               .And<INLocation.inclQtyAvail.IsEqual<True>>>.View.Select(baseGraph, actWarehouse.SiteID).RowCast<INLocation>().Select(x => x.LocationID).ToList();
-                            storageSummary = storageSummary.Where(x => inLocation.IndexOf(x.LocationID) > -1).ToList();
+                            var inLocation = allINlocationData.Where(x => x.SiteID == actWarehouse.SiteID).Select(x => x.LocationID).ToList();
+                            storageSummary = storageSummary.Where(x => inLocation.IndexOf(x.LocationID) > -1);
                             #endregion
 
                             #region Inventory Allocation Details
+                            // 交易Graph
+                            var invGraph = PXGraph.CreateInstance<InventoryAllocDetEnq>();
                             invGraph.Filter.Cache.SetValueExt<InventoryAllocDetEnqFilter.inventoryID>(invGraph.Filter.Current, actSku.InventoryID);
                             invGraph.Filter.Cache.SetValueExt<InventoryAllocDetEnqFilter.siteID>(invGraph.Filter.Current, actWarehouse.SiteID);
-                            var invAllocDetails = invGraph.ResultRecords.Select().RowCast<InventoryAllocDetEnqResult>().ToList();
+                            var invAllocDetails = invGraph.ResultRecords.Select().RowCast<InventoryAllocDetEnqResult>();
                             #endregion
 
                             #region Act Issue (Release INTran)
-
                             var inTransData = firstForecastData == null ? null :
-                                              SelectFrom<INTran>
-                                              .InnerJoin<INLocation>.On<INTran.siteID.IsEqual<INLocation.siteID>
-                                                                   .And<INLocation.inclQtyAvail.IsEqual<True>>
-                                                                   .And<INTran.locationID.IsEqual<INLocation.locationID>>>
-                                              .Where<INTran.sOShipmentType.IsEqual<P.AsString>
-                                                .And<INTran.released.IsEqual<True>>
-                                                .And<INTran.siteID.IsEqual<P.AsInt>>
-                                                .And<INTran.inventoryID.IsEqual<P.AsInt>>>
-                                              .View.Select(baseGraph, "I", actWarehouse.SiteID, actSku.InventoryID).RowCast<INTran>()
-                                              .Where(x => x.ReleasedDateTime.Value.Date >= firstForecastData.Date.Value.Date && x.ReleasedDateTime.Value.Date <= actDate.Value.Date)
-                                              .ToList();
-
+                                              allINTranData.Where(x => x.SiteID == actWarehouse.SiteID &&
+                                                                       x.InventoryID == actSku.InventoryID &&
+                                                                       x.ReleasedDateTime.Value.Date >= firstForecastData.Date.Value.Date &&
+                                                                       x.ReleasedDateTime.Value.Date <= actDate.Value.Date);
                             #endregion
 
                             #region Get Inventory calculate rules
                             var invRules = new List<string>();
-                            var invInfo = SelectFrom<InventoryItem>
-                                          .InnerJoin<INItemClass>.On<InventoryItem.itemClassID.IsEqual<INItemClass.itemClassID>>
-                                          .InnerJoin<INAvailabilityScheme>.On<INItemClass.availabilitySchemeID.IsEqual<INAvailabilityScheme.availabilitySchemeID>>
-                                          .Where<InventoryItem.inventoryID.IsEqual<P.AsInt>>
-                                          .View.Select(baseGraph, actSku.InventoryID);
+                            var invInfo = allInvInfoData.Where(x => x.GetItem<InventoryItem>().InventoryID == actSku.InventoryID);
                             var invSchema = invInfo.RowCast<INAvailabilityScheme>().FirstOrDefault();
                             foreach (var item in invSchema.GetType().GetProperties())
                             {
@@ -187,11 +179,8 @@ namespace LumTomofunCustomization.Graph
                             #endregion
 
                             #region Safety Stock
-                            safetyStock = SelectFrom<INItemSite>
-                                         .Where<INItemSite.inventoryID.IsEqual<P.AsInt>
-                                           .And<INItemSite.siteID.IsEqual<P.AsInt>>
-                                           .And<INItemSite.siteStatus.IsEqual<P.AsString>>>
-                                         .View.Select(baseGraph, actSku.InventoryID, actWarehouse.SiteID, "AC").TopFirst?.SafetyStock ?? 0;
+                            safetyStock = allSafetyStockData.FirstOrDefault(x => x.InventoryID == actSku.InventoryID &&
+                                                                                 x.SiteID == actWarehouse.SiteID)?.SafetyStock ?? 0;
                             #endregion 
 
                             // initial 
@@ -469,6 +458,74 @@ namespace LumTomofunCustomization.Graph
                 FinalProcessLastDate = new DateTime(Math.Max(FinalProcessLastDate.Ticks, forecastData.Date.Value.Ticks));
             return FinalProcessLastDate;
         }
+
+        /// <summary> Get All Upload Forcast Data (CompanyName, Revision) </summary>
+        public PXResultset<LUMForecastUpload> GetAllForecastData(LUMMRPProcess baseGraph, string actCompanyName, string revision)
+        {
+            return SelectFrom<LUMForecastUpload>
+                   .InnerJoin<InventoryItem>.On<LUMForecastUpload.sku.IsEqual<InventoryItem.inventoryCD>>
+                   .InnerJoin<INSite>.On<LUMForecastUpload.warehouse.IsEqual<INSite.siteCD>>
+                   .Where<LUMForecastUpload.company.IsEqual<@P.AsString>
+                     .And<LUMForecastUpload.revision.IsEqual<@P.AsString>>>
+                   .View.Select(baseGraph, actCompanyName, revision);
+        }
+
+        /// <summary> Get All INLocation Data </summary>
+        public IEnumerable<INLocation> GetAllINlocationData(LUMMRPProcess baseGraph)
+        {
+            return SelectFrom<INLocation>
+                   .Where<INLocation.inclQtyAvail.IsEqual<True>>
+                   .View.Select(baseGraph).RowCast<INLocation>();
+        }
+
+        /// <summary> Get All INTran Data </summary>
+        public IEnumerable<INTran> GetAllINTranData(LUMMRPProcess baseGraph)
+        {
+            return SelectFrom<INTran>
+                   .InnerJoin<INLocation>.On<INTran.siteID.IsEqual<INLocation.siteID>
+                                        .And<INLocation.inclQtyAvail.IsEqual<True>>
+                                        .And<INTran.locationID.IsEqual<INLocation.locationID>>>
+                   .Where<INTran.sOShipmentType.IsEqual<P.AsString>
+                     .And<INTran.released.IsEqual<True>>>
+                   .View.Select(baseGraph, "I").RowCast<INTran>();
+        }
+
+        /// <summary> Get All Inventory Info Data </summary>
+        public PXResultset<InventoryItem> GetAllInventoryInfoData(LUMMRPProcess baseGraph)
+        {
+            return SelectFrom<InventoryItem>
+                   .InnerJoin<INItemClass>.On<InventoryItem.itemClassID.IsEqual<INItemClass.itemClassID>>
+                   .InnerJoin<INAvailabilityScheme>.On<INItemClass.availabilitySchemeID.IsEqual<INAvailabilityScheme.availabilitySchemeID>>
+                   .View.Select(baseGraph);
+        }
+
+        /// <summary> Get All Safety Stock Data </summary>
+        public IEnumerable<INItemSite> GetAllSafetyStockData(LUMMRPProcess baseGraph)
+        {
+            return SelectFrom<INItemSite>
+                   .Where<INItemSite.siteStatus.IsEqual<P.AsString>>
+                   .View.Select(baseGraph, "AC").RowCast<INItemSite>();
+        }
+
+        /// <summary> Get All Process Inventory Item </summary>
+        public IEnumerable<InventoryItem> GetAllProcessItem(LUMMRPProcess baseGraph, MRPFilter filter)
+        {
+            return SelectFrom<InventoryItem>
+                   .Where<InventoryItem.itemClassID.IsEqual<P.AsInt>
+                     .And<InventoryItem.itemStatus.IsEqual<P.AsString>>>
+                   .View.Select(baseGraph, filter.ItemClassID, "AC").RowCast<InventoryItem>()
+                   .Where(x => filter.Sku == null || x.InventoryID == filter?.Sku);
+        }
+
+        /// <summary> Get All Process Warehouse </summary>
+        public IEnumerable<INSite> GetAllProcessWarehouse(LUMMRPProcess baseGraph, MRPFilter filter)
+        {
+            return SelectFrom<INSite>
+                   .Where<INSite.active.IsEqual<True>>
+                   .View.Select(baseGraph).RowCast<INSite>()
+                   .Where(x => filter.Warehouse == null || x.SiteID == filter?.Warehouse);
+        }
+
         #endregion
     }
 
