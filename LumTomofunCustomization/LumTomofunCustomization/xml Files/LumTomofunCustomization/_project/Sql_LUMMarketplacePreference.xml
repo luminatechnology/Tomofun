@@ -3,6 +3,7 @@
   <col name="CompanyID" type="Int" default="Zero" />
   <col name="BAccountID" type="Int" />
   <col name="Marketplace" type="NVarChar(20)" />
+  <col name="IsTaxCalculation" type="Bit" nullable="true" />
   <col name="NoteID" type="UniqueIdentifier" nullable="true" />
   <col name="CreatedByID" type="UniqueIdentifier" />
   <col name="CreatedByScreenID" type="Char(8)" />

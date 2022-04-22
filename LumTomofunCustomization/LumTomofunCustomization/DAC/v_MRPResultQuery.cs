@@ -69,5 +69,24 @@ namespace LUMTomofunCustomization.DAC
         public virtual Decimal? QtyMonth { get; set; }
         public abstract class qtyMonth : PX.Data.BQL.BqlDecimal.Field<qtyMonth> { }
         #endregion
+
+        #region Revision
+        [PXDBString(10, InputMask = "", IsUnicode = true)]
+        [PXUIField(DisplayName = "Revision")]
+        public virtual string Revision { get; set; }
+        public abstract class revision : PX.Data.BQL.BqlString.Field<revision> { }
+        #endregion
+
+        #region CreatedDateTime
+        [PXDBCreatedDateTime()]
+        public virtual DateTime? CreatedDateTime { get; set; }
+        public abstract class createdDateTime : PX.Data.BQL.BqlDateTime.Field<createdDateTime> { }
+        #endregion
+
+        #region CreatedByID
+        [PXDBCreatedByID()]
+        public virtual Guid? CreatedByID { get; set; }
+        public abstract class createdByID : PX.Data.BQL.BqlGuid.Field<createdByID> { }
+        #endregion
     }
 }

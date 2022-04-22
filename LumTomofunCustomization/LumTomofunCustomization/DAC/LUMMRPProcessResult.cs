@@ -49,6 +49,13 @@ namespace LumTomofunCustomization.DAC
         public abstract class date : PX.Data.BQL.BqlDateTime.Field<date> { }
         #endregion
 
+        #region Revision
+        [PXDBString(10,InputMask = "", IsUnicode = true)]
+        [PXUIField(DisplayName = "Revision")]
+        public virtual string Revision { get; set; }
+        public abstract class revision : PX.Data.BQL.BqlString.Field<revision> { }
+        #endregion
+
         #region Forecast
         [PXDBInt()]
         [PXUIField(DisplayName = "Forecast")]

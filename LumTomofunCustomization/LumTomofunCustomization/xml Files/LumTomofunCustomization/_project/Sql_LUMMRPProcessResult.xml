@@ -4,6 +4,7 @@
   <col name="Sku" type="Int" />
   <col name="Warehouse" type="Int" />
   <col name="Date" type="DateTime" />
+  <col name="Revision" type="NVarChar(10)" nullable="true" />
   <col name="Forecast" type="Int" nullable="true" />
   <col name="ForecastBase" type="Int" nullable="true" />
   <col name="OpenSo" type="Int" nullable="true" />

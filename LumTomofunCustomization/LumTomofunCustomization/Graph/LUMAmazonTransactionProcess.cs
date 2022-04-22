@@ -52,6 +52,8 @@ namespace LumTomofunCustomization.Graph
                         var soGraph = PXGraph.CreateInstance<SOOrderEntry>();
                         // validation
                         Validation(row);
+                        // Marketplace tax calculation
+                        var isTaxCalculate = GetMarketplaceTaxCalculation(row.Marketplace);
                         // Amazon Order Object
                         var amzOrder = JsonConvert.DeserializeObject<LumTomofunCustomization.API_Entity.AmazonOrder.Order>(row.TransJson);
                         // Amazon Total Tax Amount
@@ -150,11 +152,14 @@ namespace LumTomofunCustomization.Graph
 
                         #region Update Tax
                         // Setting SO Tax
-                        soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, row.Marketplace + "EC");
-                        soGraph.Taxes.Cache.SetValueExt<SOTaxTran.curyTaxAmt>(soGraph.Taxes.Current, row.Marketplace == "US" ? 0 : amzTotalTax);
+                        if (!isTaxCalculate)
+                        {
+                            soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, row.Marketplace + "EC");
+                            soGraph.Taxes.Cache.SetValueExt<SOTaxTran.curyTaxAmt>(soGraph.Taxes.Current, row.Marketplace == "US" ? 0 : amzTotalTax);
 
-                        soGraph.Document.Cache.SetValueExt<SOOrder.curyTaxTotal>(soGraph.Document.Current, row.Marketplace == "US" ? 0 : amzTotalTax);
-                        soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + (row.Marketplace == "US" ? 0 : amzTotalTax));
+                            soGraph.Document.Cache.SetValueExt<SOOrder.curyTaxTotal>(soGraph.Document.Current, row.Marketplace == "US" ? 0 : amzTotalTax);
+                            soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + (row.Marketplace == "US" ? 0 : amzTotalTax));
+                        }
                         #endregion
 
                         // Write json into note
@@ -173,7 +178,13 @@ namespace LumTomofunCustomization.Graph
                                     soGraph.Document.Current.OrderNbr
                                 }
                             };
-                            soGraph.PrepareInvoice(newAdapter);
+                            // 判斷是否不產生Invoice
+                            var isDoNotCreateInvoice =
+                                 soGraph.Document.Current.CuryOrderTotal == 0 ||
+                                 (isTaxCalculate && (decimal?)amzOrder.Amount != soGraph.Document.Current.CuryOrderTotal - soGraph.Document.Current.CuryTaxTotal) ||
+                                 (!isTaxCalculate && (decimal?)amzOrder.Amount - (row.Marketplace == "US" ? amzTotalTax : 0) != soGraph.Document.Current.CuryOrderTotal);
+                            if (!isDoNotCreateInvoice)
+                                soGraph.PrepareInvoice(newAdapter);
                         }
                         // Prepare Invoice Success
                         catch (PXRedirectRequiredException ex)
@@ -251,6 +262,12 @@ namespace LumTomofunCustomization.Graph
             => SelectFrom<LUMMarketplacePreference>
                .Where<LUMMarketplacePreference.marketplace.IsEqual<P.AsString>>
                .View.Select(this, marketPlace).TopFirst?.BAccountID;
+
+        /// <summary> 取Marketplace 對應 Tax Calculation </summary>
+        public bool GetMarketplaceTaxCalculation(string marketPlace)
+            => SelectFrom<LUMMarketplacePreference>
+               .Where<LUMMarketplacePreference.marketplace.IsEqual<P.AsString>>
+               .View.Select(this, marketPlace).TopFirst?.IsTaxCalculation ?? false;
 
         /// <summary> 取Fee 對應 Non-Stock item ID </summary>
         public int? GetFeeNonStockItem(string fee)

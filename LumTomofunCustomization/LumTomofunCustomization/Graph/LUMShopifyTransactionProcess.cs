@@ -37,7 +37,7 @@ namespace LumTomofunCustomization.Graph
         public static void GoProcessing(List<LUMShopifyTransData> list)
         {
             var graph = CreateInstance<LUMShopifyTransactionProcess>();
-            graph.CreateSalesOrder(graph,list);
+            graph.CreateSalesOrder(graph, list);
         }
 
         /// <summary> Create Sales Order </summary>
@@ -50,6 +50,8 @@ namespace LumTomofunCustomization.Graph
                 {
                     using (PXTransactionScope sc = new PXTransactionScope())
                     {
+                        // Marketplace tax calculation
+                        var isTaxCalculate = GetMarketplaceTaxCalculation(row.Marketplace);
                         // Create Sales Order Graph
                         var soGraph = PXGraph.CreateInstance<SOOrderEntry>();
                         var spOrder = JsonConvert.DeserializeObject<API_Entity.ShopifyOrder.ShopifyOrderEntity>(row.TransJson);
@@ -85,7 +87,9 @@ namespace LumTomofunCustomization.Graph
                             soGraph.Document.Cache.SetValueExt(order, PX.Objects.CS.Messages.Attribute + "ORDTAXAMT", spOrder.current_total_tax);
                             // UserDefined - TAXCOLLECT
                             soGraph.Document.Cache.SetValueExt(order, PX.Objects.CS.Messages.Attribute + "TAXCOLLECT", 0);
-                            #endregion 
+                            // UserDefined -  ORDERTAGS
+                            soGraph.Document.Cache.SetValueExt(order, PX.Objects.CS.Messages.Attribute + "ORDERTAGS", spOrder.tags);
+                            #endregion
                             // Insert Sales Order
                             soGraph.Document.Insert(order);
                             // Setting Shipping_Address
@@ -112,7 +116,7 @@ namespace LumTomofunCustomization.Graph
                             foreach (var item in spOrder.line_items)
                             {
                                 // requires_shipping <> True (Do not import this item)
-                                if(!item.requires_shipping)
+                                if (!item.requires_shipping)
                                     continue;
                                 var line = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                 line.InventoryID = GetInvetoryitemID(soGraph, item.sku);
@@ -129,7 +133,7 @@ namespace LumTomofunCustomization.Graph
                             #endregion
 
                             #region Create Slaes Order Line for Shipping
-                            if(spOrder.shipping_lines.Any(x => decimal.Parse(x.price) > 0))
+                            if (spOrder.shipping_lines.Any(x => decimal.Parse(x.price) > 0))
                             {
                                 var soShipLine = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                 soShipLine.InventoryID = GetFeeNonStockItem("Shipping");
@@ -144,11 +148,14 @@ namespace LumTomofunCustomization.Graph
 
                             #region Update Tax
                             // Setting SO Tax
-                            soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, row.Marketplace + "EC");
-                            soGraph.Taxes.Cache.SetValueExt<SOTaxTran.curyTaxAmt>(soGraph.Taxes.Current, spOrder.current_total_tax);
+                            if (!isTaxCalculate)
+                            {
+                                soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, row.Marketplace + "EC");
+                                soGraph.Taxes.Cache.SetValueExt<SOTaxTran.curyTaxAmt>(soGraph.Taxes.Current, spOrder.current_total_tax);
 
-                            soGraph.Document.Cache.SetValueExt<SOOrder.curyTaxTotal>(soGraph.Document.Current, spOrder.current_total_tax);
-                            soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + decimal.Parse(spOrder.current_total_tax));
+                                soGraph.Document.Cache.SetValueExt<SOOrder.curyTaxTotal>(soGraph.Document.Current, spOrder.current_total_tax);
+                                soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + decimal.Parse(spOrder.current_total_tax));
+                            }
                             #endregion
 
                             // Write json into note
@@ -162,6 +169,14 @@ namespace LumTomofunCustomization.Graph
                         // Prepare Invocie
                         try
                         {
+                            // 判斷是否需要Create Invoice
+                            if (!string.IsNullOrEmpty(spOrder.tags) ||
+                                soGraph.Document.Current.CuryOrderTotal == 0 ||
+                                (isTaxCalculate && decimal.Parse(spOrder.current_total_price) != soGraph.Document.Current.CuryTaxTotal.Value - soGraph.Document.Current.CuryTaxTotal) || 
+                                (!isTaxCalculate && decimal.Parse(spOrder.current_total_price) - 0 != soGraph.Document.Current.CuryTaxTotal.Value))
+                            {
+                                GoPrepareInvoice = false;
+                            }
                             if (GoPrepareInvoice)
                             {
                                 var newAdapter = new PXAdapter(soGraph.Document)
@@ -241,6 +256,12 @@ namespace LumTomofunCustomization.Graph
             => SelectFrom<LUMShopifyMarketplacePreference>
                .Where<LUMShopifyMarketplacePreference.marketplace.IsEqual<P.AsString>>
                .View.Select(this, marketPlace).TopFirst?.BAccountID;
+
+        /// <summary> 取Marketplace 對應 Tax Calculation </summary>
+        public bool GetMarketplaceTaxCalculation(string marketPlace)
+            => SelectFrom<LUMShopifyMarketplacePreference>
+               .Where<LUMShopifyMarketplacePreference.marketplace.IsEqual<P.AsString>>
+               .View.Select(this, marketPlace).TopFirst?.IsTaxCalculation ?? false;
 
         /// <summary> 取Inventory Item ID </summary>
         public int? GetInvetoryitemID(PXGraph graph, string sku)

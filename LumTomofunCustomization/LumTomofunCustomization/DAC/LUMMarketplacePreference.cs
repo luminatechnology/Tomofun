@@ -30,6 +30,14 @@ namespace LUMTomofunCustomization.DAC
         public abstract class marketplace : PX.Data.BQL.BqlString.Field<marketplace> { }
         #endregion
 
+        #region IsTaxCalculation
+        [PXDBBool]
+        [PXDefault(false)]
+        [PXUIField(DisplayName = "Tax Calculation")]
+        public virtual bool? IsTaxCalculation { get; set; }
+        public abstract class isTaxCalculation : PX.Data.BQL.BqlBool.Field<isTaxCalculation> { }
+        #endregion
+
         #region Noteid
         [PXNote()]
         public virtual Guid? Noteid { get; set; }

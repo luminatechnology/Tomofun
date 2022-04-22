@@ -28,6 +28,7 @@
                     <px:PXGridColumn DataField="Sku"></px:PXGridColumn>
                     <px:PXGridColumn DataField="Warehouse" />
                     <px:PXGridColumn DataField="Date"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="Revision"></px:PXGridColumn>
                     <px:PXGridColumn DataField="Forecast"></px:PXGridColumn>
                     <px:PXGridColumn DataField="ForecastBase"></px:PXGridColumn>
                     <px:PXGridColumn DataField="OpenSo"></px:PXGridColumn>

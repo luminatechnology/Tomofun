@@ -129,14 +129,14 @@ namespace LumTomofunCustomization.Graph
                             var lastDayRemainForecast = 0;           // MRP 前一天剩餘 Forecast
                             var lastDayStock = 0;                    // MRP 前一天剩餘的 Stock
                             decimal safetyStock = 0;                 // 安全庫存
-                            var Sku = actSku.InventoryID;            // MRP Sku
-                            var Warehouse = actWarehouse.SiteID;     // MRP Warehouse
-                            var revision = filter.Revision;          // MRP Revision
+                            var _Sku = actSku.InventoryID;            // MRP Sku
+                            var _Warehouse = actWarehouse.SiteID;     // MRP Warehouse
+                            var _revision = filter.Revision;          // MRP Revision
                             LUMForecastUpload firstForecastData;     // 離計算日最新的Forecast資料
 
                             // Forecast upload data
-                            var forecastData = allForecastData.Where(x => x.GetItem<InventoryItem>().InventoryID == Sku &&
-                                                                          x.GetItem<INSite>().SiteID == Warehouse)
+                            var forecastData = allForecastData.Where(x => x.GetItem<InventoryItem>().InventoryID == _Sku &&
+                                                                          x.GetItem<INSite>().SiteID == _Warehouse)
                                                               .RowCast<LUMForecastUpload>();
                             // 執行日期前的最新一筆Forecast Upload 資料
                             firstForecastData = forecastData.OrderBy(x => x.Date).LastOrDefault(x => x.Date.Value.Date < actDate.Value.Date && x.Mrptype == "Forecast");
@@ -157,6 +157,11 @@ namespace LumTomofunCustomization.Graph
                             invGraph.Filter.Cache.SetValueExt<InventoryAllocDetEnqFilter.inventoryID>(invGraph.Filter.Current, actSku.InventoryID);
                             invGraph.Filter.Cache.SetValueExt<InventoryAllocDetEnqFilter.siteID>(invGraph.Filter.Current, actWarehouse.SiteID);
                             var invAllocDetails = invGraph.ResultRecords.Select().RowCast<InventoryAllocDetEnqResult>();
+                            #endregion
+
+                            #region Skip Warehouse
+                            if (forecastData.Count() == 0 && storageSummary.Count() == 0 && invAllocDetails.Count() == 0)
+                                continue;
                             #endregion
 
                             #region Act Issue (Release INTran)
@@ -187,7 +192,7 @@ namespace LumTomofunCustomization.Graph
                             while (actDate.Value.Date <= lastDate.Date)
                             {
                                 var result = baseGraph.Transaction.Insert((LUMMRPProcessResult)baseGraph.Transaction.Cache.CreateInstance());
-
+                                result.Revision = _revision;
                                 // 只計算第一天
                                 if (startDate.Value.Date == actDate.Value.Date)
                                 {
@@ -324,18 +329,19 @@ namespace LumTomofunCustomization.Graph
 
                                 #region Sku + Warehouse + Date
 
-                                result.Sku = Sku;
-                                result.Warehouse = Warehouse;
+                                result.Sku = _Sku;
+                                result.Warehouse = _Warehouse;
                                 result.Date = actDate;
 
                                 #endregion
                                 actDate = actDate.Value.AddDays(1);
                             }
 
-                            // Save data
-                            baseGraph.Actions.PressSave();
                         }
                     }
+
+                    // Save data
+                    baseGraph.Actions.PressSave();
                 });
             }
             catch (PXOuterException ex)
