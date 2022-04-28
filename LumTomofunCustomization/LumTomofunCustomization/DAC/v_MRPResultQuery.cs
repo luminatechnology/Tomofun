@@ -88,5 +88,13 @@ namespace LUMTomofunCustomization.DAC
         public virtual Guid? CreatedByID { get; set; }
         public abstract class createdByID : PX.Data.BQL.BqlGuid.Field<createdByID> { }
         #endregion
+
+        #region TransactionExistsFlag
+        [PXDBString(1)]
+        [PXUIField(DisplayName = "Transaction Exists Flag")]
+        public virtual string TransactionExistsFlag { get; set; }
+        public abstract class transactionExistsFlag : PX.Data.BQL.BqlString.Field<transactionExistsFlag> { }
+        #endregion
+
     }
 }

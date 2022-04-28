@@ -60,6 +60,13 @@ namespace LumTomofunCustomization.Graph
             => e.NewValue = SelectFrom<LUMForecastUploadPreference>.View.Select(this).TopFirst?.Revision;
         #endregion
 
+        #region Event
+
+        public virtual void _(Events.FieldDefaulting<MRPFilter.date> e)
+            => e.NewValue = DateTime.Now;
+
+        #endregion
+
         #region Method
         /// <summary> 非同步執行程序 </summary>
         public static void GoProcessing(MRPFilter filter)
@@ -193,6 +200,7 @@ namespace LumTomofunCustomization.Graph
                             {
                                 var result = baseGraph.Transaction.Insert((LUMMRPProcessResult)baseGraph.Transaction.Cache.CreateInstance());
                                 result.Revision = _revision;
+
                                 // 只計算第一天
                                 if (startDate.Value.Date == actDate.Value.Date)
                                 {
@@ -258,6 +266,14 @@ namespace LumTomofunCustomization.Graph
                                     }
                                     #endregion
                                 }
+
+                                #region Transaction Exists Flag
+                                if (actDate.Value.Date == lastDate.Date ||
+                                    actDate.Value.Date == startDate.Value.Date ||
+                                    actDayExistsForecast ||
+                                    invAllocDetails.FirstOrDefault(x => x.PlanDate.Value.Date == actDate.Value.Date) != null)
+                                    result.TransactionExistsFlag = "Y";
+                                #endregion
 
                                 #region Foreacse Initial
 
@@ -539,7 +555,7 @@ namespace LumTomofunCustomization.Graph
     public class MRPFilter : IBqlTable
     {
         [PXDBDate]
-        [PXDefault(typeof(AccessInfo.businessDate))]
+        [PXDefault()]
         [PXUIField(DisplayName = "Start Date")]
         public virtual DateTime? Date { get; set; }
         public abstract class date : PX.Data.BQL.BqlDateTime.Field<date> { }

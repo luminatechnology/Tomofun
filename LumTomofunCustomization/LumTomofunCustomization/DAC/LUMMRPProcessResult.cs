@@ -161,6 +161,13 @@ namespace LumTomofunCustomization.DAC
         public abstract class finalStockAvaliable : PX.Data.BQL.BqlInt.Field<finalStockAvaliable> { }
         #endregion
 
+        #region TransactionExistsFlag
+        [PXDBString(1)]
+        [PXUIField(DisplayName = "Transaction Exists Flag")]
+        public virtual string TransactionExistsFlag { get;set;}
+        public abstract class transactionExistsFlag : PX.Data.BQL.BqlString.Field<transactionExistsFlag> { }
+        #endregion
+
         #region CreatedByID
         [PXDBCreatedByID()]
         [PXUIField(Enabled = false)]

@@ -27,7 +27,7 @@
   <col name="LastModifiedByScreenID" type="Char(8)" />
   <col name="LastModifiedDateTime" type="DateTime" />
   <col name="tstamp" type="Timestamp" />
-  <index name="PK_LUMMRPProcessResult" clustered="true" primary="true" unique="true">
+  <index name="RemovedRemovedRemovedPK_LUMMRPProcessResult" clustered="true" primary="true" unique="true">
     <col name="CompanyID" />
     <col name="Sku" />
     <col name="Warehouse" />
