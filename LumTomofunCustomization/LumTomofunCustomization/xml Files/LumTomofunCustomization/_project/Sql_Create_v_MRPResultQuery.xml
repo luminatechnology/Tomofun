@@ -187,11 +187,11 @@ SELECT 'Stock Available' AS MRPType,
 	   Date,
 	   StockAva AS Qty,
 	   CASE 
-	    WHEN tmp.LastRecordTime IS NOT NULL THEN StockInitial
+	    WHEN tmp.LastRecordTime IS NOT NULL THEN StockAva
 		WHEN tmp.LastRecordTime IS NULL AND DatePart(WeekDay,Date)-1 = 6 THEN StockInitial
 	   ELSE null END AS QtyWeek,
 	   CASE
-	   WHEN tmp.LastRecordTime IS NOT NULL THEN StockInitial
+	   WHEN tmp.LastRecordTime IS NOT NULL THEN StockAva
 		WHEN tmp.LastRecordTime IS NULL AND CAST(result.DATE AS Date) = CAST(DATEADD(MM,DATEDIFF(MM, -1, result.Date),-1) AS Date) THEN StockInitial
 	   ELSE null END AS QtyMonth,
 	   result.BaseRevision AS Revision,
