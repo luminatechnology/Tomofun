@@ -27,6 +27,8 @@ namespace LumTomofunCustomization.Graph
         [InjectDependency]
         private ILegacyCompanyService _legacyCompanyService { get; set; }
 
+        private List<DateTime> _transactionExistsDays = new List<DateTime>();
+
         #region Constructor
 
         public LUMMRPProcess()
@@ -268,10 +270,10 @@ namespace LumTomofunCustomization.Graph
                                 }
 
                                 #region Transaction Exists Flag
+                                _transactionExistsDays = _transactionExistsDays.Distinct().ToList();
                                 if (actDate.Value.Date == lastDate.Date ||
                                     actDate.Value.Date == startDate.Value.Date ||
-                                    actDayExistsForecast ||
-                                    invAllocDetails.FirstOrDefault(x => x.PlanDate.Value.Date == actDate.Value.Date) != null)
+                                    _transactionExistsDays.IndexOf(actDate.Value.Date) > 0 )
                                     result.TransactionExistsFlag = "Y";
                                 #endregion
 
@@ -468,6 +470,8 @@ namespace LumTomofunCustomization.Graph
                             invGraph.ProcessItemPlanRecAs(inclQtyField, resultList, ip);
                     }
                     FinalProcessLastDate = new DateTime(Math.Max(FinalProcessLastDate.Ticks, resultList.Max(x => x.PlanDate).Value.Ticks));
+                    // 找出所有有交易的日期
+                    _transactionExistsDays.AddRange(resultList.Select(x => x.PlanDate.Value.Date));
                 }
             }
             // 找出所有Forecast Revision中最後一筆日期
@@ -475,9 +479,11 @@ namespace LumTomofunCustomization.Graph
                                .InnerJoin<InventoryItem>.On<LUMForecastUpload.sku.IsEqual<InventoryItem.inventoryCD>>
                                .InnerJoin<INSite>.On<LUMForecastUpload.warehouse.IsEqual<INSite.siteCD>>
                                .Where<LUMForecastUpload.revision.IsEqual<@P.AsString>>
-                               .View.Select(this, revision).RowCast<LUMForecastUpload>().OrderByDescending(x => x.Date).FirstOrDefault();
+                               .View.Select(this, revision).RowCast<LUMForecastUpload>().OrderByDescending(x => x.Date);
+            // 找出所有有Forecast的日期
+            _transactionExistsDays.AddRange(forecastData.Select(x => x.Date.Value.Date));
             if (forecastData != null)
-                FinalProcessLastDate = new DateTime(Math.Max(FinalProcessLastDate.Ticks, forecastData.Date.Value.Ticks));
+                FinalProcessLastDate = new DateTime(Math.Max(FinalProcessLastDate.Ticks, forecastData.FirstOrDefault().Date.Value.Ticks));
             return FinalProcessLastDate;
         }
 
