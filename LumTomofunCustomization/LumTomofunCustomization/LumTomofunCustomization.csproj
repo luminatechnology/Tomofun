@@ -73,6 +73,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +107,7 @@
     <Compile Include="DAC\LUMMarketplaceFeePreference.cs" />
     <Compile Include="DAC\LUMMWSPreference.cs" />
     <Compile Include="DAC\LUMForecastUploadPreference.cs" />
+    <Compile Include="LUMLibrary\AmazonPublicFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PX.Objects.CM;
 using PX.Objects.AR;
+using LumTomofunCustomization.LUMLibrary;
 
 namespace LumTomofunCustomization.Graph
 {
@@ -95,10 +96,10 @@ namespace LumTomofunCustomization.Graph
                             // Setting Shipping_Address
                             var soAddress = soGraph.Shipping_Address.Current;
                             soAddress.OverrideAddress = true;
-                            soAddress.PostalCode = spOrder.shipping_address.zip;
-                            soAddress.CountryID = spOrder.shipping_address.country_code;
-                            soAddress.State = spOrder.shipping_address.province;
-                            soAddress.City = spOrder.shipping_address.city;
+                            soAddress.PostalCode = spOrder.shipping_address?.zip;
+                            soAddress.CountryID = spOrder.shipping_address?.country_code;
+                            soAddress.State = spOrder.shipping_address?.province;
+                            soAddress.City = spOrder.shipping_address?.city;
                             soAddress.RevisionID = 1;
                             // Setting Shipping_Contact
                             var soContact = soGraph.Shipping_Contact.Current;
@@ -119,7 +120,7 @@ namespace LumTomofunCustomization.Graph
                                 if (!item.requires_shipping)
                                     continue;
                                 var line = soGraph.Transactions.Cache.CreateInstance() as SOLine;
-                                line.InventoryID = GetInvetoryitemID(soGraph, item.sku);
+                                line.InventoryID = AmazonPublicFunction.GetInvetoryitemID(soGraph, item.sku);
                                 if (line.InventoryID == null)
                                     throw new Exception($"can not find Inventory item ID({item.sku})");
                                 line.ManualPrice = true;
@@ -262,13 +263,6 @@ namespace LumTomofunCustomization.Graph
             => SelectFrom<LUMShopifyMarketplacePreference>
                .Where<LUMShopifyMarketplacePreference.marketplace.IsEqual<P.AsString>>
                .View.Select(this, marketPlace).TopFirst?.IsTaxCalculation ?? false;
-
-        /// <summary> 取Inventory Item ID </summary>
-        public int? GetInvetoryitemID(PXGraph graph, string sku)
-            => InventoryItem.UK.Find(graph, sku)?.InventoryID ??
-               SelectFrom<INItemXRef>
-               .Where<INItemXRef.alternateID.IsEqual<P.AsString>>
-               .View.SelectSingleBound(graph, null, sku).TopFirst?.InventoryID;
 
         /// <summary> 取Fee 對應 Non-Stock item ID </summary>
         public int? GetFeeNonStockItem(string fee)
