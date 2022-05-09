@@ -160,7 +160,7 @@ namespace LumTomofunCustomization.Graph
                                     var chargeTrans = arGraph.PaymentCharges.Cache.CreateInstance() as ARPaymentChargeTran;
                                     if (item.AmountType?.ToUpper() != "ITEMFEES")
                                         continue;
-                                    chargeTrans.EntryTypeID = "COMMISSION";
+                                    chargeTrans.EntryTypeID = item.AmountDescription.Substring(0, 10);
                                     chargeTrans.CuryTranAmt = item?.Amount * -1;
                                     arGraph.PaymentCharges.Insert(chargeTrans);
                                 }
