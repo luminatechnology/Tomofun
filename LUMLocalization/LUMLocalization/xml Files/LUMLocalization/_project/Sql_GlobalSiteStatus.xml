@@ -1,0 +1,72 @@
+﻿<Sql TableName="GlobalSiteStatus" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'GlobalSiteStatus' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].GlobalSiteStatus	
+GO
+CREATE VIEW GlobalSiteStatus AS
+SELECT [Company].[CompanyCD] AS 'TenantName', 
+	   [INSite].[SiteCD] AS 'WarehouseID',
+	   [INSite].[Descr] AS 'WarehouseDescription',
+	   [InventoryItem].[InventoryCD] AS 'InventoryID',
+	   [InventoryItem].[Descr] AS 'InventoryDescription',
+	   [INSiteStatus].[Qty],
+	   [INSiteStatus].[QtyOnHand]
+      ,[INSiteStatus].[QtyNotAvail]
+      ,[INSiteStatus].[QtyAvail]
+      ,[INSiteStatus].[QtyHardAvail]
+      ,[INSiteStatus].[QtyActual]
+      ,[INSiteStatus].[QtyInTransit]
+      ,[INSiteStatus].[QtyInTransitToSO]
+      ,[INSiteStatus].[QtyINReplaned]
+      ,[INSiteStatus].[QtyPOPrepared]
+      ,[INSiteStatus].[QtyPOOrders]
+      ,[INSiteStatus].[QtyPOReceipts]
+      ,[INSiteStatus].[QtyFSSrvOrdBooked]
+      ,[INSiteStatus].[QtyFSSrvOrdAllocated]
+      ,[INSiteStatus].[QtyFSSrvOrdPrepared]
+      ,[INSiteStatus].[QtySOBackOrdered]
+      ,[INSiteStatus].[QtySOPrepared]
+      ,[INSiteStatus].[QtySOBooked]
+      ,[INSiteStatus].[QtySOShipped]
+      ,[INSiteStatus].[QtySOShipping]
+      ,[INSiteStatus].[QtyFixedFSSrvOrd]
+      ,[INSiteStatus].[QtyPOFixedFSSrvOrd]
+      ,[INSiteStatus].[QtyPOFixedFSSrvOrdPrepared]
+      ,[INSiteStatus].[QtyPOFixedFSSrvOrdReceipts]
+      ,[INSiteStatus].[QtySOFixed]
+      ,[INSiteStatus].[QtyPOFixedOrders]
+      ,[INSiteStatus].[QtyPOFixedPrepared]
+      ,[INSiteStatus].[QtyPOFixedReceipts]
+      ,[INSiteStatus].[QtySODropShip]
+      ,[INSiteStatus].[QtyPODropShipOrders]
+      ,[INSiteStatus].[QtyPODropShipPrepared]
+      ,[INSiteStatus].[QtyPODropShipReceipts]
+      ,[INSiteStatus].[QtyINIssues]
+      ,[INSiteStatus].[QtyINReceipts]
+      ,[INSiteStatus].[QtyINAssemblySupply]
+      ,[INSiteStatus].[QtyINAssemblyDemand]
+      ,[INSiteStatus].[QtyInTransitToProduction]
+      ,[INSiteStatus].[QtyProductionSupplyPrepared]
+      ,[INSiteStatus].[QtyProductionSupply]
+      ,[INSiteStatus].[QtyPOFixedProductionPrepared]
+      ,[INSiteStatus].[QtyPOFixedProductionOrders]
+      ,[INSiteStatus].[QtyProductionDemandPrepared]
+      ,[INSiteStatus].[QtyProductionDemand]
+      ,[INSiteStatus].[QtyProductionAllocated]
+      ,[INSiteStatus].[QtySOFixedProduction]
+      ,[INSiteStatus].[QtyProdFixedPurchase]
+      ,[INSiteStatus].[QtyProdFixedProduction]
+      ,[INSiteStatus].[QtyProdFixedProdOrdersPrepared]
+      ,[INSiteStatus].[QtyProdFixedProdOrders]
+      ,[INSiteStatus].[QtyProdFixedSalesOrdersPrepared]
+      ,[INSiteStatus].[QtyProdFixedSalesOrders]
+FROM INSiteStatus
+LEFT JOIN Company ON Company.CompanyID = INSiteStatus.CompanyID
+LEFT JOIN InventoryItem ON InventoryItem.InventoryID = INSiteStatus.InventoryID and InventoryItem.CompanyID = INSiteStatus.CompanyID
+LEFT JOIN INSite ON INSite.SiteID = INSiteStatus.SiteID and INSite.CompanyID = INSiteStatus.CompanyID
+WHERE INSiteStatus.CompanyID > 0]]></CDATA>
+</Sql>

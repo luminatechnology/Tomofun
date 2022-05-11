@@ -1,0 +1,25 @@
+﻿<Sql TableName="LMTFInvQty" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="LMTFInvQty">
+  <col name="CompanyID" type="Int" default="Zero" />
+  <col name="InventoryID" type="Int" />
+  <col name="SiteID" type="Int" nullable="true" />
+  <col name="INLocationID" type="Int" nullable="true" />
+  <col name="Qty" type="Int" nullable="true" />
+  <col name="ExportedDate" type="DateTime" />
+  <col name="FulfillmentCenterID" type="Char(10)" />
+  <col name="CountryID" type="Char(5)" />
+  <col name="CreatedByID" type="UniqueIdentifier" />
+  <col name="CreatedByScreenID" type="Char(8)" />
+  <col name="CreatedDateTime" type="DateTime" />
+  <col name="LastModifiedByID" type="UniqueIdentifier" />
+  <col name="LastModifiedByScreenID" type="Char(8)" />
+  <col name="LastModifiedDateTime" type="DateTime" />
+  <index name="LMTFInvQty_PK" clustered="true" primary="true" unique="true">
+    <col name="CompanyID" />
+    <col name="InventoryID" />
+    <col name="FulfillmentCenterID" />
+    <col name="CountryID" />
+    <col name="ExportedDate" />
+  </index>
+</table>]]></CDATA>
+</Sql>

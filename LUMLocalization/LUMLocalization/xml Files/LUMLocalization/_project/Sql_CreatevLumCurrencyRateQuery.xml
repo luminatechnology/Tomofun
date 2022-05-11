@@ -1,0 +1,26 @@
+﻿<Sql TableName="CreatevLumCurrencyRateQuery" SqlScriptPriority="1" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'vLumCurrencyRateQuery' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[vLumCurrencyRateQuery]	
+GO
+CREATE VIEW vLumCurrencyRateQuery AS
+SELECT  t .CompanyID, t .FromCuryID, t .CuryRateType, t .CuryMultDiv, t .CuryRate, t .RateReciprocal, t .ToCuryID, t .CuryEffDate, 
+                   DATEADD(DAY, - 1, ISNULL
+                       ((SELECT  S.CuryEffDate
+                         FROM       (SELECT  ROW_NUMBER() OVER (PARTITION BY CompanyID, CuryRateType, FromCuryID, ToCuryID, 
+                                                                CuryMultDiv
+                                             ORDER BY CuryEffDate) row_num, CompanyID, FromCuryID, CuryRateType, CuryMultDiv, CuryRate, 
+                                            RateReciprocal, ToCuryID, CuryEffDate
+                         FROM       CurrencyRate
+                         WHERE    CompanyID = t .CompanyID AND CuryRateType = t .CuryRateType AND FromCuryID = t .FromCuryID AND 
+                                            ToCuryID = t .ToCuryID AND CuryMultDiv = t .CuryMultDiv) S
+WHERE   S.row_num = t .row_num + 1), '9999/12/31')) AS EndCuryEffDate
+FROM      (SELECT  ROW_NUMBER() OVER (PARTITION BY CompanyID, CuryRateType, FromCuryID, ToCuryID, CuryMultDiv
+                   ORDER BY CuryEffDate) row_num, CompanyID, FromCuryID, CuryRateType, CuryMultDiv, CuryRate, RateReciprocal, 
+                   ToCuryID, CuryEffDate
+FROM      CurrencyRate) t]]></CDATA>
+</Sql>

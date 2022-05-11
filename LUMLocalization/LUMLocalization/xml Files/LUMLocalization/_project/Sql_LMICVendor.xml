@@ -1,0 +1,22 @@
+﻿<Sql TableName="LMICVendor" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="LMICVendor">
+  <col name="BranchID" type="Int" />
+  <col name="VendorID" type="Int" />
+  <col name="VendorName" type="NVarChar(255)" nullable="true" />
+  <col name="TenantID" type="Int" />
+  <col name="LoginName" type="NVarChar(128)" nullable="true" />
+  <col name="CompanyID" type="Int" default="Zero" />
+  <col name="CreatedByID" type="UniqueIdentifier" />
+  <col name="CreatedByScreenID" type="Char(8)" />
+  <col name="CreatedDateTime" type="DateTime" />
+  <col name="LastModifiedByID" type="UniqueIdentifier" />
+  <col name="LastModifiedByScreenID" type="Char(8)" />
+  <col name="LastModifiedDateTime" type="DateTime" />
+  <index name="pk_LMICVendor_Id" clustered="true" primary="true" unique="true">
+    <col name="BranchID" />
+    <col name="VendorID" />
+    <col name="TenantID" />
+    <col name="CompanyID" />
+  </index>
+</table>]]></CDATA>
+</Sql>

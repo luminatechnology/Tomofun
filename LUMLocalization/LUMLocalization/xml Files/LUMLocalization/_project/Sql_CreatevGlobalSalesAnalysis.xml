@@ -1,0 +1,67 @@
+﻿<Sql TableName="CreatevGlobalSalesAnalysis" SqlScriptPriority="2" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'vGlobalSalesAnalysis' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[vGlobalSalesAnalysis]	
+GO
+CREATE VIEW vGlobalSalesAnalysis AS
+SELECT arCompany.CompanyCD,
+	　 t.BranchID,  
+	   t.TranDate, 
+	   t.DrCr, 
+	   t.TranAmt, 
+	   t.TranCost,
+	   t.IsTranCostFinal, 
+	   t.SOOrderNbr, 
+	   t.SOOrderType,
+	   t.TranType,
+	   i.ItemClassID,
+	   class.ItemClassCD as ItemClassDescr,
+	   t.InventoryID,
+	   i.InventoryCD　as InventoryCD,
+	   i.Descr as InventoryDescr,
+	   c.CustomerClassID,
+	   cstClass.Descr as CustomerClassDescr,
+	   t.CustomerID,
+	   acct.AcctName as CustomerName,
+	   t.SalesPersonID,
+	   t.Released,
+	   t.Qty,
+	   address.CountryID,
+	   invoice.CompanyID as InvoiceBranchID,
+	   invoiceBranch.CompanyCD as InvoiceBranchCD,
+	   b.BaseCuryID,
+	   CASE WHEN rate.CuryRate IS NULL AND b.BaseCuryID = 'USD'　THEN 1
+	   WHEN rate.CuryRate IS NULL THEN 0
+	   ELSE rate.CuryRate END AS CuryRate,
+	   t.UOM
+FROM ARTran t
+INNER JOIN Branch b ON t.CompanyID = b.CompanyID
+				   AND t.BranchID = b.BranchID
+INNER JOIN Customer c ON t.CompanyID = c.CompanyID
+					 AND t.CustomerID = c.BAccountID
+INNER JOIN BAccount acct　ON t.CompanyID = acct.CompanyID
+						 AND c.BAccountID = acct.BAccountID
+INNER JOIN InventoryItem i ON t.CompanyID = i.CompanyID
+						  AND t.InventoryID = i.InventoryID
+INNER JOIN INItemClass class　ON t.CompanyID = class.CompanyID
+							 AND i.ItemClassID = class.ItemClassID
+LEFT JOIN CustomerClass cstClass ON t.CompanyID = cstClass.CompanyID
+								AND c.CustomerClassID = cstClass.CustomerClassID
+LEFT JOIN ARInvoice invoice ON t.CompanyID = invoice.CompanyID
+						  AND t.TranType = invoice.DocType
+						  AND t.RefNbr = invoice.RefNbr
+LEFT JOIN ARAddress address ON t.CompanyID = address.CompanyID
+						   AND invoice.ShipAddressID = address.AddressID
+INNER JOIN Company invoiceBranch ON invoice.CompanyID = invoiceBranch.CompanyID
+INNER JOIN Company arCompany ON t.CompanyID = arCompany.CompanyID
+LEFT JOIN vLumCurrencyRateQuery rate ON rate.CompanyID = 4
+									AND rate.ToCuryID = 'TWD'
+									AND rate.CuryRateType = 'SPOT'
+									AND t.TranDate between rate.CuryEffDate　and rate.EndCuryEffDate
+									AND b.BaseCuryID = rate.FromCuryID
+WHERE t.CompanyID > 0]]></CDATA>
+</Sql>
