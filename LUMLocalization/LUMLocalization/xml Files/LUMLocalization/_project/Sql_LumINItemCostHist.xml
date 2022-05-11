@@ -1,0 +1,32 @@
+﻿<Sql TableName="LumINItemCostHist" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="LumINItemCostHist">
+  <col name="ID" type="Int" identity="true" />
+  <col name="CompanyID" type="Int" default="Zero" />
+  <col name="InventoryID" type="Int" />
+  <col name="InventoryCD" type="NVarChar(30)" nullable="true" />
+  <col name="ItemDescr" type="NVarChar(256)" nullable="true" />
+  <col name="ItemClassID" type="Int" nullable="true" />
+  <col name="ItemClassCD" type="NVarChar(30)" nullable="true" />
+  <col name="ItemClassDescr" type="NVarChar(256)" nullable="true" />
+  <col name="EndingQty_FinYtdQty" type="Decimal(19,4)" nullable="true" />
+  <col name="EndingCost_FinYtdCost" type="Decimal(19,4)" nullable="true" />
+  <col name="PeriodQtyWithin30D" type="Decimal(19,4)" nullable="true" />
+  <col name="PeriodQtyFrom30Dto60D" type="Decimal(19,4)" nullable="true" />
+  <col name="PeriodQtyFrom60Dto90D" type="Decimal(19,4)" nullable="true" />
+  <col name="PeriodQtyFrom4Mto6M" type="Decimal(19,4)" nullable="true" />
+  <col name="PeriodQtyFrom7Mto12M" type="Decimal(19,4)" nullable="true" />
+  <col name="PeriodQtyOver1Y" type="Decimal(19,4)" nullable="true" />
+  <col name="PeriodCostWithin30D" type="Decimal(19,4)" nullable="true" />
+  <col name="PeriodCostFrom30Dto60D" type="Decimal(19,4)" nullable="true" />
+  <col name="PeriodCostFrom60Dto90D" type="Decimal(19,4)" nullable="true" />
+  <col name="PeriodCostFrom4Mto6M" type="Decimal(19,4)" nullable="true" />
+  <col name="PeriodCostFrom7Mto12M" type="Decimal(19,4)" nullable="true" />
+  <col name="PeriodCostOver1Y" type="Decimal(19,4)" nullable="true" />
+  <col name="LastActivityPeriod" type="Char(6)" nullable="true" />
+  <col name="ConditionPeriod" type="Char(6)" nullable="true" />
+  <col name="LastReceiptDate" type="DateTime" nullable="true" />
+  <col name="LastReceiptDoc" type="NVarChar(256)" nullable="true" />
+  <col name="LastSalesDate" type="DateTime" nullable="true" />
+  <col name="LastSalesDoc" type="NVarChar(256)" nullable="true" />
+</table>]]></CDATA>
+</Sql>

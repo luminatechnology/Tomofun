@@ -1,0 +1,143 @@
+﻿<Sql TableName="SP_LCMValuation" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[IF EXISTS
+(
+	SELECT *
+	FROM SYS.procedures
+	WHERE name = 'SP_LCMValuation' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP PROCEDURE [dbo].[SP_LCMValuation]
+GO
+
+CREATE PROCEDURE [dbo].[SP_LCMValuation]
+	@period int,
+	@companyID int
+
+AS
+BEGIN
+
+	--Truncate table
+	TRUNCATE TABLE [dbo].[LCMValuation]
+
+	INSERT INTO [dbo].[LCMValuation] ([InventoryID], [FinPeriodID], [ConditionPeriod])
+	(
+		select distinct(InventoryID), MAX(FinPeriodID), @period from INItemCostHist
+		where CompanyID = @companyID and FinPeriodID <= FORMAT(DATEADD(MONTH, -0, CONVERT(datetime, CONCAT(@period, '01'))),'yyyyMM')
+		group by CompanyID, InventoryID
+	)
+
+	--Declare outside loop variables
+	DECLARE @i int, @TOTALCOUNT int, @FinYtdCost decimal(19, 6), @FinYtdQty decimal(19, 6), @UnitCost decimal(19, 6), 
+			@LastSalesPrice decimal(19, 6), @LastSalesDate DateTime,
+			@IsValuationLoss int, @ValuationLoss decimal(19, 6),
+			@LastReceiptPrice decimal(19, 6), @LastReceiptDate DateTime
+
+	SET @i = 1
+	SET @TOTALCOUNT = (SELECT COUNT(*) FROM LCMValuation)
+
+	--Run while loop
+	WHILE @i <= @TOTALCOUNT
+	BEGIN
+
+		--Declare inside loop variables
+		DECLARE @INVENTORYID int, @FinPeriodID int
+		SET @INVENTORYID = (SELECT InventoryID FROM LCMValuation WHERE ID = @i)
+		SET @FinPeriodID = (SELECT FinPeriodID FROM LCMValuation WHERE ID = @i)
+
+		SET @FinYtdCost = (select SUM(main.FinYtdCost)
+							from INItemCostHist main
+							inner join
+								(
+									select CompanyID, InventoryID, SiteID, MAX(FinPeriodID) as FinPeriodID from INItemCostHist
+									where CompanyID = @companyID and InventoryID = @INVENTORYID and FinPeriodID <= @FinPeriodID
+									group by CompanyID, InventoryID, SiteID
+								) sub
+							on main.CompanyID = sub.CompanyID and main.InventoryID = sub.InventoryID and main.SiteID = sub.SiteID and main.FinPeriodID = sub.FinPeriodID
+							group by main.InventoryID, main.CompanyID)
+
+		SET @FinYtdQty = (select SUM(main.FinYtdQty)
+							from INItemCostHist main
+							inner join
+								(
+									select CompanyID, InventoryID, SiteID, MAX(FinPeriodID) as FinPeriodID from INItemCostHist
+									where CompanyID = @companyID and InventoryID = @INVENTORYID and FinPeriodID <= @FinPeriodID
+									group by CompanyID, InventoryID, SiteID
+								) sub
+							on main.CompanyID = sub.CompanyID and main.InventoryID = sub.InventoryID and main.SiteID = sub.SiteID and main.FinPeriodID = sub.FinPeriodID
+							group by main.InventoryID, main.CompanyID)
+
+		SET @UnitCost = (CASE
+			WHEN @FinYtdQty > 0
+				THEN (@FinYtdCost / @FinYtdQty)
+				ELSE 0
+			END)
+
+		SET @LastSalesPrice = (select top 1 UnitPrice from INTran
+							where INTran.CompanyID = @companyID and
+								  INTran.InventoryID = @INVENTORYID and
+								  INTran.FinPeriodID <= @FinPeriodID and
+								  INTran.TranType = 'INV'
+							order by INTran.TranDate desc)
+		
+		SET @LastSalesDate = (select top 1 TranDate from INTran
+							where INTran.CompanyID = @companyID and
+								  INTran.InventoryID = @INVENTORYID and
+								  INTran.FinPeriodID <= @FinPeriodID and
+								  INTran.TranType = 'INV'
+							order by INTran.TranDate desc)
+		
+		SET @IsValuationLoss = (CASE
+							WHEN (@FinYtdQty * (select top 1 UnitPrice from INTran 
+													where INTran.CompanyID = @companyID and
+														  INTran.InventoryID = @INVENTORYID and
+														  INTran.FinPeriodID = @FinPeriodID and
+														  INTran.TranType = 'INV' and
+														  INTran.UnitPrice > 0
+													order by INTran.TranDate desc)) < @FinYtdCost
+								THEN 1
+								ELSE 0
+							END)
+		
+		SET @ValuationLoss = (CASE
+							WHEN (@FinYtdQty * (select top 1 UnitPrice from INTran 
+															where INTran.CompanyID = @companyID and
+																  INTran.InventoryID = @INVENTORYID and
+																  INTran.FinPeriodID = @FinPeriodID and
+																  INTran.TranType = 'INV' and
+																  INTran.UnitPrice > 0
+															order by INTran.TranDate desc)) < @FinYtdCost
+								THEN (@FinYtdCost - (@FinYtdQty * (select top 1 UnitPrice from INTran
+															where INTran.CompanyID = @companyID and
+																  INTran.InventoryID = @INVENTORYID and
+																  INTran.FinPeriodID = @FinPeriodID and
+																  INTran.TranType = 'INV' and
+																  INTran.UnitPrice > 0
+															order by INTran.TranDate desc)))
+								ELSE 0
+							END)
+		
+		SET @LastReceiptPrice = (select top 1 UnitCost from INTran 
+												where INTran.CompanyID = @companyID and
+													  INTran.InventoryID = @INVENTORYID and
+													  INTran.FinPeriodID <= @FinPeriodID and
+													  (INTran.TranType = 'ASY' or INTran.TranType = 'RCP')
+												order by INTran.TranDate desc)
+		
+		SET @LastReceiptDate = (select top 1 TranDate from INTran 
+												where INTran.CompanyID = @companyID and
+													  INTran.InventoryID = @INVENTORYID and
+													  INTran.FinPeriodID <= @FinPeriodID and
+													  (INTran.TranType = 'ASY' or INTran.TranType = 'RCP')
+												order by INTran.TranDate desc)
+		--update 
+		UPDATE LCMValuation
+		SET [FinYtdCost] = @FinYtdCost, [FinYtdQty] = @FinYtdQty, [UnitCost] = @UnitCost,
+			[LastSalesPrice] = @LastSalesPrice, [LastSalesDate] = @LastSalesDate,
+			[IsValuationLoss] = @IsValuationLoss, [ValuationLoss] = @ValuationLoss,
+			[LastReceiptPrice] = @LastReceiptPrice, [LastReceiptDate] = @LastReceiptDate,
+			[CompanyID] = @companyID
+		WHERE ID = @i
+
+		SET @i = @i + 1
+	END
+END]]></CDATA>
+</Sql>

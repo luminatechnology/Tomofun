@@ -1,0 +1,4 @@
+﻿<Table TableName="SOPackageDetail">
+    <Column TableName="SOPackageDetail" ColumnName="UsrShipmentSplitLineNbr" ColumnType="int" AllowNull="True" DecimalPrecision="0" DecimalLength="0" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="SOPackageDetail" ColumnName="UsrTotalCartons" ColumnType="int" AllowNull="True" DecimalPrecision="0" DecimalLength="0" IsNewColumn="True" IsUnicode="True" />
+</Table>

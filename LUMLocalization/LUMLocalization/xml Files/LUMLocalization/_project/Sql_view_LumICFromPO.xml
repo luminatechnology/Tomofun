@@ -1,0 +1,54 @@
+﻿<Sql TableName="view_LumICFromPO" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'v_LumICFromPO' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[v_LumICFromPO]	
+GO
+CREATE VIEW v_LumICFromPO AS
+
+select
+	POOrder.CompanyID,
+	POOrder.OrderNbr as 'POOrderNbr',
+	POOrder.OrderType as 'POOrderType',
+	POOrder.BranchID as 'POBranchID',
+	curBranch.BranchCD as 'POBranchCD',
+	curBAccount.AcctName as 'POAcctName',
+	SOOrder.CompanyID as 'SOCompanyID',
+	SOOrder.OrderNbr as 'SOOrderNbr',
+	SOOrder.OrderType as 'SOOrderType',
+	SOOrder.BranchID as 'SOBranchID',
+	Branch.BranchCD as 'SOBranchCD',
+	BAccount.AcctName as 'SOAcctName',
+	SOOrderShipment.ShippingRefNoteID as 'ShippingRefNoteID',
+	SOShipment.ShipmentNbr as 'SOShipmentShipmentNbr',
+	SOShipment.NoteID as 'SOShipmentNoteID',
+	SOShipment.Status as 'SOShipmentStatus',
+	SOShipment.ShipDate as 'SOShipmentShipDate',
+	SOShipment.ShipmentQty as 'SOShipmentShipmentQty',
+	SOShipment.SiteID as 'SOShipmentSiteID',
+	SOShipment.ShipmentDesc as 'SOShipmentShipmentDesc',
+	SOShipment.WorkgroupID as 'SOShipmentWorkgroupID',
+	SOShipment.ShipmentWeight,
+	SOShipment.ShipmentVolume,
+	SOShipment.PackageLineCntr as 'SOShipmentPackageCount',
+	SOShipment.PackageWeight as 'SOShipmentPackageWeight',
+	POReceipt.ReceiptNbr,
+	POReceipt.ReceiptDate
+from POOrder
+left join Branch curBranch on curBranch.BranchID = POOrder.BranchID and curBranch.CompanyID = POOrder.CompanyID
+left join BAccount curBAccount on curBAccount.bAccountID = curBranch.bAccountID and curBAccount.CompanyID = curBranch.CompanyID
+inner join SOOrder on SOOrder.UsrICPONoteID = POOrder.NoteID --and SOOrder.OrderNbr = POOrder.VendorRefNbr
+left join SOOrderShipment on SOOrderShipment.OrderNbr = SOOrder.OrderNbr and SOOrderShipment.OrderType = SOOrder.OrderType and SOOrderShipment.CompanyID = SOOrder.CompanyID
+left join SOShipment on SOShipment.ShipmentNbr = SOOrderShipment.ShipmentNbr and SOShipment.NoteID = SOOrderShipment.ShippingRefNoteID and SOShipment.CompanyID = SOOrderShipment.CompanyID
+left join Branch on Branch.BranchID = SOOrder.BranchID and Branch.CompanyID = SOOrder.CompanyID
+left join BAccount on BAccount.bAccountID = Branch.bAccountID and BAccount.CompanyID = Branch.CompanyID
+left join POReceipt on POReceipt.CompanyID = POOrder.CompanyID and
+	POReceipt.ReceiptNbr = 
+	(
+		select top 1 ReceiptNbr from POReceiptLine where POReceiptLine.PONbr = POOrder.OrderNbr and POReceiptLine.CompanyID = POOrder.CompanyID
+	)
+where POOrder.UsrICSOCreated = 1 and POOrder.CompanyID > 0]]></CDATA>
+</Sql>
