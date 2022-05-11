@@ -64,7 +64,7 @@ namespace LumTomofunCustomization.Graph
                         SOOrder order = soGraph.Document.Cache.CreateInstance() as SOOrder;
                         order.OrderType = "FA";
                         order.OrderDate = CalculateAmazonDateTime(amzOrder.PurchaseDate);
-                        order.RequestDate = CalculateAmazonDateTime(amzOrder.LatestShipDate);
+                        order.RequestDate = CalculateAmazonDateTime(amzOrder.LatestShipDate ?? amzOrder.PurchaseDate);
                         order.CustomerID = GetMarketplaceCustomer(row.Marketplace);
                         order.OrderDesc = $"Amazon Order ID: {amzOrder.OrderId}";
                         order.CustomerOrderNbr = amzOrder.OrderId;
@@ -86,9 +86,14 @@ namespace LumTomofunCustomization.Graph
                         soGraph.Document.Insert(order);
                         // Setting Shipping_Address
                         var soAddress = soGraph.Shipping_Address.Current;
+
+                        var defaultAddress = SelectFrom<PX.Objects.CR.Address>
+                                             .Where<PX.Objects.CR.Address.bAccountID.IsEqual<P.AsInt>>
+                                             .View.SelectSingleBound(baseGraph, null, order.CustomerID).TopFirst;
+
                         soAddress.OverrideAddress = true;
                         soAddress.PostalCode = amzOrder.PostalCode;
-                        soAddress.CountryID = amzOrder.CountryCode;
+                        soAddress.CountryID = string.IsNullOrEmpty(amzOrder.CountryCode) ? defaultAddress?.CountryID : amzOrder.CountryCode; ;
                         soAddress.State = amzOrder.StateOrRegion;
                         soAddress.City = amzOrder.City;
                         soAddress.RevisionID = 1;
@@ -113,13 +118,19 @@ namespace LumTomofunCustomization.Graph
                             var line = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                             line.InventoryID = GetInvetoryitemID(soGraph, item.SellerSKU);
                             if (line.InventoryID == null)
-                                throw new Exception("can not find Inventory item ID");
+                                throw new Exception($"can not find Inventory item ID ({item.SellerSKU})");
+                            if(item.QuantityShipped == 0)
+                                continue;
                             line.ManualPrice = true;
                             line.OrderQty = item.QuantityShipped;
                             line.CuryUnitPrice =
-                                 (row.Marketplace == "US" || row.Marketplace == "CA") ?
-                                 (decimal?)(item.ItemPriceAmount - item.PromotionDiscountAmount) / item.QuantityShipped :
-                                 (decimal?)((item.ItemPriceAmount - item.PromotionDiscountAmount - item.ItemTaxAmount + item.PromotionDiscountTaxAmount) / item.QuantityShipped);
+                                 (row.Marketplace == "US" || row.Marketplace == "CA" || row.Marketplace == "MX") ?
+                                 (decimal?)item.ItemPriceAmount / item.QuantityShipped :
+                                 (decimal?)((item.ItemPriceAmount - item.ItemTaxAmount) / item.QuantityShipped);
+                            line.CuryDiscAmt =
+                                (row.Marketplace == "US" || row.Marketplace == "CA" || row.Marketplace == "MX") ?
+                                (decimal?)item.PromotionDiscountAmount :
+                                (decimal?)(item.PromotionDiscountAmount + item.PromotionDiscountTaxAmount);
                             soGraph.Transactions.Insert(line);
                             // Non-stock Item(Shipping) 
                             if (item.ShippingPriceAmount - item.ShippingDiscountAmount != 0)
@@ -180,7 +191,6 @@ namespace LumTomofunCustomization.Graph
                             };
                             // 判斷是否不產生Invoice
                             var isDoNotCreateInvoice =
-                                 soGraph.Document.Current.CuryOrderTotal == 0 ||
                                  (isTaxCalculate && (decimal?)amzOrder.Amount != soGraph.Document.Current.CuryOrderTotal - soGraph.Document.Current.CuryTaxTotal) ||
                                  (!isTaxCalculate && (decimal?)amzOrder.Amount - (row.Marketplace == "US" ? amzTotalTax : 0) != soGraph.Document.Current.CuryOrderTotal);
                             if (!isDoNotCreateInvoice)
@@ -215,7 +225,7 @@ namespace LumTomofunCustomization.Graph
                             invoiceGraph.Save.Press();
                             // Release Invoice
                             invoiceGraph.releaseFromCreditHold.Press();
-                            // invoiceGraph.release.Press();
+                            invoiceGraph.release.Press();
                             #endregion
                         }
                         row.IsProcessed = true;

@@ -171,9 +171,10 @@ namespace LumTomofunCustomization.Graph
                         try
                         {
                             // 判斷是否需要Create Invoice
-                            if (!string.IsNullOrEmpty(spOrder.tags) ||
-                                soGraph.Document.Current.CuryOrderTotal == 0 ||
-                                (isTaxCalculate && decimal.Parse(spOrder.current_total_price) != soGraph.Document.Current.CuryTaxTotal.Value - soGraph.Document.Current.CuryTaxTotal) || 
+                            var tagConditions = new string[] { "KOL", "REPLACE", "FAAS" };
+                            if (Array.IndexOf(tagConditions, spOrder.tags?.ToUpper()) == -1 ||
+                                (soGraph.Document.Current.CuryOrderTotal == 0 && Array.IndexOf(tagConditions, spOrder.tags?.ToUpper()) == -1) ||
+                                (isTaxCalculate && decimal.Parse(spOrder.current_total_price) != soGraph.Document.Current.CuryTaxTotal.Value - soGraph.Document.Current.CuryTaxTotal) ||
                                 (!isTaxCalculate && decimal.Parse(spOrder.current_total_price) - 0 != soGraph.Document.Current.CuryTaxTotal.Value))
                             {
                                 GoPrepareInvoice = false;
@@ -218,7 +219,7 @@ namespace LumTomofunCustomization.Graph
                             invoiceGraph.Save.Press();
                             // Release Invoice
                             invoiceGraph.releaseFromCreditHold.Press();
-                            // invoiceGraph.release.Press();
+                            invoiceGraph.release.Press();
                         }
                         row.IsProcessed = true;
                         row.ErrorMessage = string.Empty;

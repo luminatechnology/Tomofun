@@ -41,5 +41,12 @@ namespace LumTomofunCustomization.LUMLibrary
                SelectFrom<INItemXRef>
                .Where<INItemXRef.alternateID.IsEqual<P.AsString>>
                .View.SelectSingleBound(graph, null, sku).TopFirst?.InventoryID;
+
+        /// <summary> 取Location ID By CD </summary>
+        public static int? GetLocationID(int? siteid)
+            => SelectFrom<INLocation>
+               .Where<INLocation.siteID.IsEqual<P.AsInt>
+                 .And<INLocation.locationCD.IsEqual<P.AsString>>>
+               .View.SelectSingleBound(new PXGraph(),null,siteid,"RMA").TopFirst?.LocationID;
     }
 }
