@@ -128,7 +128,8 @@ namespace LumTomofunCustomization.Graph
                 try
                 {
                     #region Setting Marketplace
-                    var _marketplace = amzGroupOrderData.FirstOrDefault(x => !string.IsNullOrEmpty(x.MarketPlaceName))?.MarketPlaceName;
+                    // 先找相同Settlement的MarketplaceName (非non-Amazon)
+                    var _marketplace = amazonList.FirstOrDefault(x => x.SettlementID == amzGroupOrderData.Key.SettlementID && (x.MarketPlaceName ?? string.Empty).ToUpper().StartsWith("AMAZON"))?.MarketPlaceName;
                     if (string.IsNullOrEmpty(_marketplace) && string.IsNullOrEmpty(amzGroupOrderData.Key.OrderID))
                         throw new Exception("Settlement Market Place Not Found");
                     else if (string.IsNullOrEmpty(_marketplace) || _marketplace?.ToUpper() == "NON-AMAZON")
@@ -138,7 +139,7 @@ namespace LumTomofunCustomization.Graph
                                        .View(baseGraph);
                         var refOrder = refOrderView.Select(amzGroupOrderData.Key.OrderID).TopFirst;
                         if (refOrder == null)
-                            throw new Exception("Can not find marketplace name");
+                            throw new Exception($"Settlement Market Place Not Found in Sales order({amzGroupOrderData.Key.OrderID})");
                         _marketplace = GetMarketplaceName((string)((PXFieldState)refOrderView.Cache.GetValueExt(refOrder, PX.Objects.CS.Messages.Attribute + "MKTPLACE")).Value);
                     }
                     else
@@ -907,7 +908,7 @@ namespace LumTomofunCustomization.Graph
 
         public virtual string GetMarketplaceName(string saleschannel)
         {
-            var splitIdx = saleschannel.IndexOf('.');
+            var splitIdx = saleschannel.LastIndexOf('.');
             if (splitIdx >= 0)
             {
                 saleschannel = saleschannel.Substring(splitIdx + 1);
