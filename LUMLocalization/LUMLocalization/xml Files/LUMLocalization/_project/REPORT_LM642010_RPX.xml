@@ -7140,7 +7140,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                     </ReportVariable>
                     <ReportVariable>
                         <Name>SumTotalVal</Name>
-                        <ValueExpr>= $SumTotalVal + (IsNull([SOShipLine.ShippedQty], 0) * [SOLine.CuryUnitPrice])</ValueExpr>
+                        <ValueExpr>=IIf([SOShipment.ShipmentType] = 'T',#010;$SumTotalVal + IsNull([SOShipLine.ShippedQty], 0) * [POLine.CuryUnitCost],#010;$SumTotalVal + IsNull([SOShipLine.ShippedQty], 0) * [SOLine.CuryUnitPrice])</ValueExpr>
                     </ReportVariable>
                 </Variables>
                 <Items>
@@ -7225,7 +7225,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <TextAlign>Center</TextAlign>
                             <VerticalAlign>Middle</VerticalAlign>
                         </Style>
-                        <Value>=IsNull([SOShipLine.ShippedQty], 0) * [SOLine.CuryUnitPrice]</Value>
+                        <Value>=IIf([SOShipment.ShipmentType] = 'T',#010;IsNull([SOShipLine.ShippedQty], 0) * [POLine.CuryUnitCost],#010;IsNull([SOShipLine.ShippedQty], 0) * [SOLine.CuryUnitPrice])</Value>
                     </TextBox>
                 </Items>
             </Detail>
