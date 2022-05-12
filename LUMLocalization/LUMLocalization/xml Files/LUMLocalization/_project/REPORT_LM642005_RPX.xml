@@ -4547,7 +4547,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>=[SOShipmentContact.Attention]</Value>
+                        <Value>=[SOShipmentContact.FullName]</Value>
                     </TextBox>
                     <TextBox Name="textBox12">
                         <Excel>
@@ -4598,7 +4598,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>='Contact Person: ' + IsNull([SOShipmentContact.DisplayName], '')</Value>
+                        <Value>='Contact Person: ' + IsNull([SOShipmentContact.Attention], '')</Value>
                     </TextBox>
                     <TextBox Name="textBox14">
                         <Excel>
