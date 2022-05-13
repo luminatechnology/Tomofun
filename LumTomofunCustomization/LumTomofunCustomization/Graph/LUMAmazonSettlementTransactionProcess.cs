@@ -185,7 +185,7 @@ namespace LumTomofunCustomization.Graph
                                     var chargeTrans = arGraph.PaymentCharges.Cache.CreateInstance() as ARPaymentChargeTran;
                                     if (item.AmountType?.ToUpper() != "ITEMFEES" && item.AmountType?.ToUpper() != "POINTS")
                                         continue;
-                                    chargeTrans.EntryTypeID = item.AmountDescription.Substring(0, 10);
+                                    chargeTrans.EntryTypeID = item.AmountDescription.Length >= 10 ? item.AmountDescription.Substring(0, 10) : item.AmountDescription;
                                     chargeTrans.CuryTranAmt = item?.Amount * -1;
                                     arGraph.PaymentCharges.Insert(chargeTrans);
                                 }
@@ -293,7 +293,8 @@ namespace LumTomofunCustomization.Graph
                                         var PrincipalLine = soGraph.Transactions.Cache.Cached.RowCast<SOLine>().FirstOrDefault(x => x.InventoryID == AmazonPublicFunction.GetInvetoryitemID(soGraph, row.Sku));
                                         if (PrincipalLine != null)
                                         {
-                                            PrincipalLine.DiscAmt = row.Amount;
+                                            PrincipalLine.ManualDisc = true;
+                                            PrincipalLine.CuryDiscAmt = row.Amount;
                                             soGraph.Transactions.Update(PrincipalLine);
                                         }
                                         continue;
@@ -323,6 +324,12 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
                                     }
                                     else if (row.AmountDescription == "ShippingHB")
+                                    {
+                                        soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
+                                        soTrans.OrderQty = 1;
+                                        soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                    }
+                                    else if (row.AmountDescription == "PointsReturned")
                                     {
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
