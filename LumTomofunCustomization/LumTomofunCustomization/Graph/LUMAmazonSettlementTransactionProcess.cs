@@ -49,6 +49,8 @@ namespace LumTomofunCustomization.Graph
         public static void GoProcessing(List<LUMAmazonSettlementTransData> list, SettlementFilter filter)
         {
             var baseGraph = CreateInstance<LUMAmazonSettlementTransactionProcess>();
+            if (String.IsNullOrEmpty(filter.ProcessType))
+                throw new Exception("Process Type can not be empty!");
             baseGraph.DeleteDefaultData();
             switch (filter.ProcessType)
             {
@@ -183,10 +185,20 @@ namespace LumTomofunCustomization.Graph
                                 {
                                     PXLongOperation.SetCurrentItem(item);
                                     var chargeTrans = arGraph.PaymentCharges.Cache.CreateInstance() as ARPaymentChargeTran;
-                                    if (item.AmountType?.ToUpper() != "ITEMFEES" && item.AmountType?.ToUpper() != "POINTS")
+                                    if ((item.AmountType?.ToUpper() == "ITEMFEES" && item.AmountDescription?.ToUpper() != "CODFEE") || (item.AmountType?.ToUpper() == "POINTS" && item.AmountDescription?.ToUpper() != "CODITEMCHARGE"))
+                                    {
+                                        chargeTrans.EntryTypeID = item.AmountDescription.Length >= 10 ? item.AmountDescription.Substring(0, 10) : item.AmountDescription;
+                                        chargeTrans.CuryTranAmt = item?.Amount * -1;
+                                    }
+                                    else if (item.AmountDescription?.ToUpper() == "CODFEE")
+                                    {
+                                        chargeTrans.EntryTypeID = "CODFEE";
+                                        chargeTrans.CuryTranAmt = (decimal)amzGroupOrderData.Where(x => x.AmountDescription.ToUpper().StartsWith("COD")).Sum(y => (y.Amount ?? 0)) * -1;
+                                        if(chargeTrans.CuryTranAmt == 0 || !chargeTrans.CuryTranAmt.HasValue)
+                                            continue;
+                                    }
+                                    else
                                         continue;
-                                    chargeTrans.EntryTypeID = item.AmountDescription.Length >= 10 ? item.AmountDescription.Substring(0, 10) : item.AmountDescription;
-                                    chargeTrans.CuryTranAmt = item?.Amount * -1;
                                     arGraph.PaymentCharges.Insert(chargeTrans);
                                 }
                                 // set payment amount to apply amount
@@ -816,9 +828,7 @@ namespace LumTomofunCustomization.Graph
                 }
             }
             baseGraph.Actions.PressSave();
-
         }
-
 
         /// <summary> Sales Order Prepare Invoice and Override Tax </summary>
         public virtual void PrepareInvoiceAndOverrideTax(SOOrderEntry soGraph, SOOrder soDoc)
@@ -943,7 +953,7 @@ namespace LumTomofunCustomization.Graph
         public abstract class toDate : PX.Data.BQL.BqlDateTime.Field<toDate> { }
 
         [PXDBString(50, IsUnicode = true, InputMask = "")]
-        [PXDefault("Prepare Data")]
+        [PXDefault("")]
         [PXUIField(DisplayName = "Process type")]
         [PXStringList(new string[] { "Prepare Data", "Process Payment" }, new string[] { "Prepare Data", "Process Payment" })]
         public virtual string ProcessType { get; set; }
