@@ -169,6 +169,14 @@ namespace LumTomofunCustomization.Graph
                                 arDoc.DepositDate = GetDepositDate(amzGroupOrderData.Key.SettlementID) ?? DateTime.Now;
                                 if (arDoc.DepositDate == null)
                                     throw new Exception($"can not find Deposit Date({amzGroupOrderData.Key.SettlementID})");
+
+                                #region User-Defiend
+
+                                // UserDefined - ORDERTYPE
+                                arGraph.Document.Cache.SetValueExt(arDoc, PX.Objects.CS.Messages.Attribute + "ECNETPAY", amzGroupOrderData.Sum(x => x.Amount ?? 0));
+
+                                #endregion
+
                                 arGraph.Document.Insert(arDoc);
                                 #endregion
 
@@ -181,11 +189,12 @@ namespace LumTomofunCustomization.Graph
                                 arGraph.Adjustments.Insert(adjTrans);
                                 #endregion
 
+                                #region CHARGS
                                 foreach (var item in amzGroupOrderData)
                                 {
                                     PXLongOperation.SetCurrentItem(item);
                                     var chargeTrans = arGraph.PaymentCharges.Cache.CreateInstance() as ARPaymentChargeTran;
-                                    if ((item.AmountType?.ToUpper() == "ITEMFEES" && item.AmountDescription?.ToUpper() != "CODFEE") || (item.AmountType?.ToUpper() == "POINTS" && item.AmountDescription?.ToUpper() != "CODITEMCHARGE"))
+                                    if ((item.AmountType?.ToUpper() == "ITEMFEES" && item.AmountDescription?.ToUpper() != "CODFEE") || (item.AmountType?.ToUpper() == "POINTS" && item.AmountDescription?.ToUpper() != "CODITEMCHARGE") || item.AmountType?.ToUpper() == "SHIPMENTFEES")
                                     {
                                         chargeTrans.EntryTypeID = item.AmountDescription.Length >= 10 ? item.AmountDescription.Substring(0, 10) : item.AmountDescription;
                                         chargeTrans.CuryTranAmt = item?.Amount * -1;
@@ -194,13 +203,14 @@ namespace LumTomofunCustomization.Graph
                                     {
                                         chargeTrans.EntryTypeID = "CODFEE";
                                         chargeTrans.CuryTranAmt = (decimal)amzGroupOrderData.Where(x => x.AmountDescription.ToUpper().StartsWith("COD")).Sum(y => (y.Amount ?? 0)) * -1;
-                                        if(chargeTrans.CuryTranAmt == 0 || !chargeTrans.CuryTranAmt.HasValue)
+                                        if (chargeTrans.CuryTranAmt == 0 || !chargeTrans.CuryTranAmt.HasValue)
                                             continue;
                                     }
                                     else
                                         continue;
                                     arGraph.PaymentCharges.Insert(chargeTrans);
-                                }
+                                } 
+                                #endregion
                                 // set payment amount to apply amount
                                 arGraph.Document.SetValueExt<ARPayment.curyOrigDocAmt>(arGraph.Document.Current, arGraph.Document.Current.CuryApplAmt);
                                 // Save Payment
@@ -341,7 +351,7 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
                                     }
-                                    else if (row.AmountDescription == "PointsReturned")
+                                    else if (row.AmountDescription == "PointsReturned" || row.AmountDescription == "PointsFee")
                                     {
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
