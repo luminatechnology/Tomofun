@@ -323,8 +323,18 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 </Links>
                 <ParentName>SOLineSplit</ParentName>
             </ReportRelation>
+            <ReportRelation>
+                <ChildName>CurrencyInfo</ChildName>
+                <Links>
+                    <RelationRow>
+                        <ChildField>CurrencyInfo.CuryInfoID</ChildField>
+                        <ParentField>SOLine.CuryInfoID</ParentField>
+                    </RelationRow>
+                </Links>
+                <ParentName>SOLine</ParentName>
+            </ReportRelation>
         </Relations>
-        <SchemaUrl>http://localhost/AcumaticaTomofun/</SchemaUrl>
+        <SchemaUrl>http://localhost/Tomofun1/</SchemaUrl>
         <Sorting>
             <SortExp>
                 <DataField>SOShipment.ShipmentNbr</DataField>
@@ -5916,6 +5926,63 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 </Fields>
                 <FullName>PX.Objects.SO.SOLineSplit</FullName>
             </ReportTable>
+            <ReportTable Name="CurrencyInfo">
+                <Fields>
+                    <ReportField Name="BaseCalc">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                    <ReportField Name="BaseCuryID">
+                    </ReportField>
+                    <ReportField Name="BasePrecision">
+                        <DataType>Int16</DataType>
+                    </ReportField>
+                    <ReportField Name="CuryEffDate">
+                        <DataType>DateTime</DataType>
+                    </ReportField>
+                    <ReportField Name="CuryEffDate_Day">
+                    </ReportField>
+                    <ReportField Name="CuryEffDate_Hour">
+                    </ReportField>
+                    <ReportField Name="CuryEffDate_Month">
+                    </ReportField>
+                    <ReportField Name="CuryEffDate_Quarter">
+                    </ReportField>
+                    <ReportField Name="CuryID">
+                    </ReportField>
+                    <ReportField Name="CuryInfoID">
+                        <DataType>Int64</DataType>
+                    </ReportField>
+                    <ReportField Name="CuryMultDiv">
+                    </ReportField>
+                    <ReportField Name="CuryPrecision">
+                        <DataType>Int16</DataType>
+                    </ReportField>
+                    <ReportField Name="CuryRate">
+                        <DataType>Decimal</DataType>
+                    </ReportField>
+                    <ReportField Name="CuryRateTypeID">
+                    </ReportField>
+                    <ReportField Name="DisplayCuryID">
+                    </ReportField>
+                    <ReportField Name="IsReadOnly">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                    <ReportField Name="ModuleCode">
+                    </ReportField>
+                    <ReportField Name="RecipRate">
+                        <DataType>Decimal</DataType>
+                    </ReportField>
+                    <ReportField Name="SampleCuryRate">
+                        <DataType>Decimal</DataType>
+                    </ReportField>
+                    <ReportField Name="SampleRecipRate">
+                        <DataType>Decimal</DataType>
+                    </ReportField>
+                    <ReportField Name="tstamp">
+                    </ReportField>
+                </Fields>
+                <FullName>PX.Objects.CM.CurrencyInfo</FullName>
+            </ReportTable>
         </Tables>
         <Version>20201103</Version>
         <Sections>
@@ -5928,7 +5995,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                         </Excel>
                         <Location>0px, 0px</Location>
                         <QRCodeSettings />
-                        <Size>168px, 72px</Size>
+                        <Size>80px, 72px</Size>
                         <Source>Database</Source>
                         <Value>=[Organization.LogoNameReport]</Value>
                     </PictureBox>
@@ -5937,7 +6004,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <column>4</column>
                             <width>6</width>
                         </Excel>
-                        <Location>168px, 0px</Location>
+                        <Location>80px, 0px</Location>
                         <Size>528px, 72px</Size>
                         <Style>
                             <Font>
@@ -6340,7 +6407,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>=IIf([SOShipment.ShipmentType] = 'T', #010;'USD',#010;IsNull([SOShipment.CuryID], ''))</Value>
+                        <Value>=IIf([SOShipment.ShipmentType] = 'T', #010;'USD',#010;IsNull([CurrencyInfo.CuryID], ''))</Value>
                     </TextBox>
                     <TextBox Name="textBox25">
                         <Excel>
