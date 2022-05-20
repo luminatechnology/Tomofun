@@ -20,5 +20,14 @@
   <col name="LastModifiedByScreenID" type="Char(8)" />
   <col name="LastModifiedDateTime" type="DateTime" />
   <col name="tstamp" type="Timestamp" />
+  <col name="MXMarketplaceID" type="NVarChar(200)" nullable="true" />
+  <col name="MXRefreshToken" type="NVarChar(400)" nullable="true" />
+  <col name="SGAccessKey" type="NVarChar(200)" nullable="true" />
+  <col name="SGSecretKey" type="NVarChar(200)" nullable="true" />
+  <col name="SGRoleArn" type="NVarChar(200)" nullable="true" />
+  <col name="SGClientID" type="NVarChar(200)" nullable="true" />
+  <col name="SGClientSecret" type="NVarChar(200)" nullable="true" />
+  <col name="SGMarketplaceID" type="NVarChar(200)" nullable="true" />
+  <col name="SGRefreshToken" type="NVarChar(400)" nullable="true" />
 </table>]]></CDATA>
 </Sql>

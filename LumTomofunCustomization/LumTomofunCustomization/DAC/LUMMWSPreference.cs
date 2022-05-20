@@ -42,60 +42,123 @@ namespace LUMTomofunCustomization.DAC
         public abstract class clientSecret : PX.Data.BQL.BqlString.Field<clientSecret> { }
         #endregion
 
-        #region USMarketplaceID
+        #region US MarketplaceID
         [PXDBString(200, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "USMarketplace ID")]
+        [PXUIField(DisplayName = "US Marketplace ID")]
         public virtual string USMarketplaceID { get; set; }
         public abstract class uSMarketplaceID : PX.Data.BQL.BqlString.Field<uSMarketplaceID> { }
         #endregion
 
-        #region USRefreshToken
-        [PXDBString(400,IsUnicode = true)]
-        [PXUIField(DisplayName = "USRefresh Token")]
+        #region US RefreshToken
+        [PXDBString(400, IsUnicode = true)]
+        [PXUIField(DisplayName = "US Refresh Token")]
         public virtual string USRefreshToken { get; set; }
         public abstract class uSRefreshToken : PX.Data.BQL.BqlString.Field<uSRefreshToken> { }
         #endregion
 
-        #region EUMarketplaceID
+        #region EU MarketplaceID
         [PXDBString(200, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "EUMarketplace ID")]
+        [PXUIField(DisplayName = "EU Marketplace ID")]
         public virtual string EUMarketplaceID { get; set; }
         public abstract class eUMarketplaceID : PX.Data.BQL.BqlString.Field<eUMarketplaceID> { }
         #endregion
 
-        #region EURefreshToken
+        #region EU RefreshToken
         [PXDBString(IsUnicode = true)]
-        [PXUIField(DisplayName = "EURefresh Token")]
+        [PXUIField(DisplayName = "EU Refresh Token")]
         public virtual string EURefreshToken { get; set; }
         public abstract class eURefreshToken : PX.Data.BQL.BqlString.Field<eURefreshToken> { }
         #endregion
 
-        #region JPMarketplaceID
+        #region JP MarketplaceID
         [PXDBString(200, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "JPMarketplace ID")]
+        [PXUIField(DisplayName = "JP Marketplace ID")]
         public virtual string JPMarketplaceID { get; set; }
         public abstract class jPMarketplaceID : PX.Data.BQL.BqlString.Field<jPMarketplaceID> { }
         #endregion
 
-        #region JPRefreshToken
+        #region JP RefreshToken
         [PXDBString(IsUnicode = true)]
-        [PXUIField(DisplayName = "JPRefresh Token")]
+        [PXUIField(DisplayName = "JP Refresh Token")]
         public virtual string JPRefreshToken { get; set; }
         public abstract class jPRefreshToken : PX.Data.BQL.BqlString.Field<jPRefreshToken> { }
         #endregion
 
-        #region AUMarketplaceID
+        #region AU MarketplaceID
         [PXDBString(200, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "AUMarketplace ID")]
+        [PXUIField(DisplayName = "AU Marketplace ID")]
         public virtual string AUMarketplaceID { get; set; }
         public abstract class aUMarketplaceID : PX.Data.BQL.BqlString.Field<aUMarketplaceID> { }
         #endregion
 
-        #region AURefreshToken
+        #region AU RefreshToken
         [PXDBString(IsUnicode = true)]
-        [PXUIField(DisplayName = "AURefresh Token")]
+        [PXUIField(DisplayName = "AU Refresh Token")]
         public virtual string AURefreshToken { get; set; }
         public abstract class aURefreshToken : PX.Data.BQL.BqlString.Field<aURefreshToken> { }
+        #endregion
+
+        #region MX MarketplaceID
+        [PXDBString(200, IsUnicode = true, InputMask = "")]
+        [PXUIField(DisplayName = "MX Marketplace ID")]
+        public virtual string MXMarketplaceID { get; set; }
+        public abstract class mXMarketplaceID : PX.Data.BQL.BqlString.Field<mXMarketplaceID> { }
+        #endregion
+
+        #region MX RefreshToken
+        [PXDBString(IsUnicode = true)]
+        [PXUIField(DisplayName = "MX Refresh Token")]
+        public virtual string MXRefreshToken { get; set; }
+        public abstract class mXRefreshToken : PX.Data.BQL.BqlString.Field<mXRefreshToken> { }
+        #endregion
+
+        #region SGAccessKey
+        [PXRSACryptString(IsUnicode = true)]
+        [PXUIField(DisplayName = "SG Access Key")]
+        public virtual string SGAccessKey { get; set; }
+        public abstract class sgAccessKey : PX.Data.BQL.BqlString.Field<sgAccessKey> { }
+        #endregion
+
+        #region SGSecretKey
+        [PXRSACryptString(IsUnicode = true)]
+        [PXUIField(DisplayName = "SG Secret Key")]
+        public virtual string SGSecretKey { get; set; }
+        public abstract class sgSecretKey : PX.Data.BQL.BqlString.Field<sgSecretKey> { }
+        #endregion
+
+        #region SGRoleArn
+        [PXRSACryptString(IsUnicode = true)]
+        [PXUIField(DisplayName = "SG Role Arn")]
+        public virtual string SGRoleArn { get; set; }
+        public abstract class sgRoleArn : PX.Data.BQL.BqlString.Field<sgRoleArn> { }
+        #endregion
+
+        #region SGClientID
+        [PXRSACryptString(IsUnicode = true)]
+        [PXUIField(DisplayName = "SG Client ID")]
+        public virtual string SGClientID { get; set; }
+        public abstract class sgClientID : PX.Data.BQL.BqlString.Field<sgClientID> { }
+        #endregion
+
+        #region SGClientSecret
+        [PXRSACryptString(IsUnicode = true)]
+        [PXUIField(DisplayName = "SG Client Secret")]
+        public virtual string SGClientSecret { get; set; }
+        public abstract class sgClientSecret : PX.Data.BQL.BqlString.Field<sgClientSecret> { }
+        #endregion
+
+        #region SGMarketplaceID
+        [PXDBString(200, IsUnicode = true, InputMask = "")]
+        [PXUIField(DisplayName = "SG Marketplace ID")]
+        public virtual string SGMarketplaceID { get; set; }
+        public abstract class sgMarketplaceID : PX.Data.BQL.BqlString.Field<sgMarketplaceID> { }
+        #endregion
+
+        #region SGRefreshToken
+        [PXDBString(400, IsUnicode = true)]
+        [PXUIField(DisplayName = "SG Refresh Token")]
+        public virtual string SGRefreshToken { get; set; }
+        public abstract class sgRefreshToken : PX.Data.BQL.BqlString.Field<sgRefreshToken> { }
         #endregion
 
         #region CreatedByID

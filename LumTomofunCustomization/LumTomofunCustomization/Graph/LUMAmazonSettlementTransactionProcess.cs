@@ -22,8 +22,8 @@ namespace LumTomofunCustomization.Graph
 {
     public class LUMAmazonSettlementTransactionProcess : PXGraph<LUMAmazonSettlementTransactionProcess>
     {
-        public PXSave<LUMAmazonSettlementTransData> Save;
-        public PXCancel<LUMAmazonSettlementTransData> Cancel;
+        public PXSave<SettlementFilter> Save;
+        public PXCancel<SettlementFilter> Cancel;
         public PXFilter<SettlementFilter> Filter;
         public PXFilteredProcessing<LUMAmazonSettlementTransData, SettlementFilter> SettlementTransaction;
         public SelectFrom<LUMMWSPreference>.View Setup;
@@ -33,6 +33,9 @@ namespace LumTomofunCustomization.Graph
 
         public LUMAmazonSettlementTransactionProcess()
         {
+            this.SettlementTransaction.AllowUpdate = true;
+            PXUIFieldAttribute.SetEnabled<LUMAmazonSettlementTransData.isProcessed>(this.SettlementTransaction.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMAmazonSettlementTransData.marketPlaceName>(this.SettlementTransaction.Cache, null, true);
             var filter = this.Filter.Current;
             SettlementTransaction.SetProcessDelegate(delegate (List<LUMAmazonSettlementTransData> list)
             {
@@ -75,6 +78,12 @@ namespace LumTomofunCustomization.Graph
                 {
                     amzConnObjs.Add("EU", GetAmazonConnObject("EU"));
                     amzConnObjs.Add("AU", GetAmazonConnObject("AU"));
+                    amzConnObjs.Add("SG", GetAmazonConnObject("SG"));
+                }
+                else if (actCompanyName == "US")
+                {
+                    amzConnObjs.Add("US", GetAmazonConnObject("US"));
+                    amzConnObjs.Add("MX", GetAmazonConnObject("MX"));
                 }
                 else
                     amzConnObjs.Add(actCompanyName, GetAmazonConnObject(actCompanyName));
@@ -145,6 +154,9 @@ namespace LumTomofunCustomization.Graph
                             throw new Exception($"Settlement Market Place Not Found in Sales order({amzGroupOrderData.Key.OrderID})");
                         _marketplace = GetMarketplaceName((string)((PXFieldState)refOrderView.Cache.GetValueExt(refOrder, PX.Objects.CS.Messages.Attribute + "MKTPLACE")).Value);
                     }
+                    // 如果 Maketplace name = SI CA Prod Marketplace -> CA
+                    else if (amazonList.FirstOrDefault(x => x.SettlementID == amzGroupOrderData.Key.SettlementID && x.MarketPlaceName == "SI CA Prod Marketplace") != null)
+                        _marketplace = "CA";
                     else
                         _marketplace = GetMarketplaceName(_marketplace);
                     #endregion
@@ -184,8 +196,12 @@ namespace LumTomofunCustomization.Graph
                                 var adjTrans = arGraph.Adjustments.Cache.CreateInstance() as ARAdjust;
                                 adjTrans.AdjdDocType = "INV";
                                 adjTrans.AdjdRefNbr = SelectFrom<ARInvoice>
-                                                      .Where<ARInvoice.invoiceNbr.IsEqual<P.AsString>>
-                                                      .View.SelectSingleBound(baseGraph, null, amzGroupOrderData.Key.OrderID).TopFirst?.RefNbr;
+                                                      .InnerJoin<ARTran>.On<ARInvoice.docType.IsEqual<ARTran.tranType>
+                                                            .And<ARInvoice.refNbr.IsEqual<ARTran.refNbr>>>
+                                                      .InnerJoin<SOOrder>.On<ARTran.sOOrderNbr.IsEqual<SOOrder.orderNbr>>
+                                                      .Where<ARInvoice.invoiceNbr.IsEqual<P.AsString>
+                                                        .And<SOOrder.orderType.IsEqual<P.AsString>>>
+                                                      .View.SelectSingleBound(baseGraph, null, amzGroupOrderData.Key.OrderID, "FA").TopFirst?.RefNbr;
                                 arGraph.Adjustments.Insert(adjTrans);
                                 #endregion
 
@@ -209,7 +225,7 @@ namespace LumTomofunCustomization.Graph
                                     else
                                         continue;
                                     arGraph.PaymentCharges.Insert(chargeTrans);
-                                } 
+                                }
                                 #endregion
                                 // set payment amount to apply amount
                                 arGraph.Document.SetValueExt<ARPayment.curyOrigDocAmt>(arGraph.Document.Current, arGraph.Document.Current.CuryApplAmt);
@@ -891,15 +907,19 @@ namespace LumTomofunCustomization.Graph
                 throw new Exception("MWS Preference is null");
             return new AmazonConnection(new AmazonCredential()
             {
-                AccessKey = setup.AccessKey,
-                SecretKey = setup.SecretKey,
-                RoleArn = setup.RoleArn,
-                ClientId = setup.ClientID,
-                ClientSecret = setup.ClientSecret,
-                MarketPlace = _marketPlace == "US" ? MarketPlace.GetMarketPlaceByID(setup.USMarketplaceID) :
-                               _marketPlace == "EU" ? MarketPlace.GetMarketPlaceByID(setup.EUMarketplaceID) :
-                               _marketPlace == "JP" ? MarketPlace.GetMarketPlaceByID(setup.JPMarketplaceID) : MarketPlace.GetMarketPlaceByID(setup.AUMarketplaceID),
-                RefreshToken = _marketPlace == "US" ? setup.USRefreshToken :
+                AccessKey = _marketPlace == "SG" ? setup.SGAccessKey : setup.AccessKey,
+                SecretKey = _marketPlace == "SG" ? setup.SGSecretKey : setup.SecretKey,
+                RoleArn = _marketPlace == "SG" ? setup.SGRoleArn : setup.RoleArn,
+                ClientId = _marketPlace == "SG" ? setup.SGClientID : setup.ClientID,
+                ClientSecret = _marketPlace == "SG" ? setup.SGClientSecret : setup.ClientSecret,
+                MarketPlace = _marketPlace == "SG" ? MarketPlace.GetMarketPlaceByID(setup.SGMarketplaceID) :
+                              _marketPlace == "US" ? MarketPlace.GetMarketPlaceByID(setup.USMarketplaceID) :
+                              _marketPlace == "MX" ? MarketPlace.GetMarketPlaceByID(setup.MXMarketplaceID) :
+                              _marketPlace == "EU" ? MarketPlace.GetMarketPlaceByID(setup.EUMarketplaceID) :
+                              _marketPlace == "JP" ? MarketPlace.GetMarketPlaceByID(setup.JPMarketplaceID) : MarketPlace.GetMarketPlaceByID(setup.AUMarketplaceID),
+                RefreshToken = _marketPlace == "SG" ? setup.SGRefreshToken :
+                               _marketPlace == "US" ? setup.USRefreshToken :
+                               _marketPlace == "MX" ? setup.MXRefreshToken :
                                _marketPlace == "EU" ? setup.EURefreshToken :
                                _marketPlace == "JP" ? setup.JPRefreshToken : setup.AURefreshToken
             });
