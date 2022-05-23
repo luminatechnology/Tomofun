@@ -131,12 +131,12 @@ namespace LumTomofunCustomization.Graph
         public virtual void CreatePaymentByOrder(LUMAmazonSettlementTransactionProcess baseGraph, List<LUMAmazonSettlementTransData> amazonList, SettlementFilter filter)
         {
             // 相同OrderID只會Create一張Payment
-            foreach (var amzGroupOrderData in amazonList.GroupBy(x => new { x.SettlementID, x.TransactionType, x.OrderID, x.PostedDate }))
+            foreach (var amzGroupOrderData in amazonList.GroupBy(x => new { x.Marketplace, x.SettlementID, x.TransactionType, x.OrderID, x.PostedDate }))
             {
                 PXLongOperation.SetCurrentItem(amzGroupOrderData.FirstOrDefault());
                 string errorMsg = string.Empty;
                 string DisplayGroupKey = $"{amzGroupOrderData.Key.SettlementID},{amzGroupOrderData.Key.TransactionType},{amzGroupOrderData.Key.OrderID}";
-                var amzTotalTax = amzGroupOrderData.Where(x => x.AmountDescription == "Tax" || x.AmountDescription == "ShippingTax" || x.AmountDescription == "TaxDiscount").Sum(x => (x.Amount ?? 0) * -1);
+                var amzTotalTax = amzGroupOrderData.Where(x => x.AmountDescription == "Tax" || x.AmountDescription == "ShippingTax" || x.AmountDescription == "TaxDiscount" || x.AmountType == "ItemWithheldTax").Sum(x => (x.Amount ?? 0) * -1);
                 try
                 {
                     #region Setting Marketplace
@@ -158,7 +158,8 @@ namespace LumTomofunCustomization.Graph
                     else if (amazonList.FirstOrDefault(x => x.SettlementID == amzGroupOrderData.Key.SettlementID && x.MarketPlaceName == "SI CA Prod Marketplace") != null)
                         _marketplace = "CA";
                     else
-                        _marketplace = GetMarketplaceName(_marketplace);
+                        // 如果是MX但是Marketplace name = us 
+                        _marketplace = amzGroupOrderData.Key.Marketplace == "MX" && GetMarketplaceName(_marketplace) == "US" ? "MX" : GetMarketplaceName(_marketplace);
                     #endregion
 
                     var isTaxCalculate = AmazonPublicFunction.GetMarketplaceTaxCalculation(_marketplace);

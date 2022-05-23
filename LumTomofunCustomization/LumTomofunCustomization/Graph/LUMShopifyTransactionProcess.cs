@@ -70,8 +70,8 @@ namespace LumTomofunCustomization.Graph
                             #region Create Sales Order Header
                             order = soGraph.Document.Cache.CreateInstance() as SOOrder;
                             order.OrderType = "SP";
-                            order.CustomerOrderNbr = spOrder.id.ToString();
-                            order.CustomerRefNbr = spOrder.checkout_id.ToString();
+                            order.CustomerOrderNbr = spOrder.checkout_id.ToString();
+                            order.CustomerRefNbr = spOrder.id.ToString();
                             order.OrderDesc = $"Shopify Order #{spOrder.order_number}";
                             order.OrderDate = spOrder.created_at;
                             order.RequestDate = spOrder.created_at;
