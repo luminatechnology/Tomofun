@@ -52,7 +52,7 @@ namespace LumTomofunCustomization.Graph
                     using (PXTransactionScope sc = new PXTransactionScope())
                     {
                         // Marketplace tax calculation
-                        var isTaxCalculate = GetMarketplaceTaxCalculation(row.Marketplace);
+                        var isTaxCalculate = ShopifyPublicFunction.GetMarketplaceTaxCalculation(row.Marketplace);
                         // Create Sales Order Graph
                         var soGraph = PXGraph.CreateInstance<SOOrderEntry>();
                         var spOrder = JsonConvert.DeserializeObject<API_Entity.ShopifyOrder.ShopifyOrderEntity>(row.TransJson);
@@ -61,38 +61,39 @@ namespace LumTomofunCustomization.Graph
                         // 判斷是否需要建立Invoice
                         var GoPrepareInvoice = row.FullfillmentStatus?.ToLower() == "fulfilled";
                         // Shopify Order
-                        var order = SelectFrom<SOOrder>
-                                         .Where<SOOrder.customerOrderNbr.IsEqual<P.AsString>>
-                                         .View.Select(this, spOrder.id).TopFirst;
+                        var shopifySOOrder = SelectFrom<SOOrder>
+                                             .Where<SOOrder.customerOrderNbr.IsEqual<P.AsString>
+                                                .Or<SOOrder.customerRefNbr.IsEqual<P.AsString>>>
+                                             .View.Select(this, spOrder.id, spOrder.id).TopFirst;
                         // Create Sales Order
-                        if (order == null && row.FinancialStatus == "paid")
+                        if (shopifySOOrder == null && row.FinancialStatus == "paid")
                         {
                             #region Create Sales Order Header
-                            order = soGraph.Document.Cache.CreateInstance() as SOOrder;
-                            order.OrderType = "SP";
-                            order.CustomerOrderNbr = spOrder.checkout_id.ToString();
-                            order.CustomerRefNbr = spOrder.id.ToString();
-                            order.OrderDesc = $"Shopify Order #{spOrder.order_number}";
-                            order.OrderDate = spOrder.created_at;
-                            order.RequestDate = spOrder.created_at;
-                            order.CustomerID = GetMarketplaceCustomer(row.Marketplace);
-                            order.TermsID = "0000";
+                            shopifySOOrder = soGraph.Document.Cache.CreateInstance() as SOOrder;
+                            shopifySOOrder.OrderType = "SP";
+                            shopifySOOrder.CustomerOrderNbr = spOrder.checkout_id.ToString();
+                            shopifySOOrder.CustomerRefNbr = spOrder.id.ToString();
+                            shopifySOOrder.OrderDesc = $"Shopify Order #{spOrder.order_number}";
+                            shopifySOOrder.OrderDate = spOrder.created_at;
+                            shopifySOOrder.RequestDate = spOrder.created_at;
+                            shopifySOOrder.CustomerID = ShopifyPublicFunction.GetMarketplaceCustomer(row.Marketplace);
+                            shopifySOOrder.TermsID = "0000";
                             #region User-Defined
                             // UserDefined - ORDERTYPE
-                            soGraph.Document.Cache.SetValueExt(order, PX.Objects.CS.Messages.Attribute + "ORDERTYPE", spOrder.gateway);
+                            soGraph.Document.Cache.SetValueExt(shopifySOOrder, PX.Objects.CS.Messages.Attribute + "ORDERTYPE", spOrder.gateway);
                             // UserDefined - MKTPLACE
-                            soGraph.Document.Cache.SetValueExt(order, PX.Objects.CS.Messages.Attribute + "MKTPLACE", $"Shopify.{row.Marketplace}");
+                            soGraph.Document.Cache.SetValueExt(shopifySOOrder, PX.Objects.CS.Messages.Attribute + "MKTPLACE", $"Shopify.{row.Marketplace}");
                             // UserDefined - ORDERAMT
-                            soGraph.Document.Cache.SetValueExt(order, PX.Objects.CS.Messages.Attribute + "ORDERAMT", spOrder.current_total_price);
+                            soGraph.Document.Cache.SetValueExt(shopifySOOrder, PX.Objects.CS.Messages.Attribute + "ORDERAMT", spOrder.current_total_price);
                             // UserDefined - ORDTAAMT
-                            soGraph.Document.Cache.SetValueExt(order, PX.Objects.CS.Messages.Attribute + "ORDTAXAMT", spOrder.current_total_tax);
+                            soGraph.Document.Cache.SetValueExt(shopifySOOrder, PX.Objects.CS.Messages.Attribute + "ORDTAXAMT", spOrder.current_total_tax);
                             // UserDefined - TAXCOLLECT
-                            soGraph.Document.Cache.SetValueExt(order, PX.Objects.CS.Messages.Attribute + "TAXCOLLECT", 0);
+                            soGraph.Document.Cache.SetValueExt(shopifySOOrder, PX.Objects.CS.Messages.Attribute + "TAXCOLLECT", 0);
                             // UserDefined -  ORDERTAGS
-                            soGraph.Document.Cache.SetValueExt(order, PX.Objects.CS.Messages.Attribute + "ORDERTAGS", spOrder.tags);
+                            soGraph.Document.Cache.SetValueExt(shopifySOOrder, PX.Objects.CS.Messages.Attribute + "ORDERTAGS", spOrder.tags);
                             #endregion
                             // Insert Sales Order
-                            soGraph.Document.Insert(order);
+                            soGraph.Document.Insert(shopifySOOrder);
                             // Setting Shipping_Address
                             var soAddress = soGraph.Shipping_Address.Current;
                             soAddress.OverrideAddress = true;
@@ -137,7 +138,7 @@ namespace LumTomofunCustomization.Graph
                             if (spOrder.shipping_lines.Any(x => decimal.Parse(x.price) > 0))
                             {
                                 var soShipLine = soGraph.Transactions.Cache.CreateInstance() as SOLine;
-                                soShipLine.InventoryID = GetFeeNonStockItem("Shipping");
+                                soShipLine.InventoryID = ShopifyPublicFunction.GetFeeNonStockItem("Shipping");
                                 soShipLine.OrderQty = 1;
                                 soShipLine.CuryUnitPrice =
                                     (row.Marketplace == "US" || row.Marketplace == "CA") ?
@@ -165,29 +166,35 @@ namespace LumTomofunCustomization.Graph
                             soGraph.Save.Press();
                         }
                         // Assign Document Current
-                        else if (GoPrepareInvoice && order != null)
-                            soGraph.Document.Current = order;
+                        else if (GoPrepareInvoice && shopifySOOrder != null)
+                            soGraph.Document.Current = shopifySOOrder;
                         // Prepare Invocie
                         try
                         {
                             // 判斷是否需要Create Invoice
                             var tagConditions = new string[] { "KOL", "REPLACE", "FAAS" };
-                            if (Array.IndexOf(tagConditions, spOrder.tags?.ToUpper()) == -1 ||
-                                (soGraph.Document.Current.CuryOrderTotal == 0 && Array.IndexOf(tagConditions, spOrder.tags?.ToUpper()) == -1) ||
-                                (isTaxCalculate && decimal.Parse(spOrder.current_total_price) != soGraph.Document.Current.CuryTaxTotal.Value - soGraph.Document.Current.CuryTaxTotal) ||
-                                (!isTaxCalculate && decimal.Parse(spOrder.current_total_price) - 0 != soGraph.Document.Current.CuryTaxTotal.Value))
-                            {
+
+                            // JSON\Tags is not Empty and Upper(JSON\Tags) NOT INCLUDES ‘KOL’ or ‘REPLACE’ or ‘FAAS
+                            if (!string.IsNullOrEmpty(spOrder.tags) && Array.IndexOf(tagConditions, spOrder.tags?.ToUpper()) == -1)
                                 GoPrepareInvoice = false;
-                            }
+                            // SO Order.CuryOrderTotal is 0 and Upper(JSON\Tags) DOEST NOT INCLUDE ‘KOL’ or ‘REPLACE’ or ‘FAAS’
+                            else if (soGraph.Document.Current.CuryOrderTotal == 0 && !string.IsNullOrEmpty(spOrder.tags) && Array.IndexOf(tagConditions, spOrder.tags?.ToUpper()) == -1)
+                                GoPrepareInvoice = false;
+                            // Shoipify Market Preference ‘Tax Calculation’ is SELECTED  AND ([SOOrder.AttributeORDERAMT] <> ( [SOOrder.CuryOrderTotal] - [SOOrder.CuryTaxTotal] ))
+                            else if (isTaxCalculate && decimal.Parse(spOrder.current_total_price) != soGraph.Document.Current.CuryOrderTotal - soGraph.Document.Current.CuryTaxTotal)
+                                GoPrepareInvoice = false;
+                            // Shopify Market Preference ‘Tax Calculation’ is NOT SELECTED AND ([SOOrder.AttributeORDERAMT] - [SOOrder.AttributeTAXCOLLECT] ) <> [SOOrder.CuryOrderTotal]
+                            else if (!isTaxCalculate && decimal.Parse(spOrder.current_total_price) - 0 != soGraph.Document.Current.CuryOrderTotal)
+                                GoPrepareInvoice = false;
                             if (GoPrepareInvoice)
                             {
                                 var newAdapter = new PXAdapter(soGraph.Document)
                                 {
                                     Searches = new Object[]
-                               {
-                                    soGraph.Document.Current.OrderType,
-                                    soGraph.Document.Current.OrderNbr
-                               }
+                                    {
+                                        soGraph.Document.Current.OrderType,
+                                        soGraph.Document.Current.OrderNbr
+                                    }
                                 };
                                 soGraph.PrepareInvoice(newAdapter);
                             }
@@ -197,7 +204,7 @@ namespace LumTomofunCustomization.Graph
                         {
                             SOInvoiceEntry invoiceGraph = ex.Graph as SOInvoiceEntry;
                             // Update docDate
-                            invoiceGraph.Document.SetValueExt<ARInvoice.docDate>(invoiceGraph.Document.Current, order.RequestDate);
+                            invoiceGraph.Document.SetValueExt<ARInvoice.docDate>(invoiceGraph.Document.Current, shopifySOOrder.RequestDate);
                             var soTax = SelectFrom<SOTaxTran>
                                         .Where<SOTaxTran.orderNbr.IsEqual<P.AsString>
                                              .And<SOTaxTran.orderType.IsEqual<P.AsString>>>
@@ -252,24 +259,6 @@ namespace LumTomofunCustomization.Graph
             if (row.FinancialStatus.ToLower() != "paid")
                 throw new Exception("Financial Stauts is not equal Paid!!");
         }
-
-        /// <summary> 取Marketplace 對應 Customer ID </summary>
-        public int? GetMarketplaceCustomer(string marketPlace)
-            => SelectFrom<LUMShopifyMarketplacePreference>
-               .Where<LUMShopifyMarketplacePreference.marketplace.IsEqual<P.AsString>>
-               .View.Select(this, marketPlace).TopFirst?.BAccountID;
-
-        /// <summary> 取Marketplace 對應 Tax Calculation </summary>
-        public bool GetMarketplaceTaxCalculation(string marketPlace)
-            => SelectFrom<LUMShopifyMarketplacePreference>
-               .Where<LUMShopifyMarketplacePreference.marketplace.IsEqual<P.AsString>>
-               .View.Select(this, marketPlace).TopFirst?.IsTaxCalculation ?? false;
-
-        /// <summary> 取Fee 對應 Non-Stock item ID </summary>
-        public int? GetFeeNonStockItem(string fee)
-            => SelectFrom<LUMMarketplaceFeePreference>
-               .Where<LUMMarketplaceFeePreference.fee.IsEqual<P.AsString>>
-               .View.Select(this, fee).TopFirst?.InventoryID;
 
         #endregion
     }

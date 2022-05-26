@@ -185,7 +185,7 @@ namespace LumTomofunCustomization.Graph
 
                                 #region User-Defiend
 
-                                // UserDefined - ORDERTYPE
+                                // UserDefined - ECNETPAY
                                 arGraph.Document.Cache.SetValueExt(arDoc, PX.Objects.CS.Messages.Attribute + "ECNETPAY", amzGroupOrderData.Sum(x => x.Amount ?? 0));
 
                                 #endregion
