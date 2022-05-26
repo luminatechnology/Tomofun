@@ -372,10 +372,10 @@ namespace LumTomofunCustomization.Graph
                                 #region Create PaymentRefund
                                 paymentExt = soGraph.GetExtension<CreatePaymentExt>();
                                 paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
-                                paymentExt.QuickPayment.Current.CuryRefundAmt = row.Net * -1;
+                                paymentExt.QuickPayment.Current.CuryOrigDocAmt = row.Net * -1;
                                 paymentExt.QuickPayment.Current.CashAccountID = spCashAccount.CashAccountID;
                                 paymentExt.QuickPayment.Current.ExtRefNbr = row.OrderID;
-                                paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Refund);
+                                paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Payment);
                                 paymentEntry.releaseFromHold.Press();
                                 paymentEntry.Save.Press();
                                 #endregion
