@@ -68,7 +68,8 @@ namespace LumTomofunCustomization.Graph
                                       row.Description == "Cancellation of Hold for Dispute Resolution" ? "DisputePay" :
                                       row.Description == "Dispute Fee" ? "DisputeCharge" :
                                       row.Description == "Chargeback" ? "Chargeback" :
-                                      row.Description == "Hold on Balance for Dispute Investigation" ? "DisputeCharge" : string.Empty;
+                                      row.Description == "Hold on Balance for Dispute Investigation" ? "DisputeCharge" :
+                                      row.Description == "Payment Reversal" ? "Reversal" : string.Empty;
             }
             // Marketplace2
             if (!string.IsNullOrEmpty(row.Marketplace))
@@ -187,7 +188,8 @@ namespace LumTomofunCustomization.Graph
                             case "REFUND":
                             case "CHARGEBACK":
                             case "DISPUTECHARGE":
-                                #region TransactionType: REFUND/CHARGEBACK/DISPUTECHARGE
+                            case "REVERSAL":
+                                #region TransactionType: REFUND/CHARGEBACK/DISPUTECHARGE/REVERSAL
                                 var soGraph = PXGraph.CreateInstance<SOOrderEntry>();
 
                                 #region Header
@@ -349,13 +351,13 @@ namespace LumTomofunCustomization.Graph
                                 soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                 soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, row.TransactionType);
                                 soTrans.OrderQty = 1;
-                                soTrans.CuryUnitPrice = (row.Gross ?? 0) * -1;
+                                soTrans.CuryUnitPrice = (row.Gross ?? 0);
                                 soGraph.Transactions.Insert(soTrans);
                                 // Fee
                                 soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                 soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
                                 soTrans.OrderQty = 1;
-                                soTrans.CuryUnitPrice = (row.Fee ?? 0) * -1;
+                                soTrans.CuryUnitPrice = (row.Fee ?? 0);
                                 soGraph.Transactions.Insert(soTrans);
                                 #endregion
 
@@ -369,10 +371,10 @@ namespace LumTomofunCustomization.Graph
                                 // Sales Order Save
                                 soGraph.Save.Press();
 
-                                #region Create PaymentRefund
+                                #region Create Payment
                                 paymentExt = soGraph.GetExtension<CreatePaymentExt>();
                                 paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
-                                paymentExt.QuickPayment.Current.CuryOrigDocAmt = row.Net * -1;
+                                paymentExt.QuickPayment.Current.CuryOrigDocAmt = row.Net;
                                 paymentExt.QuickPayment.Current.CashAccountID = spCashAccount.CashAccountID;
                                 paymentExt.QuickPayment.Current.ExtRefNbr = row.OrderID;
                                 paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Payment);

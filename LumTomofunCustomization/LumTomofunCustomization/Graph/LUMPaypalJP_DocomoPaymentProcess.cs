@@ -14,61 +14,62 @@ using PX.Objects.AR;
 using PX.Objects.CM;
 using LumTomofunCustomization.LUMLibrary;
 using PX.Objects.SO.GraphExtensions.SOOrderEntryExt;
+using LumTomofunCustomization.DAC;
 
 namespace LumTomofunCustomization.Graph
 {
-    public class LUMAmazonPaymentProcess : PXGraph<LUMAmazonPaymentProcess>, PXImportAttribute.IPXPrepareItems
+    public class LUMPaypalJP_DocomoPaymentProcess : PXGraph<LUMPaypalJP_DocomoPaymentProcess>, PXImportAttribute.IPXPrepareItems
     {
-        public PXSave<LUMAmazonPaymentTransData> Save;
-        public PXCancel<LUMAmazonPaymentTransData> Cancel;
+        public PXSave<LUMPaypalJP_DocomoPaymentTransData> Save;
+        public PXCancel<LUMPaypalJP_DocomoPaymentTransData> Cancel;
 
-        [PXImport(typeof(LUMAmazonPaymentTransData))]
-        public PXProcessing<LUMAmazonPaymentTransData> PaymentTransactions;
+        [PXImport(typeof(LUMPaypalJP_DocomoPaymentTransData))]
+        public PXProcessing<LUMPaypalJP_DocomoPaymentTransData> PaymentTransactions;
 
-        public LUMAmazonPaymentProcess()
+        public LUMPaypalJP_DocomoPaymentProcess()
         {
             this.PaymentTransactions.Cache.AllowInsert = this.PaymentTransactions.Cache.AllowUpdate = this.PaymentTransactions.Cache.AllowDelete = true;
             #region Set Field Enable
-            PXUIFieldAttribute.SetEnabled<LUMAmazonPaymentTransData.transSequenceNumber>(PaymentTransactions.Cache, null, true);
-            PXUIFieldAttribute.SetEnabled<LUMAmazonPaymentTransData.marketplace>(PaymentTransactions.Cache, null, true);
-            PXUIFieldAttribute.SetEnabled<LUMAmazonPaymentTransData.transactionPostedDate>(PaymentTransactions.Cache, null, true);
-            PXUIFieldAttribute.SetEnabled<LUMAmazonPaymentTransData.transactionType>(PaymentTransactions.Cache, null, true);
-            PXUIFieldAttribute.SetEnabled<LUMAmazonPaymentTransData.amazonTransactionId>(PaymentTransactions.Cache, null, true);
-            PXUIFieldAttribute.SetEnabled<LUMAmazonPaymentTransData.amazonOrderReferenceId>(PaymentTransactions.Cache, null, true);
-            PXUIFieldAttribute.SetEnabled<LUMAmazonPaymentTransData.sellerOrderId>(PaymentTransactions.Cache, null, true);
-            PXUIFieldAttribute.SetEnabled<LUMAmazonPaymentTransData.transactionAmount>(PaymentTransactions.Cache, null, true);
-            PXUIFieldAttribute.SetEnabled<LUMAmazonPaymentTransData.totalTransactionFee>(PaymentTransactions.Cache, null, true);
-            PXUIFieldAttribute.SetEnabled<LUMAmazonPaymentTransData.netTransactionAmount>(PaymentTransactions.Cache, null, true);
-            PXUIFieldAttribute.SetEnabled<LUMAmazonPaymentTransData.settlementId>(PaymentTransactions.Cache, null, true);
-            PXUIFieldAttribute.SetEnabled<LUMAmazonPaymentTransData.currencyCode>(PaymentTransactions.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMPaypalJP_DocomoPaymentTransData.transSequenceNumber>(PaymentTransactions.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMPaypalJP_DocomoPaymentTransData.marketplace>(PaymentTransactions.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMPaypalJP_DocomoPaymentTransData.transactionDate>(PaymentTransactions.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMPaypalJP_DocomoPaymentTransData.transactionType>(PaymentTransactions.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMPaypalJP_DocomoPaymentTransData.orderID>(PaymentTransactions.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMPaypalJP_DocomoPaymentTransData.gross>(PaymentTransactions.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMPaypalJP_DocomoPaymentTransData.fee>(PaymentTransactions.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMPaypalJP_DocomoPaymentTransData.net>(PaymentTransactions.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMPaypalJP_DocomoPaymentTransData.description>(PaymentTransactions.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMPaypalJP_DocomoPaymentTransData.origOrderID>(PaymentTransactions.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMPaypalJP_DocomoPaymentTransData.currency>(PaymentTransactions.Cache, null, true);
             #endregion
-            this.PaymentTransactions.SetProcessDelegate(delegate (List<LUMAmazonPaymentTransData> list)
+            this.PaymentTransactions.SetProcessDelegate(delegate (List<LUMPaypalJP_DocomoPaymentTransData> list)
             {
                 GoProcessing(list);
             });
         }
 
         #region Event
-
-        public virtual void _(Events.RowInserted<LUMAmazonPaymentTransData> e)
+        public virtual void _(Events.RowInserted<LUMPaypalJP_DocomoPaymentTransData> e)
         {
-            var row = e.Row as LUMAmazonPaymentTransData;
-            if (row.SellerOrderId.IndexOf("#") != -1)
-                row.OrderID = row.SellerOrderId.Substring(row.SellerOrderId.IndexOf("#") + 1);
+            e.Row.Currency = "JPY";
+            e.Row.Marketplace = "JP";
+            e.Row.Fee = 0;
+            e.Row.Net = e.Row.Gross ?? 0;
+            e.Row.OrderID = e.Row.OrigOrderID.Substring(e.Row.OrigOrderID.IndexOf('#') + 1);
+            e.Row.TransactionType = (e.Row.Gross ?? 0) < 0 ? "Refund" : "Order";
         }
-
         #endregion
 
         #region Method
 
-        public static void GoProcessing(List<LUMAmazonPaymentTransData> list)
+        public static void GoProcessing(List<LUMPaypalJP_DocomoPaymentTransData> list)
         {
-            var baseGraph = CreateInstance<LUMAmazonPaymentProcess>();
+            var baseGraph = CreateInstance<LUMPaypalJP_DocomoPaymentProcess>();
             baseGraph.CreateShopifyPayment(list, baseGraph);
         }
 
         /// <summary> Create Shopify Payment </summary>
-        public virtual void CreateShopifyPayment(List<LUMAmazonPaymentTransData> list, LUMAmazonPaymentProcess baseGraph)
+        public virtual void CreateShopifyPayment(List<LUMPaypalJP_DocomoPaymentTransData> list, LUMPaypalJP_DocomoPaymentProcess baseGraph)
         {
             foreach (var row in list)
             {
@@ -87,29 +88,29 @@ namespace LumTomofunCustomization.Graph
                         // Shopify Cash account
                         var spCashAccount = SelectFrom<CashAccount>
                                             .Where<CashAccount.cashAccountCD.IsEqual<P.AsString>>
-                                            .View.SelectSingleBound(baseGraph, null, $"{row.CurrencyCode}SPFAMZ").TopFirst;
+                                            .View.SelectSingleBound(baseGraph, null, $"{row.Currency}DOCOMO").TopFirst;
                         switch (row.TransactionType.ToUpper())
                         {
-                            case "CAPTURE":
-                                #region TransactionType: CAPTURE
+                            case "ORDER":
+                                #region TransactionType: ORDER
                                 if (spCashAccount == null)
-                                    throw new PXException($"Can not find Cash Account ({row.CurrencyCode}SPFAMZ)");
+                                    throw new PXException($"Can not find Cash Account ({row.Currency}DOCOMO)");
                                 var arGraph = PXGraph.CreateInstance<ARPaymentEntry>();
 
                                 #region Header(Document)
                                 var arDoc = arGraph.Document.Cache.CreateInstance() as ARPayment;
                                 arDoc.DocType = shopifySOOrder == null ? "PMT" :
                                                 shopifySOOrder.Status == "N" ? "PPM" : "PMT";
-                                arDoc.AdjDate = row.TransactionPostedDate;
-                                arDoc.ExtRefNbr = row.SettlementId;
+                                arDoc.AdjDate = row.TransactionDate;
+                                arDoc.ExtRefNbr = row.OrderID;
                                 arDoc.CustomerID = ShopifyPublicFunction.GetMarketplaceCustomer(row.Marketplace);
                                 arDoc.CashAccountID = spCashAccount.CashAccountID;
-                                arDoc.DocDesc = $"Amazon Payment Gateway {row.OrderID}";
-                                arDoc.DepositAfter = row.TransactionPostedDate;
-                                arDoc.CuryOrigDocAmt = row.TransactionAmount;
+                                arDoc.DocDesc = $"PayPal Docomo Payment Gateway {row.OrderID}";
+                                arDoc.DepositAfter = row.TransactionDate;
+                                arDoc.CuryOrigDocAmt = row.Gross;
                                 #region User-Defiend
                                 // UserDefined - ECNETPAY
-                                arGraph.Document.Cache.SetValueExt(arDoc, PX.Objects.CS.Messages.Attribute + "ECNETPAY", row.NetTransactionAmount);
+                                arGraph.Document.Cache.SetValueExt(arDoc, PX.Objects.CS.Messages.Attribute + "ECNETPAY", row.Net);
                                 #endregion
 
                                 arGraph.Document.Insert(arDoc);
@@ -128,7 +129,7 @@ namespace LumTomofunCustomization.Graph
                                                           .Where<SOOrder.orderNbr.IsEqual<P.AsString>
                                                             .And<SOOrder.orderType.IsEqual<P.AsString>>>
                                                           .View.SelectSingleBound(baseGraph, null, shopifySOOrder.OrderNbr, shopifySOOrder.OrderType).TopFirst?.RefNbr;
-                                    adjTrans.CuryAdjgAmt = row.TransactionAmount;
+                                    adjTrans.CuryAdjgAmt = row.Gross;
                                     arGraph.Adjustments.Insert(adjTrans);
                                     #endregion
                                 }
@@ -138,17 +139,10 @@ namespace LumTomofunCustomization.Graph
                                     var adjSOTrans = arGraph.SOAdjustments.Cache.CreateInstance() as SOAdjust;
                                     adjSOTrans.AdjdOrderType = shopifySOOrder.OrderType;
                                     adjSOTrans.AdjdOrderNbr = shopifySOOrder.OrderNbr;
-                                    adjSOTrans.CuryAdjgAmt = row.TransactionAmount;
+                                    adjSOTrans.CuryAdjgAmt = row.Gross;
                                     arGraph.SOAdjustments.Insert(adjSOTrans);
                                     #endregion
                                 }
-                                #endregion
-
-                                #region CHARGS
-                                var chargeTrans = arGraph.PaymentCharges.Cache.CreateInstance() as ARPaymentChargeTran;
-                                chargeTrans.EntryTypeID = "COMMISSION";
-                                chargeTrans.CuryTranAmt = (row.TotalTransactionFee ?? 0) * -1;
-                                arGraph.PaymentCharges.Insert(chargeTrans);
                                 #endregion
 
                                 // set payment amount to apply amount
@@ -162,28 +156,26 @@ namespace LumTomofunCustomization.Graph
                                 #endregion
                                 break;
                             case "REFUND":
-                            case "CHARGEBACK":
-                            case "A TO Z GUARANTEE CLAIM":
-                                #region TransactionType: REFUND/CHARGEBACK/A TO Z GUARANTEE CLAIM
+                                #region TransactionType: REFUND
                                 var soGraph = PXGraph.CreateInstance<SOOrderEntry>();
 
                                 #region Header
                                 var soDoc = soGraph.Document.Cache.CreateInstance() as SOOrder;
                                 soDoc.OrderType = "CM";
                                 soDoc.CustomerOrderNbr = row.OrderID;
-                                soDoc.OrderDate = row.TransactionPostedDate;
+                                soDoc.OrderDate = row.TransactionDate;
                                 soDoc.RequestDate = Accessinfo.BusinessDate;
                                 soDoc.CustomerID = ShopifyPublicFunction.GetMarketplaceCustomer(row.Marketplace);
-                                soDoc.OrderDesc = $"Amazon Payment Gateway {row.TransactionType} {row.OrderID}";
+                                soDoc.OrderDesc = $"Paypal Docomo Payment Gateway {row.TransactionType} {row.OrderID}";
                                 #endregion
 
                                 #region User-Defined
                                 // UserDefined - ORDERTYPE
-                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERTYPE", $"Amazon Gateway Refund");
+                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERTYPE", $"Paypal Docomo Gateway {row.TransactionType}");
                                 // UserDefined - MKTPLACE
                                 soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "MKTPLACE", row.Marketplace);
                                 // UserDefined - ORDERAMT
-                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERAMT", row.NetTransactionAmount);
+                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERAMT", row.Net);
                                 // UserDefined - ORDTAAMT
                                 soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDTAXAMT", 0);
                                 // UserDefined - TAXCOLLECT
@@ -223,20 +215,11 @@ namespace LumTomofunCustomization.Graph
                                 #endregion
 
                                 #region SOLine
-                                // Amount
+                                // Gross
                                 var soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
-                                if(row.TransactionType.Length>6 && row.TransactionType.ToUpper().Substring(0,6) == "A TO Z")
-                                    soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "GuaranteeClaim");
-                                else
-                                    soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, row.TransactionType);
+                                soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, row.TransactionType);
                                 soTrans.OrderQty = 1;
-                                soTrans.CuryUnitPrice = (row.TransactionAmount ?? 0) * -1;
-                                soGraph.Transactions.Insert(soTrans);
-                                // Fee
-                                soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
-                                soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
-                                soTrans.OrderQty = 1;
-                                soTrans.CuryUnitPrice = (row.TotalTransactionFee ?? 0) * -1;
+                                soTrans.CuryUnitPrice = (row.Gross ?? 0) * -1;
                                 soGraph.Transactions.Insert(soTrans);
                                 #endregion
 
@@ -253,80 +236,10 @@ namespace LumTomofunCustomization.Graph
                                 #region Create PaymentRefund
                                 var paymentExt = soGraph.GetExtension<CreatePaymentExt>();
                                 paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
-                                paymentExt.QuickPayment.Current.CuryRefundAmt = row.NetTransactionAmount * -1;
+                                paymentExt.QuickPayment.Current.CuryRefundAmt = row.Net * -1;
                                 paymentExt.QuickPayment.Current.CashAccountID = spCashAccount.CashAccountID;
-                                paymentExt.QuickPayment.Current.ExtRefNbr = row.SettlementId;
+                                paymentExt.QuickPayment.Current.ExtRefNbr = row.OrderID;
                                 ARPaymentEntry paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Refund);
-                                paymentEntry.releaseFromHold.Press();
-                                paymentEntry.Save.Press();
-                                #endregion
-
-                                // Prepare Invoice
-                                PrepareInvoiceAndOverrideTax(soGraph, soDoc);
-                                #endregion
-                                break;
-                            case "DEBT":
-                                #region TransactionType: DEBT
-                                soGraph = PXGraph.CreateInstance<SOOrderEntry>();
-
-                                #region Header
-                                soDoc = soGraph.Document.Cache.CreateInstance() as SOOrder;
-                                soDoc.OrderType = "IN";
-                                soDoc.CustomerOrderNbr = row.OrderID;
-                                soDoc.OrderDate = row.TransactionPostedDate;
-                                soDoc.RequestDate = Accessinfo.BusinessDate;
-                                soDoc.CustomerID = ShopifyPublicFunction.GetMarketplaceCustomer(row.Marketplace);
-                                soDoc.OrderDesc = $"Amazon Payment Gateway {row.TransactionType} {row.SettlementId}";
-                                #endregion
-
-                                #region User-Defined
-                                // UserDefined - ORDERTYPE
-                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERTYPE", $"Amazon Gateway {row.TransactionType}");
-                                // UserDefined - MKTPLACE
-                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "MKTPLACE", row.Marketplace);
-                                // UserDefined - ORDERAMT
-                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERAMT", row.NetTransactionAmount);
-                                // UserDefined - ORDTAAMT
-                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDTAXAMT", 0);
-                                // UserDefined - TAXCOLLECT
-                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "TAXCOLLECT", 0);
-                                #endregion
-
-                                // Insert SOOrder
-                                soGraph.Document.Insert(soDoc);
-
-                                #region Set Currency
-                                info = CurrencyInfoAttribute.SetDefaults<SOOrder.curyInfoID>(soGraph.Document.Cache, soGraph.Document.Current);
-                                if (info != null)
-                                    soGraph.Document.Cache.SetValueExt<SOOrder.curyID>(soGraph.Document.Current, info.CuryID);
-                                #endregion
-
-                                #region SOLine
-                                // Net
-                                soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
-                                soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
-                                soTrans.OrderQty = 1;
-                                soTrans.CuryUnitPrice = row.NetTransactionAmount;
-                                soGraph.Transactions.Insert(soTrans);
-                                #endregion
-
-                                #region Update Tax
-                                // Setting SO Tax
-                                soGraph.Taxes.Current = soGraph.Taxes.Current ?? soGraph.Taxes.Insert(soGraph.Taxes.Cache.CreateInstance() as SOTaxTran);
-                                soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, row.Marketplace + "EC");
-                                soGraph.Taxes.Update(soGraph.Taxes.Current);
-                                #endregion
-
-                                // Sales Order Save
-                                soGraph.Save.Press();
-
-                                #region Create Payment
-                                paymentExt = soGraph.GetExtension<CreatePaymentExt>();
-                                paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
-                                paymentExt.QuickPayment.Current.CuryOrigDocAmt = row.NetTransactionAmount;
-                                paymentExt.QuickPayment.Current.CashAccountID = spCashAccount.CashAccountID;
-                                paymentExt.QuickPayment.Current.ExtRefNbr = row.SettlementId;
-                                paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Payment);
                                 paymentEntry.releaseFromHold.Press();
                                 paymentEntry.Save.Press();
                                 #endregion
@@ -388,35 +301,20 @@ namespace LumTomofunCustomization.Graph
 
         #endregion
 
+        #region Implement Upload
         public bool PrepareImportRow(string viewName, IDictionary keys, IDictionary values)
-        {
-            try
-            {
-                var type = values["TransactionType"] as string;
-                return type?.ToUpper() != "TRANSFER";
-            }
-            catch
-            {
-                return false;
-            }
-        }
+             => true;
 
-        public void PrepareItems(string viewName, IEnumerable items) { }
+        public void PrepareItems(string viewName, IEnumerable items)
+        {
+            throw new NotImplementedException();
+        }
 
         public bool RowImported(string viewName, object row, object oldRow)
-        {
-            try
-            {
-                return ((LUMAmazonPaymentTransData)row).TransactionType?.ToUpper() != "TRANSFER";
-            }
-            catch
-            {
-                return false;
-            }
-        }
+            => true;
 
         public bool RowImporting(string viewName, object row)
             => true;
-
+        #endregion
     }
 }
