@@ -77,12 +77,12 @@ namespace LUMTomofunCustomization.DAC
         public abstract class isSkippedProcess : PX.Data.BQL.BqlBool.Field<isSkippedProcess> { }
         #endregion
 
-        #region SkipReason
-        [PXDBString(100, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Skip Reason")]
-        public virtual string SkipReason { get; set; }
-        public abstract class skipReason : PX.Data.BQL.BqlString.Field<skipReason> { }
-        #endregion
+        //#region SkipReason
+        //[PXDBString(100, IsUnicode = true, InputMask = "")]
+        //[PXUIField(DisplayName = "Skip Reason")]
+        //public virtual string SkipReason { get; set; }
+        //public abstract class skipReason : PX.Data.BQL.BqlString.Field<skipReason> { }
+        //#endregion
 
         #region CreatedByID
         [PXDBCreatedByID()]

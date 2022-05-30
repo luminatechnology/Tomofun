@@ -81,12 +81,12 @@ namespace LumTomofunCustomization.Graph
                                                  .View.Select(this, order.id, order.id).TopFirst;
                             if(shopifySOOrder != null && order.financial_status?.ToUpper() == "PAID" && string.IsNullOrEmpty(order.fulfillment_status))
                             { 
-                                data.SkipReason = $"Sales Order is Exsits : {shopifySOOrder.OrderNbr}";
+                                //data.SkipReason = $"Sales Order is Exsits : {shopifySOOrder.OrderNbr}";
                                 continue;
                             }
                             else if(shopifySOOrder != null && shopifySOOrder.Status != "N" && order.fulfillment_status?.ToUpper() == "FULFILLED")
                             {
-                                data.SkipReason = $"Sales Order Status is not equeal OPEN : {shopifySOOrder.OrderNbr}";
+                                //data.SkipReason = $"Sales Order Status is not equeal OPEN : {shopifySOOrder.OrderNbr}";
                                 continue;
                             }
                             isAllSkipped = false;
