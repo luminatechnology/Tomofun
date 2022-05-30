@@ -68,7 +68,7 @@ namespace LumTomofunCustomization.Graph
                         var shopifySOOrder = SelectFrom<SOOrder>
                                              .Where<SOOrder.customerOrderNbr.IsEqual<P.AsString>
                                                 .Or<SOOrder.customerRefNbr.IsEqual<P.AsString>>>
-                                             .View.Select(this, spOrder.id, spOrder.id).TopFirst;
+                                             .View.Select(new PXGraph(), spOrder.id, spOrder.id).TopFirst;
                         // Create Sales Order
                         if (shopifySOOrder == null && row.FinancialStatus == "paid")
                         {
@@ -254,7 +254,7 @@ namespace LumTomofunCustomization.Graph
                             invoiceGraph.Save.Press();
                             // Release Invoice
                             invoiceGraph.releaseFromCreditHold.Press();
-                            invoiceGraph.release.Press();
+                            //invoiceGraph.release.Press();
                         }
                         sc.Complete();
                     }
