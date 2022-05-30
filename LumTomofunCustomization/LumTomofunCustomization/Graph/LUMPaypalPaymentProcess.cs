@@ -208,7 +208,7 @@ namespace LumTomofunCustomization.Graph
                                 // UserDefined - MKTPLACE
                                 soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "MKTPLACE", row.Marketplace2);
                                 // UserDefined - ORDERAMT
-                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERAMT", row.Net);
+                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERAMT", Math.Abs(row.Net ?? 0));
                                 // UserDefined - ORDTAAMT
                                 soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDTAXAMT", 0);
                                 // UserDefined - TAXCOLLECT
@@ -307,7 +307,7 @@ namespace LumTomofunCustomization.Graph
                                 // UserDefined - MKTPLACE
                                 soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "MKTPLACE", row.Marketplace2);
                                 // UserDefined - ORDERAMT
-                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERAMT", row.Net);
+                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERAMT", Math.Abs(row.Net ?? 0));
                                 // UserDefined - ORDTAAMT
                                 soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDTAXAMT", 0);
                                 // UserDefined - TAXCOLLECT

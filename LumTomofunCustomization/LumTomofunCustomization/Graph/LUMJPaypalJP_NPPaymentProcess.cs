@@ -190,7 +190,7 @@ namespace LumTomofunCustomization.Graph
                                 // UserDefined - MKTPLACE
                                 soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "MKTPLACE", row.Marketplace);
                                 // UserDefined - ORDERAMT
-                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERAMT", row.Net);
+                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERAMT", Math.Abs(row.Net ?? 0));
                                 // UserDefined - ORDTAAMT
                                 soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDTAXAMT", 0);
                                 // UserDefined - TAXCOLLECT
@@ -296,7 +296,7 @@ namespace LumTomofunCustomization.Graph
                                 // UserDefined - MKTPLACE
                                 soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "MKTPLACE", row.Marketplace);
                                 // UserDefined - ORDERAMT
-                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERAMT", row.Net);
+                                soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERAMT", Math.Abs(row.Net ?? 0));
                                 // UserDefined - ORDTAAMT
                                 soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDTAXAMT", 0);
                                 // UserDefined - TAXCOLLECT
@@ -418,7 +418,7 @@ namespace LumTomofunCustomization.Graph
         public bool PrepareImportRow(string viewName, IDictionary keys, IDictionary values)
         {
             values.Add("Marketplace", "JP");
-            values.Add("OrderID", string.IsNullOrEmpty((string)values["Marketplace"]) ? values["TransactionDate"] : values["Marketplace"]);
+            values.Add("OrderID", string.IsNullOrEmpty((string)values["Description"]) ? values["TransactionDate"] : values["Description"]);
             var tempDate = (string)values["TransactionDate"];
             values["TransactionDate"] = new DateTime(int.Parse("20" + tempDate.Substring(0, 2)), int.Parse(tempDate.Substring(2, 2)), int.Parse(tempDate.Substring(4, 2)));
             values.Add("Currency", "JPY");

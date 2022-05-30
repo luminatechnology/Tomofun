@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using PX.Objects.CM;
 using PX.Objects.AR;
 using LumTomofunCustomization.LUMLibrary;
+using PX.Objects.SO.GraphExtensions.SOOrderEntryExt;
+using PX.Objects.CA;
 
 namespace LumTomofunCustomization.Graph
 {
@@ -160,14 +162,37 @@ namespace LumTomofunCustomization.Graph
                             }
                             #endregion
 
+                            #region Create Payment
+                            if (spOrder.gateway?.ToUpper() == "CREDIT_CARD_HITRUSTPAY")
+                            {
+                                var spCashAccount = SelectFrom<CashAccount>
+                                            .Where<CashAccount.cashAccountCD.IsEqual<P.AsString>>
+                                            .View.SelectSingleBound(baseGraph, null, $"TWDHITRUST").TopFirst;
+                                var paymentExt = soGraph.GetExtension<CreatePaymentExt>();
+                                paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
+                                paymentExt.QuickPayment.Current.CashAccountID = spCashAccount.CashAccountID;
+                                paymentExt.QuickPayment.Current.ExtRefNbr = row.OrderID;
+                                var paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Payment);
+                                paymentEntry.releaseFromHold.Press();
+                                paymentEntry.Save.Press();
+                            }
+                            #endregion
+
                             // Write json into note
                             PXNoteAttribute.SetNote(soGraph.Document.Cache, soGraph.Document.Current, row.TransJson);
                             // Sales Order Save
                             soGraph.Save.Press();
                         }
                         // Assign Document Current
-                        else if (GoPrepareInvoice && shopifySOOrder != null)
+                        else if (GoPrepareInvoice && shopifySOOrder != null && shopifySOOrder.Status == "N")
                             soGraph.Document.Current = shopifySOOrder;
+                        // Do nothing
+                        else
+                        {
+                            row.IsProcessed = false;
+                            row.ErrorMessage = $"FinancialStatus or FullfillmentStatus or Sales Order is already Invoiced is not correct";
+                            continue;
+                        }
                         // Prepare Invocie
                         try
                         {
