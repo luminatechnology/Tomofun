@@ -22,6 +22,7 @@
             <px:PXGridLevel DataMember="ShopifyTransaction">
                 <Columns>
                     <px:PXGridColumn AllowCheckAll="True" DataField="Selected" Width="40" Type="CheckBox" TextAlign="Center" CommitChanges="True" ></px:PXGridColumn>
+                    <px:PXGridColumn DataField="SequenceNumber" Width="130"></px:PXGridColumn>
                     <px:PXGridColumn DataField="BranchID" Width="120"></px:PXGridColumn>
                     <px:PXGridColumn DataField="APIType" Width="120"></px:PXGridColumn>
                     <px:PXGridColumn DataField="TransactionType" Width="120"></px:PXGridColumn>

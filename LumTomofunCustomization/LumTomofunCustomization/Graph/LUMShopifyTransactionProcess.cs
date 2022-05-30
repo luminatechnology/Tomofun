@@ -49,6 +49,8 @@ namespace LumTomofunCustomization.Graph
             PXUIFieldAttribute.SetEnabled<LUMShopifyTransData.isProcessed>(ShopifyTransaction.Cache, null, true);
             foreach (var row in shopifyList)
             {
+                row.ErrorMessage = string.Empty;
+                PXProcessing.SetCurrentItem(row);
                 try
                 {
                     using (PXTransactionScope sc = new PXTransactionScope())
@@ -188,11 +190,7 @@ namespace LumTomofunCustomization.Graph
                             soGraph.Document.Current = shopifySOOrder;
                         // Do nothing
                         else
-                        {
-                            row.IsProcessed = false;
-                            row.ErrorMessage = $"FinancialStatus or FullfillmentStatus or Sales Order is already Invoiced is not correct";
-                            continue;
-                        }
+                            throw new Exception($"FinancialStatus or FullfillmentStatus is not correct or Sales Order is already Invoiced");
                         // Prepare Invocie
                         try
                         {
@@ -201,27 +199,32 @@ namespace LumTomofunCustomization.Graph
 
                             // JSON\Tags is not Empty and Upper(JSON\Tags) NOT INCLUDES ‘KOL’ or ‘REPLACE’ or ‘FAAS
                             if (!string.IsNullOrEmpty(spOrder.tags) && Array.IndexOf(tagConditions, spOrder.tags?.ToUpper()) == -1)
+                            { 
                                 GoPrepareInvoice = false;
+                                row.ErrorMessage = @"JSON\Tags is not Empty and Upper(JSON\Tags) NOT INCLUDES ‘KOL’ or ‘REPLACE’ or ‘FAAS";
+                            }
                             // SO Order.CuryOrderTotal is 0 and Upper(JSON\Tags) DOEST NOT INCLUDE ‘KOL’ or ‘REPLACE’ or ‘FAAS’
                             else if (soGraph.Document.Current.CuryOrderTotal == 0 && !string.IsNullOrEmpty(spOrder.tags) && Array.IndexOf(tagConditions, spOrder.tags?.ToUpper()) == -1)
+                            { 
                                 GoPrepareInvoice = false;
+                                row.ErrorMessage = @"SO Order.CuryOrderTotal is 0 and Upper(JSON\Tags) DOEST NOT INCLUDE ‘KOL’ or ‘REPLACE’ or ‘FAAS’";
+                            }
                             // Shoipify Market Preference ‘Tax Calculation’ is SELECTED  AND ([SOOrder.AttributeORDERAMT] <> ( [SOOrder.CuryOrderTotal] - [SOOrder.CuryTaxTotal] ))
                             else if (isTaxCalculate && decimal.Parse(spOrder.current_total_price) != soGraph.Document.Current.CuryOrderTotal - soGraph.Document.Current.CuryTaxTotal)
+                            {
                                 GoPrepareInvoice = false;
+                                row.ErrorMessage = @"Shoipify Market Preference ‘Tax Calculation’ is SELECTED  AND ([SOOrder.AttributeORDERAMT] <> ( [SOOrder.CuryOrderTotal] - [SOOrder.CuryTaxTotal] ))";
+                            }
                             // Shopify Market Preference ‘Tax Calculation’ is NOT SELECTED AND ([SOOrder.AttributeORDERAMT] - [SOOrder.AttributeTAXCOLLECT] ) <> [SOOrder.CuryOrderTotal]
                             else if (!isTaxCalculate && decimal.Parse(spOrder.current_total_price) - 0 != soGraph.Document.Current.CuryOrderTotal)
+                            { 
                                 GoPrepareInvoice = false;
+                                row.ErrorMessage = @"Shopify Market Preference ‘Tax Calculation’ is NOT SELECTED AND ([SOOrder.AttributeORDERAMT] - [SOOrder.AttributeTAXCOLLECT] ) <> [SOOrder.CuryOrderTotal]";
+                            }
                             if (GoPrepareInvoice)
                             {
-                                var newAdapter = new PXAdapter(soGraph.Document)
-                                {
-                                    Searches = new Object[]
-                                    {
-                                        soGraph.Document.Current.OrderType,
-                                        soGraph.Document.Current.OrderNbr
-                                    }
-                                };
-                                soGraph.PrepareInvoice(newAdapter);
+                                soGraph.releaseFromHold.Press();
+                                soGraph.prepareInvoice.Press();
                             }
                         }
                         // Prepare invoice Success
@@ -253,8 +256,6 @@ namespace LumTomofunCustomization.Graph
                             invoiceGraph.releaseFromCreditHold.Press();
                             invoiceGraph.release.Press();
                         }
-                        row.IsProcessed = true;
-                        row.ErrorMessage = string.Empty;
                         sc.Complete();
                     }
                 }
@@ -268,6 +269,7 @@ namespace LumTomofunCustomization.Graph
                 }
                 finally
                 {
+                    row.IsProcessed = string.IsNullOrEmpty(row.ErrorMessage);
                     if (!string.IsNullOrEmpty(row.ErrorMessage))
                         PXProcessing.SetError(row.ErrorMessage);
                     baseGraph.ShopifyTransaction.Update(row);

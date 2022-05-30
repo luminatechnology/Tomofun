@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using PX.Objects.SO;
+using PX.Data.BQL;
 
 namespace LumTomofunCustomization.Graph
 {
@@ -62,9 +64,9 @@ namespace LumTomofunCustomization.Graph
             var graph = PXGraph.CreateInstance<LUMShopifyTransactionProcess>();
             foreach (var data in dataSource)
             {
+                var isAllSkipped = true;
                 try
                 {
-                    var isAllSkipped = true;
                     switch (data.TransactionType)
                     {
                         case "Shopify Orders":
@@ -72,6 +74,21 @@ namespace LumTomofunCustomization.Graph
                             var order = JsonConvert.DeserializeObject<API_Entity.ShopifyOrder.ShopifyOrderEntity>(data.JsonSource);
                             if (order.financial_status.ToLower() != "paid")
                                 continue;
+                            // Shopify Order
+                            var shopifySOOrder = SelectFrom<SOOrder>
+                                                 .Where<SOOrder.customerOrderNbr.IsEqual<P.AsString>
+                                                    .Or<SOOrder.customerRefNbr.IsEqual<P.AsString>>>
+                                                 .View.Select(this, order.id, order.id).TopFirst;
+                            if(shopifySOOrder != null && order.financial_status?.ToUpper() == "PAID" && string.IsNullOrEmpty(order.fulfillment_status))
+                            { 
+                                data.SkipReason = $"Sales Order is Exsits : {shopifySOOrder.OrderNbr}";
+                                continue;
+                            }
+                            else if(shopifySOOrder != null && shopifySOOrder.Status != "N" && order.fulfillment_status?.ToUpper() == "FULFILLED")
+                            {
+                                data.SkipReason = $"Sales Order Status is not equeal OPEN : {shopifySOOrder.OrderNbr}";
+                                continue;
+                            }
                             isAllSkipped = false;
                             var orderTrans = graph.ShopifyTransaction.Insert((LUMShopifyTransData)graph.ShopifyTransaction.Cache.CreateInstance());
                             orderTrans.BranchID = data.BranchID;
@@ -84,29 +101,18 @@ namespace LumTomofunCustomization.Graph
                             orderTrans.FinancialStatus = order.financial_status;
                             orderTrans.TransJson = JsonConvert.SerializeObject(order);
                             break;
-                        case "Shopify Payment":
-                            // 逐筆解析Json + 新增資料
-                            foreach (var item in JsonConvert.DeserializeObject<List<API_Entity.ShopifyPayment.ShopifyPaymentEntity>>(data.JsonSource))
-                            {
-                                var trans = graph.ShopifyTransaction.Insert((LUMShopifyTransData)graph.ShopifyTransaction.Cache.CreateInstance());
-                                trans.BranchID = data.BranchID;
-                                trans.Apitype = data.APIType;
-                                trans.TransactionType = data.TransactionType;
-                                trans.Marketplace = data.Marketplace;
-                                trans.SequenceNumber = data.SequenceNumber;
-                                trans.OrderID = item.id.ToString();
-                                trans.TransJson = JsonConvert.SerializeObject(item);
-                            }
-                            break;
                     }
-                    data.IsProcessed = !isAllSkipped;
-                    data.IsSkippedProcess = isAllSkipped;
-                    this.ShopifySourceData.Update(data);
-                    graph.Actions.PressSave();
                 }
                 catch (Exception ex)
                 {
                     PXProcessing.SetError(ex.Message);
+                }
+                finally
+                {
+                    data.IsProcessed = !isAllSkipped;
+                    data.IsSkippedProcess = isAllSkipped;
+                    this.ShopifySourceData.Update(data);
+                    graph.Actions.PressSave();
                 }
             }
             this.Actions.PressSave();

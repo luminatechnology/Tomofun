@@ -28,7 +28,7 @@ namespace LUMTomofunCustomization.DAC
 
         #region SequenceNumber
         [PXDBInt()]
-        [PXUIField(DisplayName = "Sequence Number")]
+        [PXUIField(DisplayName = "Sequence Number", Visible = false)]
         public virtual int? SequenceNumber { get; set; }
         public abstract class sequenceNumber : PX.Data.BQL.BqlInt.Field<sequenceNumber> { }
         #endregion
