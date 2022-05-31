@@ -4941,7 +4941,7 @@
                         <Location>580px, 4px</Location>
                         <Size>428px, 14px</Size>
                         <StyleName>Normal</StyleName>
-                        <Value>Requested By:</Value>
+                        <Value>='Requested By: '+Report.GetDefUI('RowAccessInfo.UserName')</Value>
                         <VisibleExpr>=$PrepaymentsCount &gt; 0 or $UnbalancedCount &gt; 0</VisibleExpr>
                     </TextBox>
                     <TextBox Name="textBox32">
