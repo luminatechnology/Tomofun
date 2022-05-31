@@ -25,7 +25,7 @@
         </layout>
         <data>
             <SiteMap>
-                <row Title="Paypal JP-NP Payment Upload" Url="~/Pages/LM/LM501026.aspx" ScreenID="LM501026" NodeID="c3c9c183-6127-44ac-8d3c-866368b29072" ParentID="00000000-0000-0000-0000-000000000000">
+                <row Title="JP-NP Payment Upload" Url="~/Pages/LM/LM501026.aspx" ScreenID="LM501026" NodeID="c3c9c183-6127-44ac-8d3c-866368b29072" ParentID="00000000-0000-0000-0000-000000000000">
                     <MUIScreen IsPortal="0" WorkspaceID="b6902036-c01f-44cb-84ff-340da661381b" Order="110" SubcategoryID="32130442-2305-4394-9389-cf915b191d2a" />
                 </row>
             </SiteMap>

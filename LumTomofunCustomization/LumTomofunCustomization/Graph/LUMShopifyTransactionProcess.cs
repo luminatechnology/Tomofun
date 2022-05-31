@@ -175,8 +175,9 @@ namespace LumTomofunCustomization.Graph
                                 paymentExt.QuickPayment.Current.CashAccountID = spCashAccount.CashAccountID;
                                 paymentExt.QuickPayment.Current.ExtRefNbr = row.OrderID;
                                 var paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Payment);
-                                paymentEntry.releaseFromHold.Press();
                                 paymentEntry.Save.Press();
+                                paymentEntry.releaseFromHold.Press();
+                                paymentEntry.release.Press();
                             }
                             #endregion
 

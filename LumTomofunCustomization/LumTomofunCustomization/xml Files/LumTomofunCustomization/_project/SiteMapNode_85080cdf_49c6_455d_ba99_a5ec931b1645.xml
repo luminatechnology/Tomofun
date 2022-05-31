@@ -25,7 +25,7 @@
         </layout>
         <data>
             <SiteMap>
-                <row Title="Paypal JP-Docomo Payment Upload" Url="~/Pages/LM/LM501027.aspx" ScreenID="LM501027" NodeID="85080cdf-49c6-455d-ba99-a5ec931b1645" ParentID="00000000-0000-0000-0000-000000000000">
+                <row Title="JP-Docomo Payment Upload" Url="~/Pages/LM/LM501027.aspx" ScreenID="LM501027" NodeID="85080cdf-49c6-455d-ba99-a5ec931b1645" ParentID="00000000-0000-0000-0000-000000000000">
                     <MUIScreen IsPortal="0" WorkspaceID="b6902036-c01f-44cb-84ff-340da661381b" Order="120" SubcategoryID="32130442-2305-4394-9389-cf915b191d2a" />
                 </row>
             </SiteMap>

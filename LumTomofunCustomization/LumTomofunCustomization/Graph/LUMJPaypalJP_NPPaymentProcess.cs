@@ -166,7 +166,8 @@ namespace LumTomofunCustomization.Graph
                                     arGraph.Document.SetValueExt<ARPayment.curyOrigDocAmt>(arGraph.Document.Current, arGraph.Document.Current.CurySOApplAmt);
                                 // Save Payment
                                 arGraph.Actions.PressSave();
-
+                                arGraph.releaseFromHold.Press();
+                                arGraph.release.Press();
                                 #endregion
                                 break;
                             case "REFUND":
@@ -268,8 +269,9 @@ namespace LumTomofunCustomization.Graph
                                 paymentExt.QuickPayment.Current.CashAccountID = spCashAccount.CashAccountID;
                                 paymentExt.QuickPayment.Current.ExtRefNbr = row.OrderID;
                                 ARPaymentEntry paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Refund);
-                                paymentEntry.releaseFromHold.Press();
                                 paymentEntry.Save.Press();
+                                paymentEntry.releaseFromHold.Press();
+                                paymentEntry.release.Press();
                                 #endregion
 
                                 // Prepare Invoice
@@ -353,8 +355,9 @@ namespace LumTomofunCustomization.Graph
                                 paymentExt.QuickPayment.Current.CashAccountID = spCashAccount.CashAccountID;
                                 paymentExt.QuickPayment.Current.ExtRefNbr = row.OrderID;
                                 paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Payment);
-                                paymentEntry.releaseFromHold.Press();
                                 paymentEntry.Save.Press();
+                                paymentEntry.releaseFromHold.Press();
+                                paymentEntry.release.Press();
                                 #endregion
 
                                 // Prepare Invoice
@@ -407,7 +410,7 @@ namespace LumTomofunCustomization.Graph
                 invoiceGraph.Save.Press();
                 // Release Invoice
                 invoiceGraph.releaseFromCreditHold.Press();
-                // invoiceGraph.release.Press();
+                invoiceGraph.release.Press();
                 #endregion
             }
         }
