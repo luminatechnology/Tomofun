@@ -165,7 +165,7 @@ namespace LumTomofunCustomization.Graph
                             #endregion
 
                             #region Create Payment
-                            if (spOrder.gateway?.ToUpper() == "CREDIT_CARD_HITRUSTPAY")
+                            if ((spOrder.gateway ?? string.Empty).ToUpper().Contains("HITRUSTPAY"))
                             {
                                 var spCashAccount = SelectFrom<CashAccount>
                                             .Where<CashAccount.cashAccountCD.IsEqual<P.AsString>>
