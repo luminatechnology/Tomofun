@@ -255,7 +255,7 @@ namespace LumTomofunCustomization.Graph
                             invoiceGraph.Save.Press();
                             // Release Invoice
                             invoiceGraph.releaseFromCreditHold.Press();
-                            //invoiceGraph.release.Press();
+                            invoiceGraph.release.Press();
                         }
                         sc.Complete();
                     }
