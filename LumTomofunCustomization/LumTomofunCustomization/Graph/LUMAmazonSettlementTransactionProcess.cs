@@ -78,7 +78,7 @@ namespace LumTomofunCustomization.Graph
                 {
                     amzConnObjs.Add("EU", GetAmazonConnObject("EU"));
                     amzConnObjs.Add("AU", GetAmazonConnObject("AU"));
-                    amzConnObjs.Add("SG", GetAmazonConnObject("SG"));
+                    //amzConnObjs.Add("SG", GetAmazonConnObject("SG"));
                 }
                 else if (actCompanyName == "US")
                 {
@@ -90,8 +90,9 @@ namespace LumTomofunCustomization.Graph
                 foreach (var dic in amzConnObjs)
                 {
                     ReportManager reportManager = new ReportManager(dic.Value);
-                    foreach (var item in reportManager.GetSettlementOrderAsync(filter.FromDate == null ? DateTime.Now.AddDays(-1).Date : filter.FromDate.Value.Date,
-                                                                               filter.ToDate == null ? DateTime.Now.Date : filter.ToDate.Value.Date).Result)
+                    var SettlementOrders = reportManager.GetSettlementOrderAsync(filter.FromDate == null ? DateTime.Now.AddDays(-1).Date : filter.FromDate.Value.Date,
+                                                                               filter.ToDate == null ? DateTime.Now.Date : filter.ToDate.Value.Date).Result;
+                    foreach (var item in SettlementOrders)
                     {
                         var trans = baseGraph.SettlementTransaction.Cache.CreateInstance() as LUMAmazonSettlementTransData;
                         trans.Marketplace = dic.Key;
