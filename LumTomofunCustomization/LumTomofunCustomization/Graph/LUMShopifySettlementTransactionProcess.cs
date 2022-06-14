@@ -76,7 +76,7 @@ namespace LumTomofunCustomization.Graph
                         // Shopify Cash account
                         var spCashAccount = SelectFrom<CashAccount>
                                             .Where<CashAccount.cashAccountCD.IsEqual<P.AsString>>
-                                            .View.SelectSingleBound(baseGraph, null, $"{row.Currency}SPFSPF").TopFirst;
+                                            .View.SelectSingleBound(baseGraph, null, $"{row.Marketplace}SPFSPF").TopFirst;
                         switch (row.TransactionType.ToUpper())
                         {
                             case "CHARGE":
