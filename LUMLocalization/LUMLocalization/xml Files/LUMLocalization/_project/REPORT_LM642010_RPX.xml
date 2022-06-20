@@ -6360,7 +6360,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
         <Version>20201103</Version>
         <Sections>
             <PageHeader Name="pageHeaderSection1">
-                <Height>13.54497cm</Height>
+                <Height>13.75661cm</Height>
                 <Items>
                     <PictureBox Name="pictureBox1">
                         <Excel>
@@ -6525,7 +6525,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <width>4</width>
                         </Excel>
                         <Location>0px, 480px</Location>
-                        <Size>304px, 24px</Size>
+                        <Size>304px, 16px</Size>
                         <Style>
                             <BorderStyle>
                                 <Bottom>Solid</Bottom>
@@ -6533,7 +6533,6 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Right>Solid</Right>
                             </BorderStyle>
                             <BorderWidth>
-                                <Bottom>1px</Bottom>
                                 <Left>1px</Left>
                                 <Right>1px</Right>
                             </BorderWidth>
@@ -7267,7 +7266,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <width>4</width>
                         </Excel>
                         <Location>328px, 488px</Location>
-                        <Size>368px, 16px</Size>
+                        <Size>368px, 24px</Size>
                         <Style>
                             <BorderStyle>
                                 <Bottom>Solid</Bottom>
@@ -7473,6 +7472,34 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             </Padding>
                         </Style>
                         <Value>=IIf([SOShipment.ShipmentType] = 'T',#010;IsNull([SOOrder.OrderNbr], ''),#010;IsNull([SOOrder.CustomerOrderNbr], ''))</Value>
+                    </TextBox>
+                    <TextBox Name="textBox63">
+                        <Excel>
+                            <row>25</row>
+                            <width>4</width>
+                        </Excel>
+                        <Location>0px, 496px</Location>
+                        <Size>304px, 16px</Size>
+                        <Style>
+                            <BorderStyle>
+                                <Bottom>Solid</Bottom>
+                                <Left>Solid</Left>
+                                <Right>Solid</Right>
+                            </BorderStyle>
+                            <BorderWidth>
+                                <Bottom>1px</Bottom>
+                                <Left>1px</Left>
+                                <Right>1px</Right>
+                            </BorderWidth>
+                            <Font>
+                                <Name>Microsoft YaHei UI</Name>
+                                <Size>10px</Size>
+                            </Font>
+                            <Padding>
+                                <Left>1px</Left>
+                            </Padding>
+                        </Style>
+                        <Value>=IIF([SOShipment.ShipmentType] = 'I','',[INSite.AttributeWHREGNO])</Value>
                     </TextBox>
                     <TextBox Name="textBox7">
                         <Excel>

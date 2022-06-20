@@ -5081,7 +5081,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
         <Version>20201103</Version>
         <Sections>
             <PageHeader Name="pageHeaderSection1">
-                <Height>12.91005cm</Height>
+                <Height>13.33333cm</Height>
                 <Items>
                     <PictureBox Name="pictureBox3">
                         <Excel>
@@ -5253,7 +5253,6 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Right>Solid</Right>
                             </BorderStyle>
                             <BorderWidth>
-                                <Bottom>1px</Bottom>
                                 <Left>1px</Left>
                                 <Right>1px</Right>
                             </BorderWidth>
@@ -5991,7 +5990,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <width>4</width>
                         </Excel>
                         <Location>328px, 464px</Location>
-                        <Size>368px, 16px</Size>
+                        <Size>368px, 32px</Size>
                         <Style>
                             <BorderStyle>
                                 <Bottom>Solid</Bottom>
@@ -6192,6 +6191,34 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             </Padding>
                         </Style>
                         <Value>=IIf([SOShipment.ShipmentType] = 'T',#010;IsNull([SOOrder.OrderNbr], ''),#010;IsNull([SOOrder.CustomerOrderNbr], ''))</Value>
+                    </TextBox>
+                    <TextBox Name="textBox95">
+                        <Excel>
+                            <row>23</row>
+                            <width>4</width>
+                        </Excel>
+                        <Location>0px, 480px</Location>
+                        <Size>304px, 16px</Size>
+                        <Style>
+                            <BorderStyle>
+                                <Bottom>Solid</Bottom>
+                                <Left>Solid</Left>
+                                <Right>Solid</Right>
+                            </BorderStyle>
+                            <BorderWidth>
+                                <Bottom>1px</Bottom>
+                                <Left>1px</Left>
+                                <Right>1px</Right>
+                            </BorderWidth>
+                            <Font>
+                                <Name>Microsoft YaHei UI</Name>
+                                <Size>10px</Size>
+                            </Font>
+                            <Padding>
+                                <Left>1px</Left>
+                            </Padding>
+                        </Style>
+                        <Value>=IIF([SOShipment.ShipmentType] = 'I','',[INSite.AttributeWHREGNO])</Value>
                     </TextBox>
                 </Items>
             </PageHeader>
