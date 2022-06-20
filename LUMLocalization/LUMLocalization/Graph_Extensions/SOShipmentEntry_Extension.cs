@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using PX.Objects.PO;
 
 namespace PX.Objects.SO
 {
@@ -141,7 +142,7 @@ namespace PX.Objects.SO
         }
         #endregion
 
-            #region Actions
+        #region Actions
         public PXAction<SOShipment> PackingList;
         [PXButton(DisplayOnMainToolbar = false)]
         [PXUIField(DisplayName = "Print Packing List", Enabled = true, MapEnableRights = PXCacheRights.Select)]
@@ -166,11 +167,29 @@ namespace PX.Objects.SO
             {
                 if (Base.Document.Current.Status == SOShipmentStatus.Open || Base.Document.Current.Status == SOShipmentStatus.Hold) Base.Actions.PressSave();
 
-                var _SOShipLineFromDB = SelectFrom<SOShipLine>.Where<SOShipLine.shipmentNbr.IsEqual<SOPackageDetail.shipmentNbr.FromCurrent>>.View.Select(Base);
+                var poLineData = SelectFrom<SOShipLine>
+                                 .InnerJoin<SOLine>.On<SOShipLine.origOrderNbr.IsEqual<SOLine.orderNbr>
+                                                   .And<SOShipLine.origOrderType.IsEqual<SOLine.orderType>>
+                                                   .And<SOShipLine.origLineNbr.IsEqual<SOLine.lineNbr>>>
+                                 .InnerJoin<SOLineSplit>.On<SOLine.orderNbr.IsEqual<SOLineSplit.orderNbr>
+                                                        .And<SOLine.orderType.IsEqual<SOLineSplit.orderType>>
+                                                        .And<SOLine.lineNbr.IsEqual<SOLineSplit.lineNbr>>>
+                                 .InnerJoin<POLine>.On<SOLineSplit.pOType.IsEqual<POLine.orderType>
+                                                   .And<SOLineSplit.pONbr.IsEqual<POLine.orderNbr>>
+                                                   .And<SOLineSplit.pOLineNbr.IsEqual<POLine.lineNbr>>>
+                                .Where<SOShipLine.shipmentNbr.IsEqual<P.AsString>
+                                  .And<SOShipLine.shipmentType.IsEqual<P.AsString>>>
+                                 .View.Select(Base, Base.Document.Current.ShipmentNbr, Base.Document.Current.ShipmentType);
                 decimal sumUsrTotalCartons = 0;
                 foreach (PXResult<SOShipLine> line in Base.Transactions.Select())
                 {
-                    sumUsrTotalCartons += (decimal)((SOShipLine)line).UnitPrice * (decimal)((SOShipLine)line).ShippedQty;
+                    if (Base.Document.Current.ShipmentType == "I")
+                        sumUsrTotalCartons += (decimal)((SOShipLine)line).UnitPrice * (decimal)((SOShipLine)line).ShippedQty;
+                    else
+                    {
+                        var currentPOLine = poLineData.RowCast< POLine >().FirstOrDefault(x => x.LineNbr == ((SOShipLine)line).LineNbr);
+                        sumUsrTotalCartons += (decimal)((currentPOLine?.CuryUnitCost ?? 0) * (decimal)((SOShipLine)line).ShippedQty);
+                    }
                 }
 
                 var _reportID = "LM642010";

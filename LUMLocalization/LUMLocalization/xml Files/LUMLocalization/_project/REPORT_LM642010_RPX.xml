@@ -6865,7 +6865,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>=IsNull([SOShipment.FOBPoint], '')</Value>
+                        <Value>=IIF([SOShipment.ShipmentType] = 'I',IsNull([SOShipment.FOBPoint], ''),[SOShipmentAddress.CountryID])</Value>
                     </TextBox>
                     <TextBox Name="textBox28">
                         <Excel>
@@ -7094,7 +7094,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>=IsNull([Customer.TermsID], '')</Value>
+                        <Value>=IIF([SOShipment.ShipmentType] = 'I',IsNull([Customer.TermsID], ''),'0180')</Value>
                     </TextBox>
                     <TextBox Name="textBox36">
                         <Excel>
