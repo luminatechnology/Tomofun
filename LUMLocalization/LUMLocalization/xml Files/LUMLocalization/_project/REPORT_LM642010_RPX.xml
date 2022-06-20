@@ -338,7 +338,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 <Links>
                     <RelationRow>
                         <ChildField>INSite.SiteID</ChildField>
-                        <ParentField>SOShipment.SiteID</ParentField>
+                        <ParentField>SOShipment.DestinationSiteID</ParentField>
                     </RelationRow>
                 </Links>
                 <ParentName>SOShipment</ParentName>
