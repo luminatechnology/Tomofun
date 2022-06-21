@@ -1,0 +1,30 @@
+﻿<Sql TableName="LUMPaypalPaymentTransData" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="LUMPaypalPaymentTransData">
+  <col name="CompanyID" type="Int" default="Zero" />
+  <col name="TransSequenceNumber" type="Int" identity="true" />
+  <col name="Marketplace" type="NVarChar(20)" nullable="true" />
+  <col name="TransactionDate" type="DateTime" />
+  <col name="TransactionType" type="NVarChar(100)" />
+  <col name="InvoiceID" type="NVarChar(100)" nullable="true" />
+  <col name="OrderID" type="NVarChar(100)" nullable="true" />
+  <col name="Gross" type="Decimal(18,6)" nullable="true" />
+  <col name="Fee" type="Decimal(18,6)" nullable="true" />
+  <col name="Net" type="Decimal(18,6)" nullable="true" />
+  <col name="Marketplace2" type="NVarChar(20)" nullable="true" />
+  <col name="Description" type="NVarChar(200)" nullable="true" />
+  <col name="Currency" type="NVarChar(3)" nullable="true" />
+  <col name="IsProcessed" type="Bit" nullable="true" />
+  <col name="ErrorMessage" type="NVarChar(500)" nullable="true" />
+  <col name="CreatedByID" type="UniqueIdentifier" />
+  <col name="CreatedByScreenID" type="Char(8)" />
+  <col name="CreatedDateTime" type="DateTime" />
+  <col name="LastModifiedByID" type="UniqueIdentifier" />
+  <col name="LastModifiedByScreenID" type="Char(8)" />
+  <col name="LastModifiedDateTime" type="DateTime" />
+  <col name="tstamp" type="Timestamp" />
+  <index name="PK_LUMPaypalPaymentTransData_1" clustered="true" primary="true" unique="true">
+    <col name="CompanyID" />
+    <col name="TransSequenceNumber" />
+  </index>
+</table>]]></CDATA>
+</Sql>
