@@ -23,7 +23,7 @@ namespace LUMTomofunCustomization.DAC
 
         #region SequenceNumber
         [PXDBIdentity(IsKey = true)]
-        [PXUIField(DisplayName = "Sequence Number")]
+        [PXUIField(DisplayName = "Sequence Number", Visible = false)]
         public virtual int? SequenceNumber { get; set; }
         public abstract class sequenceNumber : PX.Data.BQL.BqlInt.Field<sequenceNumber> { }
         #endregion
@@ -76,6 +76,13 @@ namespace LUMTomofunCustomization.DAC
         public virtual bool? IsSkippedProcess { get; set; }
         public abstract class isSkippedProcess : PX.Data.BQL.BqlBool.Field<isSkippedProcess> { }
         #endregion
+
+        //#region SkipReason
+        //[PXDBString(100, IsUnicode = true, InputMask = "")]
+        //[PXUIField(DisplayName = "Skip Reason")]
+        //public virtual string SkipReason { get; set; }
+        //public abstract class skipReason : PX.Data.BQL.BqlString.Field<skipReason> { }
+        //#endregion
 
         #region CreatedByID
         [PXDBCreatedByID()]

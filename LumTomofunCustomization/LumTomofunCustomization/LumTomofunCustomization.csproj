@@ -86,8 +86,10 @@
     <Compile Include="DAC\LUMShopifySourceData.cs" />
     <Compile Include="DAC\LUMForecastUpload.cs" />
     <Compile Include="Graph\LUMAmazonInterfaceMaint.cs" />
+    <Compile Include="Graph\LUMAmazonPaymentProcess.cs" />
     <Compile Include="Graph\LUMAmazonSettlementTransactionProcess.cs" />
     <Compile Include="Graph\LUMAmazonTransactionProcess.cs" />
+    <Compile Include="Graph\LUMJPaypalJP_NPPaymentProcess.cs" />
     <Compile Include="Graph\LUMMarketplaceFeePreferenceMaint.cs" />
     <Compile Include="Graph\LUMMarketplacePreferenceMaint.cs" />
     <Compile Include="Graph\LUMForecastUploadProcess.cs" />
@@ -99,9 +101,12 @@
     <Compile Include="DAC\v_MRPResultQuery.cs" />
     <Compile Include="DAC\LUMAmazonSourceData.cs" />
     <Compile Include="Graph\LUMMWSSetup.cs" />
+    <Compile Include="Graph\LUMPaypalJP_DocomoPaymentProcess.cs" />
+    <Compile Include="Graph\LUMPaypalPaymentProcess.cs" />
     <Compile Include="Graph\LUMShopifyInterfaceMaint.cs" />
     <Compile Include="DAC\LUMShopifyTransData.cs" />
     <Compile Include="Graph\LUMShopifyMarketplacePreferenceMaint.cs" />
+    <Compile Include="Graph\LUMShopifySettlementTransactionProcess.cs" />
     <Compile Include="Graph\LUMShopifyTransactionProcess.cs" />
     <Compile Include="DAC\LUMMarketplacePreference.cs" />
     <Compile Include="DAC\LUMMarketplaceFeePreference.cs" />
@@ -109,6 +114,12 @@
     <Compile Include="DAC\LUMForecastUploadPreference.cs" />
     <Compile Include="Graph_Extension\APInvoiceEntryExt.cs" />
     <Compile Include="LUMLibrary\AmazonPublicFunction.cs" />
+    <Compile Include="DAC\LUMShopifySettlementTransData.cs" />
+    <Compile Include="LUMLibrary\ShopifyPublicFunction.cs" />
+    <Compile Include="DAC\LUMAmazonPaymentTransData.cs" />
+    <Compile Include="DAC\LUMPaypalPaymentTransData.cs" />
+    <Compile Include="DAC\LUMPaypalJP_NPPaymentTransData.cs" />
+    <Compile Include="DAC\LUMPaypalJP_DocomoPaymentTransData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -4778,7 +4778,7 @@
                         <Location>500px, 44px</Location>
                         <Size>276px, 14px</Size>
                         <StyleName>Heading 1</StyleName>
-                        <Value>Requested By:</Value>
+                        <Value>='Requested By: '+Report.GetDefUI('RowAccessInfo.UserName')</Value>
                     </TextBox>
                     <TextBox Name="textBox14">
                         <Excel>

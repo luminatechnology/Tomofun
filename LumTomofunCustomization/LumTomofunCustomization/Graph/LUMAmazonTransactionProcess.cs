@@ -45,6 +45,7 @@ namespace LumTomofunCustomization.Graph
             PXUIFieldAttribute.SetEnabled<LUMAmazonTransData.isProcessed>(AmazonTransaction.Cache, null, true);
             foreach (var row in amazonList)
             {
+                PXProcessing.SetCurrentItem(row);
                 try
                 {
                     using (PXTransactionScope sc = new PXTransactionScope())

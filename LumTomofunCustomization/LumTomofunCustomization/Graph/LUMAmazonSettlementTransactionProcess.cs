@@ -78,7 +78,7 @@ namespace LumTomofunCustomization.Graph
                 {
                     amzConnObjs.Add("EU", GetAmazonConnObject("EU"));
                     amzConnObjs.Add("AU", GetAmazonConnObject("AU"));
-                    amzConnObjs.Add("SG", GetAmazonConnObject("SG"));
+                    //amzConnObjs.Add("SG", GetAmazonConnObject("SG"));
                 }
                 else if (actCompanyName == "US")
                 {
@@ -90,8 +90,9 @@ namespace LumTomofunCustomization.Graph
                 foreach (var dic in amzConnObjs)
                 {
                     ReportManager reportManager = new ReportManager(dic.Value);
-                    foreach (var item in reportManager.GetSettlementOrderAsync(filter.FromDate == null ? DateTime.Now.AddDays(-1).Date : filter.FromDate.Value.Date,
-                                                                               filter.ToDate == null ? DateTime.Now.Date : filter.ToDate.Value.Date).Result)
+                    var SettlementOrders = reportManager.GetSettlementOrderAsync(filter.FromDate == null ? DateTime.Now.AddDays(-1).Date : filter.FromDate.Value.Date,
+                                                                               filter.ToDate == null ? DateTime.Now.Date : filter.ToDate.Value.Date).Result;
+                    foreach (var item in SettlementOrders)
                     {
                         var trans = baseGraph.SettlementTransaction.Cache.CreateInstance() as LUMAmazonSettlementTransData;
                         trans.Marketplace = dic.Key;
@@ -185,7 +186,7 @@ namespace LumTomofunCustomization.Graph
 
                                 #region User-Defiend
 
-                                // UserDefined - ORDERTYPE
+                                // UserDefined - ECNETPAY
                                 arGraph.Document.Cache.SetValueExt(arDoc, PX.Objects.CS.Messages.Attribute + "ECNETPAY", amzGroupOrderData.Sum(x => x.Amount ?? 0));
 
                                 #endregion
@@ -232,6 +233,8 @@ namespace LumTomofunCustomization.Graph
                                 arGraph.Document.SetValueExt<ARPayment.curyOrigDocAmt>(arGraph.Document.Current, arGraph.Document.Current.CuryApplAmt);
                                 // Save Payment
                                 arGraph.Actions.PressSave();
+                                arGraph.release.Press();
+                                arGraph.releaseFromHold.Press();
                                 #endregion
                                 break;
                             case "REFUND":
@@ -404,8 +407,9 @@ namespace LumTomofunCustomization.Graph
                                 paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
                                 paymentExt.QuickPayment.Current.ExtRefNbr = amzGroupOrderData.Key.SettlementID;
                                 ARPaymentEntry paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Refund);
-                                paymentEntry.releaseFromHold.Press();
                                 paymentEntry.Save.Press();
+                                paymentEntry.releaseFromHold.Press();
+                                paymentEntry.release.Press();
                                 #endregion
 
                                 // Prepare Invoice
@@ -504,8 +508,9 @@ namespace LumTomofunCustomization.Graph
                                 paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
                                 paymentExt.QuickPayment.Current.ExtRefNbr = amzGroupOrderData.Key.SettlementID;
                                 paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Refund);
-                                paymentEntry.releaseFromHold.Press();
                                 paymentEntry.Save.Press();
+                                paymentEntry.releaseFromHold.Press();
+                                paymentEntry.release.Press();
                                 #endregion
 
                                 // Prepare Invoice
@@ -605,8 +610,9 @@ namespace LumTomofunCustomization.Graph
                                 paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
                                 paymentExt.QuickPayment.Current.ExtRefNbr = amzGroupOrderData.Key.SettlementID;
                                 paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Refund);
-                                paymentEntry.releaseFromHold.Press();
                                 paymentEntry.Save.Press();
+                                paymentEntry.releaseFromHold.Press();
+                                paymentEntry.release.Press();
                                 #endregion
 
                                 // Prepare Invoice
@@ -713,8 +719,9 @@ namespace LumTomofunCustomization.Graph
                                 paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
                                 paymentExt.QuickPayment.Current.ExtRefNbr = amzGroupOrderData.Key.SettlementID;
                                 paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, soDoc.OrderType == "CM" ? ARPaymentType.Refund : ARPaymentType.Payment);
-                                paymentEntry.releaseFromHold.Press();
                                 paymentEntry.Save.Press();
+                                paymentEntry.releaseFromHold.Press();
+                                paymentEntry.release.Press();
                                 #endregion
 
                                 // Prepare Invoice
@@ -816,8 +823,9 @@ namespace LumTomofunCustomization.Graph
                                 paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
                                 paymentExt.QuickPayment.Current.ExtRefNbr = amzGroupOrderData.Key.SettlementID;
                                 paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, soDoc.OrderType == "CM" ? ARPaymentType.Refund : ARPaymentType.Payment);
-                                paymentEntry.releaseFromHold.Press();
                                 paymentEntry.Save.Press();
+                                paymentEntry.releaseFromHold.Press();
+                                paymentEntry.release.Press();
                                 #endregion
 
                                 // Prepare Invoice
@@ -895,7 +903,7 @@ namespace LumTomofunCustomization.Graph
                 invoiceGraph.Save.Press();
                 // Release Invoice
                 invoiceGraph.releaseFromCreditHold.Press();
-                // invoiceGraph.release.Press();
+                invoiceGraph.release.Press();
                 #endregion
             }
         }

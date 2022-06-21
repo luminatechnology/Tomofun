@@ -316,6 +316,27 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 </Links>
                 <ParentName>SOLine2</ParentName>
             </ReportRelation>
+            <ReportRelation>
+                <ChildName>INSite</ChildName>
+                <Links>
+                    <RelationRow>
+                        <ChildField>INSite.SiteID</ChildField>
+                        <ParentField>SOShipment.DestinationSiteID</ParentField>
+                    </RelationRow>
+                </Links>
+                <ParentName>SOShipment</ParentName>
+            </ReportRelation>
+            <ReportRelation>
+                <ChildAlias>CustomerPrimaryContact</ChildAlias>
+                <ChildName>Contact</ChildName>
+                <Links>
+                    <RelationRow>
+                        <ChildField>CustomerPrimaryContact.ContactID</ChildField>
+                        <ParentField>Customer.PrimaryContactID</ParentField>
+                    </RelationRow>
+                </Links>
+                <ParentName>Customer</ParentName>
+            </ReportRelation>
         </Relations>
         <SchemaUrl>http://localhost/Tomofun1/</SchemaUrl>
         <Tables>
@@ -4704,26 +4725,372 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 </Fields>
                 <FullName>PX.Objects.CM.CurrencyInfo</FullName>
             </ReportTable>
+            <ReportTable Name="INSite">
+                <Fields>
+                    <ReportField Name="Active">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                    <ReportField Name="AddressID">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="AttributeWHACCTNAME">
+                    </ReportField>
+                    <ReportField Name="AttributeWHADDR1">
+                    </ReportField>
+                    <ReportField Name="AttributeWHADDR2">
+                    </ReportField>
+                    <ReportField Name="AttributeWHCONTACT">
+                    </ReportField>
+                    <ReportField Name="AttributeWHEMAIL">
+                    </ReportField>
+                    <ReportField Name="AttributeWHPHONE">
+                    </ReportField>
+                    <ReportField Name="AttributeWHREGNO">
+                    </ReportField>
+                    <ReportField Name="AttributeWHVAT">
+                    </ReportField>
+                    <ReportField Name="AvgDefaultCost">
+                    </ReportField>
+                    <ReportField Name="BAccountID">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="BaseCuryID">
+                    </ReportField>
+                    <ReportField Name="BranchID">
+                    </ReportField>
+                    <ReportField Name="BranchID_Branch_acctName">
+                    </ReportField>
+                    <ReportField Name="BranchID_description">
+                    </ReportField>
+                    <ReportField Name="BranchID_Segment1">
+                    </ReportField>
+                    <ReportField Name="BuildingID">
+                    </ReportField>
+                    <ReportField Name="BuildingID_description">
+                    </ReportField>
+                    <ReportField Name="BuildingID_INSiteBuilding_descr">
+                    </ReportField>
+                    <ReportField Name="CarrierFacility">
+                    </ReportField>
+                    <ReportField Name="COGSAcctID">
+                    </ReportField>
+                    <ReportField Name="COGSAcctID_Account_description">
+                    </ReportField>
+                    <ReportField Name="COGSAcctID_description">
+                    </ReportField>
+                    <ReportField Name="COGSAcctID_Segment1">
+                    </ReportField>
+                    <ReportField Name="COGSSubID">
+                    </ReportField>
+                    <ReportField Name="COGSSubID_description">
+                    </ReportField>
+                    <ReportField Name="COGSSubID_Segment1">
+                    </ReportField>
+                    <ReportField Name="COGSSubID_Segment2">
+                    </ReportField>
+                    <ReportField Name="COGSSubID_Sub_description">
+                    </ReportField>
+                    <ReportField Name="ContactID">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="CreatedByID">
+                    </ReportField>
+                    <ReportField Name="CreatedByID_Creator_displayName">
+                    </ReportField>
+                    <ReportField Name="CreatedByID_Creator_Username">
+                    </ReportField>
+                    <ReportField Name="CreatedByID_description">
+                    </ReportField>
+                    <ReportField Name="CreatedByScreenID">
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime">
+                        <DataType>DateTime</DataType>
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime_Day">
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime_Hour">
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime_Month">
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime_Quarter">
+                    </ReportField>
+                    <ReportField Name="Descr">
+                    </ReportField>
+                    <ReportField Name="DiscAcctID">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="DiscSubID">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="DropShipLocationID">
+                    </ReportField>
+                    <ReportField Name="DropShipLocationID_description">
+                    </ReportField>
+                    <ReportField Name="DropShipLocationID_INLocation_descr">
+                    </ReportField>
+                    <ReportField Name="DropShipLocationID_Segment1">
+                    </ReportField>
+                    <ReportField Name="FIFODefaultCost">
+                    </ReportField>
+                    <ReportField Name="FreightAcctID">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="FreightSubID">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="GroupMask">
+                        <DataType>Object</DataType>
+                    </ReportField>
+                    <ReportField Name="Included">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                    <ReportField Name="InvtAcctID">
+                    </ReportField>
+                    <ReportField Name="InvtAcctID_Account_description">
+                    </ReportField>
+                    <ReportField Name="InvtAcctID_description">
+                    </ReportField>
+                    <ReportField Name="InvtAcctID_Segment1">
+                    </ReportField>
+                    <ReportField Name="InvtSubID">
+                    </ReportField>
+                    <ReportField Name="InvtSubID_description">
+                    </ReportField>
+                    <ReportField Name="InvtSubID_Segment1">
+                    </ReportField>
+                    <ReportField Name="InvtSubID_Segment2">
+                    </ReportField>
+                    <ReportField Name="InvtSubID_Sub_description">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByID">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByID_description">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByID_Modifier_displayName">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByID_Modifier_Username">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByScreenID">
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime">
+                        <DataType>DateTime</DataType>
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime_Day">
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime_Hour">
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime_Month">
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime_Quarter">
+                    </ReportField>
+                    <ReportField Name="LCVarianceAcctID">
+                    </ReportField>
+                    <ReportField Name="LCVarianceAcctID_Account_description">
+                    </ReportField>
+                    <ReportField Name="LCVarianceAcctID_description">
+                    </ReportField>
+                    <ReportField Name="LCVarianceAcctID_Segment1">
+                    </ReportField>
+                    <ReportField Name="LCVarianceSubID">
+                    </ReportField>
+                    <ReportField Name="LCVarianceSubID_description">
+                    </ReportField>
+                    <ReportField Name="LCVarianceSubID_Segment1">
+                    </ReportField>
+                    <ReportField Name="LCVarianceSubID_Segment2">
+                    </ReportField>
+                    <ReportField Name="LCVarianceSubID_Sub_description">
+                    </ReportField>
+                    <ReportField Name="LocationValid">
+                    </ReportField>
+                    <ReportField Name="MiscAcctID">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="MiscSubID">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="NoteActivity">
+                    </ReportField>
+                    <ReportField Name="NoteFiles">
+                    </ReportField>
+                    <ReportField Name="NoteID">
+                        <DataType>Object</DataType>
+                    </ReportField>
+                    <ReportField Name="NoteImages">
+                    </ReportField>
+                    <ReportField Name="NoteText">
+                    </ReportField>
+                    <ReportField Name="OverrideInvtAccSub">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                    <ReportField Name="POAccrualAcctID">
+                    </ReportField>
+                    <ReportField Name="POAccrualAcctID_Account_description">
+                    </ReportField>
+                    <ReportField Name="POAccrualAcctID_description">
+                    </ReportField>
+                    <ReportField Name="POAccrualAcctID_Segment1">
+                    </ReportField>
+                    <ReportField Name="POAccrualSubID">
+                    </ReportField>
+                    <ReportField Name="POAccrualSubID_description">
+                    </ReportField>
+                    <ReportField Name="POAccrualSubID_Segment1">
+                    </ReportField>
+                    <ReportField Name="POAccrualSubID_Segment2">
+                    </ReportField>
+                    <ReportField Name="POAccrualSubID_Sub_description">
+                    </ReportField>
+                    <ReportField Name="PPVAcctID">
+                    </ReportField>
+                    <ReportField Name="PPVAcctID_Account_description">
+                    </ReportField>
+                    <ReportField Name="PPVAcctID_description">
+                    </ReportField>
+                    <ReportField Name="PPVAcctID_Segment1">
+                    </ReportField>
+                    <ReportField Name="PPVSubID">
+                    </ReportField>
+                    <ReportField Name="PPVSubID_description">
+                    </ReportField>
+                    <ReportField Name="PPVSubID_Segment1">
+                    </ReportField>
+                    <ReportField Name="PPVSubID_Segment2">
+                    </ReportField>
+                    <ReportField Name="PPVSubID_Sub_description">
+                    </ReportField>
+                    <ReportField Name="ReasonCodeSubID">
+                    </ReportField>
+                    <ReportField Name="ReasonCodeSubID_description">
+                    </ReportField>
+                    <ReportField Name="ReasonCodeSubID_Segment1">
+                    </ReportField>
+                    <ReportField Name="ReasonCodeSubID_Segment2">
+                    </ReportField>
+                    <ReportField Name="ReasonCodeSubID_Sub_description">
+                    </ReportField>
+                    <ReportField Name="ReceiptLocationID">
+                    </ReportField>
+                    <ReportField Name="ReceiptLocationID_description">
+                    </ReportField>
+                    <ReportField Name="ReceiptLocationID_INLocation_descr">
+                    </ReportField>
+                    <ReportField Name="ReceiptLocationID_Segment1">
+                    </ReportField>
+                    <ReportField Name="ReceiptLocationIDOverride">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                    <ReportField Name="ReplenishmentClassID">
+                    </ReportField>
+                    <ReportField Name="ReplenishmentClassID_description">
+                    </ReportField>
+                    <ReportField Name="ReplenishmentClassID_INReplenishmentClass_descr">
+                    </ReportField>
+                    <ReportField Name="ReturnLocationID">
+                    </ReportField>
+                    <ReportField Name="ReturnLocationID_description">
+                    </ReportField>
+                    <ReportField Name="ReturnLocationID_INLocation_descr">
+                    </ReportField>
+                    <ReportField Name="ReturnLocationID_Segment1">
+                    </ReportField>
+                    <ReportField Name="SalesAcctID">
+                    </ReportField>
+                    <ReportField Name="SalesAcctID_Account_description">
+                    </ReportField>
+                    <ReportField Name="SalesAcctID_description">
+                    </ReportField>
+                    <ReportField Name="SalesAcctID_Segment1">
+                    </ReportField>
+                    <ReportField Name="SalesSubID">
+                    </ReportField>
+                    <ReportField Name="SalesSubID_description">
+                    </ReportField>
+                    <ReportField Name="SalesSubID_Segment1">
+                    </ReportField>
+                    <ReportField Name="SalesSubID_Segment2">
+                    </ReportField>
+                    <ReportField Name="SalesSubID_Sub_description">
+                    </ReportField>
+                    <ReportField Name="Secured">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                    <ReportField Name="ShipLocationID">
+                    </ReportField>
+                    <ReportField Name="ShipLocationID_description">
+                    </ReportField>
+                    <ReportField Name="ShipLocationID_INLocation_descr">
+                    </ReportField>
+                    <ReportField Name="ShipLocationID_Segment1">
+                    </ReportField>
+                    <ReportField Name="ShipLocationIDOverride">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                    <ReportField Name="SiteCD">
+                    </ReportField>
+                    <ReportField Name="SiteCD_Segment1">
+                    </ReportField>
+                    <ReportField Name="SiteID">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="StdCstRevAcctID">
+                    </ReportField>
+                    <ReportField Name="StdCstRevAcctID_Account_description">
+                    </ReportField>
+                    <ReportField Name="StdCstRevAcctID_description">
+                    </ReportField>
+                    <ReportField Name="StdCstRevAcctID_Segment1">
+                    </ReportField>
+                    <ReportField Name="StdCstRevSubID">
+                    </ReportField>
+                    <ReportField Name="StdCstRevSubID_description">
+                    </ReportField>
+                    <ReportField Name="StdCstRevSubID_Segment1">
+                    </ReportField>
+                    <ReportField Name="StdCstRevSubID_Segment2">
+                    </ReportField>
+                    <ReportField Name="StdCstRevSubID_Sub_description">
+                    </ReportField>
+                    <ReportField Name="StdCstVarAcctID">
+                    </ReportField>
+                    <ReportField Name="StdCstVarAcctID_Account_description">
+                    </ReportField>
+                    <ReportField Name="StdCstVarAcctID_description">
+                    </ReportField>
+                    <ReportField Name="StdCstVarAcctID_Segment1">
+                    </ReportField>
+                    <ReportField Name="StdCstVarSubID">
+                    </ReportField>
+                    <ReportField Name="StdCstVarSubID_description">
+                    </ReportField>
+                    <ReportField Name="StdCstVarSubID_Segment1">
+                    </ReportField>
+                    <ReportField Name="StdCstVarSubID_Segment2">
+                    </ReportField>
+                    <ReportField Name="StdCstVarSubID_Sub_description">
+                    </ReportField>
+                    <ReportField Name="tstamp">
+                    </ReportField>
+                    <ReportField Name="UseItemDefaultLocationForPicking">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                </Fields>
+                <FullName>PX.Objects.IN.INSite</FullName>
+            </ReportTable>
         </Tables>
         <Version>20201103</Version>
         <Sections>
             <PageHeader Name="pageHeaderSection1">
-                <Height>12.91005cm</Height>
+                <Height>13.33333cm</Height>
                 <Items>
                     <PictureBox Name="pictureBox3">
                         <Excel>
                             <width>3</width>
                         </Excel>
                         <Location>0px, 0px</Location>
-                        <MimeType />
                         <QRCodeSettings />
                         <Size>56px, 72px</Size>
                         <Source>Database</Source>
-                        <Style>
-                            <BackImage>
-                                <MimeType />
-                            </BackImage>
-                        </Style>
                         <Value>=[Organization.LogoNameReport]</Value>
                     </PictureBox>
                     <TextBox Name="textBox1">
@@ -4765,7 +5132,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             </Padding>
                             <TextAlign>Right</TextAlign>
                         </Style>
-                        <Value>=IIf([SOShipment.AttributeEINNBR] &lt;&gt; Null, 'EIN #: ' + [SOShipment.AttributeEINNBR], '')</Value>
+                        <Value>=IIF([SOShipment.ShipmentType] = 'I', #010;IIf([SOShipment.AttributeEINNBR] &lt;&gt; Null, 'EIN #: ' + [SOShipment.AttributeEINNBR], ''),#010;[INSite.AttributeWHVAT])</Value>
                     </TextBox>
                     <TextBox Name="textBox11">
                         <Excel>
@@ -4784,13 +5151,14 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Right>1px</Right>
                             </BorderWidth>
                             <Font>
+                                <Name>Microsoft YaHei UI</Name>
                                 <Size>10px</Size>
                             </Font>
                             <Padding>
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>=[SOShipmentContact.FullName]</Value>
+                        <Value>=IIF([SOShipment.ShipmentType] = 'I', [CustomerMainContact.FullName],[INSite.AttributeWHACCTNAME])</Value>
                     </TextBox>
                     <TextBox Name="textBox12">
                         <Excel>
@@ -4810,13 +5178,14 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Right>1px</Right>
                             </BorderWidth>
                             <Font>
+                                <Name>Microsoft YaHei UI</Name>
                                 <Size>10px</Size>
                             </Font>
                             <Padding>
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>= IIf([SOShipmentAddress.AddressLine1] &lt;&gt; Null, [SOShipmentAddress.AddressLine1], '')#010;+ IIf([SOShipmentAddress.AddressLine2] &lt;&gt; Null, ', ' + [SOShipmentAddress.AddressLine2], '')#010;+ IIf([SOShipmentAddress.City] &lt;&gt; Null, ', ' + [SOShipmentAddress.City], '')#010;+ IIf([SOShipmentAddress.State] &lt;&gt; Null, ', ' + [SOShipmentAddress.State], '')#010;+ IIf([SOShipmentAddress.CountryID] &lt;&gt; Null, ', ' + [SOShipmentAddress.CountryID], '')</Value>
+                        <Value>=IIF([SOShipment.ShipmentType] = 'I',#010;IIf([CustomerMainAddr.AddressLine1] &lt;&gt; Null, [CustomerMainAddr.AddressLine1], '')#010;+ IIf([CustomerMainAddr.AddressLine2] &lt;&gt; Null, ', ' + [CustomerMainAddr.AddressLine2], '')#010;+ IIf([CustomerMainAddr.City] &lt;&gt; Null, ', ' + [CustomerMainAddr.City], '')#010;+ IIf([CustomerMainAddr.State] &lt;&gt; Null, ', ' + [CustomerMainAddr.State], '')#010;+ IIf([CustomerMainAddr.CountryID] &lt;&gt; Null, ', ' + [CustomerMainAddr.CountryID], ''),#010;IIF([INSite.AttributeWHADDR1] &lt;&gt; Null, [INSite.AttributeWHADDR1], '')#010;+ IIF([INSite.AttributeWHADDR2]&lt;&gt; Null, [INSite.AttributeWHADDR2],''))</Value>
                     </TextBox>
                     <TextBox Name="textBox13">
                         <Excel>
@@ -4835,13 +5204,14 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Right>1px</Right>
                             </BorderWidth>
                             <Font>
+                                <Name>Microsoft YaHei UI</Name>
                                 <Size>10px</Size>
                             </Font>
                             <Padding>
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>='Contact Person: ' + IsNull([SOShipmentContact.Attention], '')</Value>
+                        <Value>='Contact Person: ' + #010;IIF([SOShipment.ShipmentType] = 'I',IsNull([CustomerPrimaryContact.DisplayName], ''),[INSite.AttributeWHCONTACT])#010;</Value>
                     </TextBox>
                     <TextBox Name="textBox14">
                         <Excel>
@@ -4860,13 +5230,14 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Right>1px</Right>
                             </BorderWidth>
                             <Font>
+                                <Name>Microsoft YaHei UI</Name>
                                 <Size>10px</Size>
                             </Font>
                             <Padding>
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>='Mobile: ' + IsNull([SOShipmentContact.Phone1], '')</Value>
+                        <Value>='Mobile: ' + #010;IIF([SOShipment.ShipmentType] = 'I',IsNull([CustomerMainContact.Phone1], [CustomerMainContact.Phone2]),[INSite.AttributeWHPHONE])</Value>
                     </TextBox>
                     <TextBox Name="textBox15">
                         <Excel>
@@ -4882,18 +5253,18 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Right>Solid</Right>
                             </BorderStyle>
                             <BorderWidth>
-                                <Bottom>1px</Bottom>
                                 <Left>1px</Left>
                                 <Right>1px</Right>
                             </BorderWidth>
                             <Font>
+                                <Name>Microsoft YaHei UI</Name>
                                 <Size>10px</Size>
                             </Font>
                             <Padding>
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>='Email: ' + IsNull([SOShipmentContact.Email], '')</Value>
+                        <Value>='Email: ' + #010;IIF([SOShipment.ShipmentType] = 'I',IsNull([CustomerMainContact.EMail], ''),[INSite.AttributeWHEMAIL])</Value>
                     </TextBox>
                     <TextBox Name="textBox16">
                         <Excel>
@@ -5214,7 +5585,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>=IsNull([SOShipment.FOBPoint], '')</Value>
+                        <Value>=IIF([SOShipment.ShipmentType] = 'I',IsNull([SOShipment.FOBPoint], ''),[SOShipmentContact.ContactID])</Value>
                     </TextBox>
                     <TextBox Name="textBox28">
                         <Excel>
@@ -5520,6 +5891,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Right>1px</Right>
                             </BorderWidth>
                             <Font>
+                                <Name>Microsoft YaHei UI</Name>
                                 <Size>10px</Size>
                             </Font>
                             <Padding>
@@ -5547,6 +5919,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Right>1px</Right>
                             </BorderWidth>
                             <Font>
+                                <Name>Microsoft YaHei UI</Name>
                                 <Size>10px</Size>
                             </Font>
                             <Padding>
@@ -5601,6 +5974,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Right>1px</Right>
                             </BorderWidth>
                             <Font>
+                                <Name>Microsoft YaHei UI</Name>
                                 <Size>10px</Size>
                             </Font>
                             <Padding>
@@ -5616,7 +5990,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <width>4</width>
                         </Excel>
                         <Location>328px, 464px</Location>
-                        <Size>368px, 16px</Size>
+                        <Size>368px, 32px</Size>
                         <Style>
                             <BorderStyle>
                                 <Bottom>Solid</Bottom>
@@ -5629,6 +6003,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Right>1px</Right>
                             </BorderWidth>
                             <Font>
+                                <Name>Microsoft YaHei UI</Name>
                                 <Size>10px</Size>
                             </Font>
                             <Padding>
@@ -5816,6 +6191,34 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             </Padding>
                         </Style>
                         <Value>=IIf([SOShipment.ShipmentType] = 'T',#010;IsNull([SOOrder.OrderNbr], ''),#010;IsNull([SOOrder.CustomerOrderNbr], ''))</Value>
+                    </TextBox>
+                    <TextBox Name="textBox95">
+                        <Excel>
+                            <row>23</row>
+                            <width>4</width>
+                        </Excel>
+                        <Location>0px, 480px</Location>
+                        <Size>304px, 16px</Size>
+                        <Style>
+                            <BorderStyle>
+                                <Bottom>Solid</Bottom>
+                                <Left>Solid</Left>
+                                <Right>Solid</Right>
+                            </BorderStyle>
+                            <BorderWidth>
+                                <Bottom>1px</Bottom>
+                                <Left>1px</Left>
+                                <Right>1px</Right>
+                            </BorderWidth>
+                            <Font>
+                                <Name>Microsoft YaHei UI</Name>
+                                <Size>10px</Size>
+                            </Font>
+                            <Padding>
+                                <Left>1px</Left>
+                            </Padding>
+                        </Style>
+                        <Value>=IIF([SOShipment.ShipmentType] = 'I','',[INSite.AttributeWHREGNO])</Value>
                     </TextBox>
                 </Items>
             </PageHeader>

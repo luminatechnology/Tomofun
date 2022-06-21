@@ -1,18 +1,12 @@
 using System;
 using PX.Data;
-using PX.Objects.GL;
 
 namespace LUMTomofunCustomization.DAC
 {
     [Serializable]
-    [PXCacheName("LUMShopifyTransData")]
-    public class LUMShopifyTransData : IBqlTable
+    [PXCacheName("LUMShopifySettlementTransData")]
+    public class LUMShopifySettlementTransData : IBqlTable
     {
-        public class FK
-        {
-            public class ShopifySourceData : LUMShopifySourceData.PK.ForeignKeyOf<LUMShopifyTransData>.By<sequenceNumber> { }
-        }
-
         #region Selected
         [PXBool()]
         [PXUIField(DisplayName = "Selected")]
@@ -22,36 +16,9 @@ namespace LUMTomofunCustomization.DAC
 
         #region TransSequenceNumber
         [PXDBIdentity(IsKey = true)]
+        [PXUIField(DisplayName = "Trans Sequence Number")]
         public virtual int? TransSequenceNumber { get; set; }
         public abstract class transSequenceNumber : PX.Data.BQL.BqlInt.Field<transSequenceNumber> { }
-        #endregion
-
-        #region SequenceNumber
-        [PXDBInt()]
-        [PXUIField(DisplayName = "Sequence Number", Visible = false)]
-        public virtual int? SequenceNumber { get; set; }
-        public abstract class sequenceNumber : PX.Data.BQL.BqlInt.Field<sequenceNumber> { }
-        #endregion
-
-        #region BranchID
-        [Branch()]
-        [PXDefault(typeof(AccessInfo.branchID), PersistingCheck = PXPersistingCheck.Nothing)]
-        public virtual int? BranchID { get; set; }
-        public abstract class branchID : PX.Data.BQL.BqlInt.Field<branchID> { }
-        #endregion
-
-        #region Apitype
-        [PXDBString(20, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Apitype")]
-        public virtual string Apitype { get; set; }
-        public abstract class apitype : PX.Data.BQL.BqlString.Field<apitype> { }
-        #endregion
-
-        #region TransactionType
-        [PXDBString(20, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Transaction Type")]
-        public virtual string TransactionType { get; set; }
-        public abstract class transactionType : PX.Data.BQL.BqlString.Field<transactionType> { }
         #endregion
 
         #region Marketplace
@@ -61,35 +28,77 @@ namespace LUMTomofunCustomization.DAC
         public abstract class marketplace : PX.Data.BQL.BqlString.Field<marketplace> { }
         #endregion
 
+        #region TransactionDate
+        [PXDBDate()]
+        [PXUIField(DisplayName = "Transaction Date")]
+        public virtual DateTime? TransactionDate { get; set; }
+        public abstract class transactionDate : PX.Data.BQL.BqlDateTime.Field<transactionDate> { }
+        #endregion
+
+        #region TransactionType
+        [PXDBString(100, IsUnicode = true, InputMask = "")]
+        [PXUIField(DisplayName = "Type")]
+        public virtual string TransactionType { get; set; }
+        public abstract class transactionType : PX.Data.BQL.BqlString.Field<transactionType> { }
+        #endregion
+
         #region OrderID
-        [PXDBString(20, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Shopify Order ID")]
+        [PXDBString(100, IsUnicode = true, InputMask = "")]
+        [PXUIField(DisplayName = "Order")]
         public virtual string OrderID { get; set; }
         public abstract class orderID : PX.Data.BQL.BqlString.Field<orderID> { }
         #endregion
 
-        #region FinancialStatus
-        [PXDBString(20, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Financial Status")]
-        public virtual string FinancialStatus { get; set; }
-        public abstract class financialStatus : PX.Data.BQL.BqlString.Field<financialStatus> { }
+        #region PayoutDate
+        [PXDBDate()]
+        [PXUIField(DisplayName = "Payout Date")]
+        public virtual DateTime? PayoutDate { get; set; }
+        public abstract class payoutDate : PX.Data.BQL.BqlDateTime.Field<payoutDate> { }
         #endregion
 
-        #region FullfillmentStatus
-        [PXDBString(20, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Fullfillment Status")]
-        public virtual string FullfillmentStatus { get; set; }
-        public abstract class fullfillmentStatus : PX.Data.BQL.BqlString.Field<fullfillmentStatus> { }
+        #region Amount
+        [PXDBDecimal()]
+        [PXUIField(DisplayName = "Amount")]
+        public virtual Decimal? Amount { get; set; }
+        public abstract class amount : PX.Data.BQL.BqlDecimal.Field<amount> { }
         #endregion
 
-        #region TransJson
-        [PXDBString(IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Transaction Json")]
-        public virtual string TransJson { get; set; }
-        public abstract class transJson : PX.Data.BQL.BqlString.Field<transJson> { }
+        #region Fee
+        [PXDBDecimal()]
+        [PXUIField(DisplayName = "Fee")]
+        public virtual Decimal? Fee { get; set; }
+        public abstract class fee : PX.Data.BQL.BqlDecimal.Field<fee> { }
         #endregion
 
-        #region IsProcessed
+        #region Net
+        [PXDBDecimal()]
+        [PXUIField(DisplayName = "Net")]
+        public virtual Decimal? Net { get; set; }
+        public abstract class net : PX.Data.BQL.BqlDecimal.Field<net> { }
+        #endregion
+
+        #region Checkout
+        [PXDBString(100, IsUnicode = true, InputMask = "")]
+        [PXUIField(DisplayName = "Checkout")]
+        public virtual string Checkout { get; set; }
+        public abstract class checkout : PX.Data.BQL.BqlString.Field<checkout> { }
+        #endregion
+
+        #region PaymentMethodName
+        [PXDBString(200, IsUnicode = true, InputMask = "")]
+        [PXUIField(DisplayName = "Payment Method Name")]
+        public virtual string PaymentMethodName { get; set; }
+        public abstract class paymentMethodName : PX.Data.BQL.BqlString.Field<paymentMethodName> { }
+        #endregion
+
+        #region Currency
+        [PXDBString(3, IsUnicode = true, InputMask = "")]
+        [PXUIField(DisplayName = "Currency")]
+        public virtual string Currency { get; set; }
+        public abstract class currency : PX.Data.BQL.BqlString.Field<currency> { }
+        #endregion
+
+         #region IsProcessed
         [PXDBBool]
         [PXUIField(DisplayName = "IsProcessed")]
         public virtual bool? IsProcessed { get; set; }
@@ -105,6 +114,7 @@ namespace LUMTomofunCustomization.DAC
 
         #region CreatedByID
         [PXDBCreatedByID()]
+        [PXUIField(Enabled = false)]
         public virtual Guid? CreatedByID { get; set; }
         public abstract class createdByID : PX.Data.BQL.BqlGuid.Field<createdByID> { }
         #endregion
@@ -117,6 +127,7 @@ namespace LUMTomofunCustomization.DAC
 
         #region CreatedDateTime
         [PXDBCreatedDateTime()]
+        [PXUIField(Enabled = false)]
         public virtual DateTime? CreatedDateTime { get; set; }
         public abstract class createdDateTime : PX.Data.BQL.BqlDateTime.Field<createdDateTime> { }
         #endregion
