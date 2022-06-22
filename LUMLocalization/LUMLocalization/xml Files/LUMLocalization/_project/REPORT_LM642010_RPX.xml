@@ -355,7 +355,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 <ParentName>Customer</ParentName>
             </ReportRelation>
         </Relations>
-        <SchemaUrl>http://localhost/Tomofun1/</SchemaUrl>
+        <SchemaUrl>https://tomofun.acumatica.com/</SchemaUrl>
         <Sorting>
             <SortExp>
                 <DataField>SOShipment.ShipmentNbr</DataField>
@@ -7620,6 +7620,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                         <ValueExpr>=IIf([SOShipment.ShipmentType] = 'T',#010;$SumTotalVal + IsNull([SOShipLine.ShippedQty], 0) * [POLine.CuryUnitCost],#010;$SumTotalVal + IsNull([SOShipLine.ShippedQty], 0) * [SOLine.CuryUnitPrice])</ValueExpr>
                     </ReportVariable>
                 </Variables>
+                <VisibleExpr>=IIf([SOShipment.ShipmentType] = 'T',#010;[POLine.CuryUnitCost],#010;[SOLine.CuryUnitPrice]) &lt;&gt; null Or #010;IIf([SOShipment.ShipmentType] = 'T',#010;[POLine.CuryUnitCost],#010;[SOLine.CuryUnitPrice]) = 0</VisibleExpr>
                 <Items>
                     <TextBox Name="textBox42">
                         <Excel>
