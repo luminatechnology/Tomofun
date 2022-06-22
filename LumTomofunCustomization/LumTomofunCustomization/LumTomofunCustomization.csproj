@@ -82,6 +82,7 @@
     <Compile Include="API Entity\ShopifyPaymentEntity.cs" />
     <Compile Include="DAC\LUMAmazonSettlementTransData.cs" />
     <Compile Include="DAC\LUMAmazonTransData.cs" />
+    <Compile Include="DAC\LUMAmzINReconcilition.cs" />
     <Compile Include="DAC\LUMShopifyMarketplacePreference.cs" />
     <Compile Include="DAC\LUMShopifySourceData.cs" />
     <Compile Include="DAC\LUMForecastUpload.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Graph\LUMAmazonPaymentProcess.cs" />
     <Compile Include="Graph\LUMAmazonSettlementTransactionProcess.cs" />
     <Compile Include="Graph\LUMAmazonTransactionProcess.cs" />
+    <Compile Include="Graph\LUMAmzINReconciliationProc.cs" />
     <Compile Include="Graph\LUMJPaypalJP_NPPaymentProcess.cs" />
     <Compile Include="Graph\LUMMarketplaceFeePreferenceMaint.cs" />
     <Compile Include="Graph\LUMMarketplacePreferenceMaint.cs" />
