@@ -5081,7 +5081,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
         <Version>20201103</Version>
         <Sections>
             <PageHeader Name="pageHeaderSection1">
-                <Height>13.33333cm</Height>
+                <Height>13.75661cm</Height>
                 <Items>
                     <PictureBox Name="pictureBox3">
                         <Excel>
@@ -5211,7 +5211,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>='Contact Person: ' + #010;IIF([SOShipment.ShipmentType] = 'I',IsNull([CustomerPrimaryContact.DisplayName], ''),[INSite.AttributeWHCONTACT])#010;</Value>
+                        <Value>='Contact Person: ' + #010;ISNULL(IIF([SOShipment.ShipmentType] = 'I',IsNull([CustomerPrimaryContact.DisplayName], ''),[INSite.AttributeWHCONTACT]),'')#010;</Value>
                     </TextBox>
                     <TextBox Name="textBox14">
                         <Excel>
@@ -5237,7 +5237,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>='Mobile: ' + #010;IIF([SOShipment.ShipmentType] = 'I',IsNull([CustomerMainContact.Phone1], [CustomerMainContact.Phone2]),[INSite.AttributeWHPHONE])</Value>
+                        <Value>='Mobile: ' + #010;ISNULL(IIF([SOShipment.ShipmentType] = 'I',IsNull([CustomerMainContact.Phone1], [CustomerMainContact.Phone2]),[INSite.AttributeWHPHONE]),'')</Value>
                     </TextBox>
                     <TextBox Name="textBox15">
                         <Excel>
@@ -5245,7 +5245,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <width>4</width>
                         </Excel>
                         <Location>0px, 464px</Location>
-                        <Size>304px, 16px</Size>
+                        <Size>304px, 24px</Size>
                         <Style>
                             <BorderStyle>
                                 <Bottom>Solid</Bottom>
@@ -5264,7 +5264,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>='Email: ' + #010;IIF([SOShipment.ShipmentType] = 'I',IsNull([CustomerMainContact.EMail], ''),[INSite.AttributeWHEMAIL])</Value>
+                        <Value>='Email: ' + #010;ISNULL(IIF([SOShipment.ShipmentType] = 'I',IsNull([CustomerMainContact.EMail], ''),[INSite.AttributeWHEMAIL]),'')</Value>
                     </TextBox>
                     <TextBox Name="textBox16">
                         <Excel>
@@ -5908,7 +5908,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <height>3</height>
                         </Excel>
                         <Location>328px, 384px</Location>
-                        <Size>368px, 64px</Size>
+                        <Size>368px, 48px</Size>
                         <Style>
                             <BorderStyle>
                                 <Left>Solid</Left>
@@ -5962,7 +5962,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>21</row>
                             <width>4</width>
                         </Excel>
-                        <Location>328px, 448px</Location>
+                        <Location>328px, 480px</Location>
                         <Size>368px, 16px</Size>
                         <Style>
                             <BorderStyle>
@@ -5989,8 +5989,8 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>22</row>
                             <width>4</width>
                         </Excel>
-                        <Location>328px, 464px</Location>
-                        <Size>368px, 32px</Size>
+                        <Location>328px, 496px</Location>
+                        <Size>368px, 16px</Size>
                         <Style>
                             <BorderStyle>
                                 <Bottom>Solid</Bottom>
@@ -6197,8 +6197,8 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>23</row>
                             <width>4</width>
                         </Excel>
-                        <Location>0px, 480px</Location>
-                        <Size>304px, 16px</Size>
+                        <Location>0px, 488px</Location>
+                        <Size>304px, 24px</Size>
                         <Style>
                             <BorderStyle>
                                 <Bottom>Solid</Bottom>
@@ -6219,6 +6219,85 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             </Padding>
                         </Style>
                         <Value>=IIF([SOShipment.ShipmentType] = 'I','',[INSite.AttributeWHREGNO])</Value>
+                    </TextBox>
+                    <TextBox Name="textBox96">
+                        <Excel>
+                            <row>21</row>
+                            <width>4</width>
+                        </Excel>
+                        <Location>328px, 432px</Location>
+                        <Size>368px, 16px</Size>
+                        <Style>
+                            <BorderStyle>
+                                <Left>Solid</Left>
+                                <Right>Solid</Right>
+                            </BorderStyle>
+                            <BorderWidth>
+                                <Left>1px</Left>
+                                <Right>1px</Right>
+                            </BorderWidth>
+                            <Font>
+                                <Name>Microsoft YaHei UI</Name>
+                                <Size>10px</Size>
+                            </Font>
+                            <Padding>
+                                <Left>1px</Left>
+                            </Padding>
+                        </Style>
+                        <Value>='Contact Person: ' + ISNULL([SOShipmentContact.Attention],'')</Value>
+                    </TextBox>
+                    <TextBox Name="textBox97">
+                        <Excel>
+                            <row>22</row>
+                            <width>4</width>
+                        </Excel>
+                        <Location>328px, 448px</Location>
+                        <Size>368px, 16px</Size>
+                        <Style>
+                            <BorderStyle>
+                                <Left>Solid</Left>
+                                <Right>Solid</Right>
+                            </BorderStyle>
+                            <BorderWidth>
+                                <Left>1px</Left>
+                                <Right>1px</Right>
+                            </BorderWidth>
+                            <Font>
+                                <Name>Microsoft YaHei UI</Name>
+                                <Size>10px</Size>
+                            </Font>
+                            <Padding>
+                                <Left>1px</Left>
+                            </Padding>
+                        </Style>
+                        <Value>='Mobile: ' + ISNULL([SOShipmentContact.Phone1],ISNULL([SOShipmentContact.Phone2],''))</Value>
+                    </TextBox>
+                    <TextBox Name="textBox98">
+                        <Excel>
+                            <row>23</row>
+                            <width>4</width>
+                        </Excel>
+                        <Location>328px, 464px</Location>
+                        <Size>368px, 16px</Size>
+                        <Style>
+                            <BorderStyle>
+                                <Bottom>Solid</Bottom>
+                                <Left>Solid</Left>
+                                <Right>Solid</Right>
+                            </BorderStyle>
+                            <BorderWidth>
+                                <Left>1px</Left>
+                                <Right>1px</Right>
+                            </BorderWidth>
+                            <Font>
+                                <Name>Microsoft YaHei UI</Name>
+                                <Size>10px</Size>
+                            </Font>
+                            <Padding>
+                                <Left>1px</Left>
+                            </Padding>
+                        </Style>
+                        <Value>='Email: ' + ISNULL([SOShipmentContact.Email],'')</Value>
                     </TextBox>
                 </Items>
             </PageHeader>
