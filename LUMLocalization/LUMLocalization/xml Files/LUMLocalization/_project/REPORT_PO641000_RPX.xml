@@ -143,17 +143,9 @@ c7+6v2ZP1207b03EXAuw1TOjS2SCNkKsVKDlUl9e3ifjiVx4xa9cYz0C1+3trhDQCnUx0epveeTLGgt8
         <Locale>=[Vendor.LocaleName]</Locale>
         <MailSettings>
             <ActivitySource>POOrder.NoteID</ActivitySource>
-            <Bcc>
-            </Bcc>
             <Body>='Dear Vendor, This is an automatic email to notify you that you have a new Purchase Order available on your account.  You will find a copy of Purchase Order #'+[POOrder.OrderNbr]+' '+'attached to this email.  #010;#010;If you have any questions, please don’t hesitate to contact us at email.  #010;#010;Thank you for choosing'+' '+[CompanyContact.FullName]+'.'</Body>
-            <Cc>
-            </Cc>
-            <Format>
-            </Format>
             <ParentSource>Vendor.NoteID</ParentSource>
             <Subject>=[CompanyContact.FullName]+' '+'Purchase Order #'+[POOrder.OrderNbr]+' '+'is now available'</Subject>
-            <TemplateID>
-            </TemplateID>
             <To>=[RemitContact.EMail]</To>
         </MailSettings>
         <PageSettings>
@@ -392,6 +384,17 @@ c7+6v2ZP1207b03EXAuw1TOjS2SCNkKsVKDlUl9e3ifjiVx4xa9cYz0C1+3trhDQCnUx0epveeTLGgt8
                 <ParentName>POOrder</ParentName>
             </ReportRelation>
             <ReportRelation>
+                <ChildAlias>RemitAddress</ChildAlias>
+                <ChildName>POAddress</ChildName>
+                <Links>
+                    <RelationRow>
+                        <ChildField>AddressID</ChildField>
+                        <ParentField>RemitAddressID</ParentField>
+                    </RelationRow>
+                </Links>
+                <ParentName>POOrder</ParentName>
+            </ReportRelation>
+            <ReportRelation>
                 <ChildName>PreferencesGeneral</ChildName>
                 <JoinType>Cross</JoinType>
                 <ParentName>Vendor</ParentName>
@@ -483,7 +486,7 @@ c7+6v2ZP1207b03EXAuw1TOjS2SCNkKsVKDlUl9e3ifjiVx4xa9cYz0C1+3trhDQCnUx0epveeTLGgt8
                 <ParentName>OrganizationBAccount</ParentName>
             </ReportRelation>
         </Relations>
-        <SchemaUrl>http://localhost/AcumaticaTomofun/</SchemaUrl>
+        <SchemaUrl>https://tomofun.acumatica.com/</SchemaUrl>
         <StylesTemplate>TemplateFormExternal.rpx</StylesTemplate>
         <Tables>
             <ReportTable Name="POOrder">
@@ -4189,7 +4192,7 @@ c7+6v2ZP1207b03EXAuw1TOjS2SCNkKsVKDlUl9e3ifjiVx4xa9cYz0C1+3trhDQCnUx0epveeTLGgt8
                                     </Padding>
                                 </Style>
                                 <StyleName>Normal</StyleName>
-                                <Value>=IIf([RemitContact.FullName]&lt;&gt;null,[RemitContact.FullName], iif([Vendor.AcctName]&lt;&gt;null,[Vendor.AcctName] , '')) +'{br}'#010;+'{br}'#010;+IIf([VendorAddress.AddressLine1]&lt;&gt;null,[VendorAddress.AddressLine1] + '{br}','')#010;+IIf([VendorAddress.AddressLine2]&lt;&gt;null,[VendorAddress.AddressLine2] +'{br}','')#010;+IIf([VendorAddress.City]&lt;&gt;null, [VendorAddress.City]+' ', '')#010;+IIf([VendorAddress.State]&lt;&gt;null, [VendorAddress.State]+' ','')#010;+IIf([VendorAddress.PostalCode]&lt;&gt;null, [VendorAddress.PostalCode],'')#010;+IIf([VendorAddress.City]&lt;&gt;null OR [VendorAddress.State]&lt;&gt;null OR [VendorAddress.PostalCode]&lt;&gt;null,'{br}','') #010;+IIf([VendorAddress.CountryID]&lt;&gt;null,   [VendorAddress.CountryID_Country_description], '')#010;+'{br}Email: '+IIf([VendorContact.EMail]&lt;&gt;null,[VendorContact.EMail],'')#010;+'{br}Phone: '+IIf([VendorContact.Phone1]&lt;&gt;null,[VendorContact.Phone1],'')</Value>
+                                <Value>=IIf([RemitContact.FullName]&lt;&gt;null,[RemitContact.FullName], iif([RemitContact.Attention]&lt;&gt;null,[RemitContact.Attention] , '')) +'{br}'#010;+'{br}'#010;+IIf([RemitAddress.AddressLine1]&lt;&gt;null,[RemitAddress.AddressLine1] + '{br}','')#010;+IIf([RemitAddress.AddressLine2]&lt;&gt;null,[RemitAddress.AddressLine2] +'{br}','')#010;+IIf([RemitAddress.City]&lt;&gt;null, [RemitAddress.City]+' ', '')#010;+IIf([RemitAddress.State]&lt;&gt;null, [RemitAddress.State]+' ','')#010;+IIf([RemitAddress.PostalCode]&lt;&gt;null, [RemitAddress.PostalCode],'')#010;+IIf([RemitAddress.City]&lt;&gt;null OR [RemitAddress.State]&lt;&gt;null OR [RemitAddress.PostalCode]&lt;&gt;null,'{br}','') #010;+IIf([RemitAddress.CountryID]&lt;&gt;null,   [RemitAddress.CountryID_Country_description], '')#010;+'{br}Email: '+IIf([RemitContact.Email]&lt;&gt;null,[RemitContact.Email],'')#010;+'{br}Phone: '+IIf([RemitContact.Phone1]&lt;&gt;null,[RemitContact.Phone1],'')</Value>
                             </TextBox>
                             <TextBox Name="textBox58">
                                 <Location>8px, 296px</Location>
