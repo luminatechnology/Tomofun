@@ -338,7 +338,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 <ParentName>Customer</ParentName>
             </ReportRelation>
         </Relations>
-        <SchemaUrl>http://localhost/Tomofun1/</SchemaUrl>
+        <SchemaUrl>https://tomofun.acumatica.com/</SchemaUrl>
         <Tables>
             <ReportTable Name="SOShipmentAddress">
                 <Fields>
@@ -7104,12 +7104,13 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Value>Pallet Size :</Value>
                             </TextBox>
                             <TextBox Name="textBox82">
+                                <CanGrow>True</CanGrow>
                                 <Excel>
                                     <column>2</column>
                                     <row>9</row>
                                 </Excel>
                                 <Location>88px, 104px</Location>
-                                <Size>112px, 16px</Size>
+                                <Size>96px, 16px</Size>
                                 <Style>
                                     <Font>
                                         <Size>10px</Size>
@@ -7150,7 +7151,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                     <column>3</column>
                                     <row>9</row>
                                 </Excel>
-                                <Location>200px, 104px</Location>
+                                <Location>184px, 104px</Location>
                                 <Size>120px, 16px</Size>
                                 <Style>
                                     <Font>
