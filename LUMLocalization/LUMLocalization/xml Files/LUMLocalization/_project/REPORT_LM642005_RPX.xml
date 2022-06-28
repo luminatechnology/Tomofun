@@ -5926,7 +5926,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>= IsNull([SOShipmentAddress.AddressLine1], '')#010;+ '{br}' + IsNull([SOShipmentAddress.AddressLine2], '')#010;+ IIf([SOShipmentAddress.City] &lt;&gt; Null, '{br}' + [SOShipmentAddress.City], '')#010;+ IIf([SOShipmentAddress.State] &lt;&gt; Null, ' ' + [SOShipmentAddress.State], '')#010;+ IIf([SOShipmentAddress.CountryID_description] &lt;&gt; Null, ' ' + [SOShipmentAddress.CountryID_description], '')</Value>
+                        <Value>= IsNull([SOShipmentAddress.AddressLine1], '')#010;+ '{br}' + IsNull([SOShipmentAddress.AddressLine2], '')#010;+ IIf([SOShipmentAddress.City] &lt;&gt; Null, '{br}' + [SOShipmentAddress.City], '')#010;+ IIf([SOShipmentAddress.State] &lt;&gt; Null, ' ' + [SOShipmentAddress.State], '')#010;+ IIf([SOShipmentAddress.CountryID_description] &lt;&gt; Null, ' ' + [SOShipmentAddress.CountryID_description], '') +#010;IIF([SOShipmentAddress.PostalCode] &lt;&gt; Null,' ' + [SOShipmentAddress.PostalCode],'')</Value>
                     </TextBox>
                     <TextBox Name="textBox4">
                         <Excel>
