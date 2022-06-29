@@ -120,7 +120,7 @@ namespace LumTomofunCustomization.Graph
                             line.InventoryID = GetInvetoryitemID(soGraph, item.SellerSKU);
                             if (line.InventoryID == null)
                                 throw new Exception($"can not find Inventory item ID ({item.SellerSKU})");
-                            if(item.QuantityShipped == 0)
+                            if (item.QuantityShipped == 0)
                                 continue;
                             line.ManualPrice = true;
                             line.OrderQty = item.QuantityShipped;
@@ -167,10 +167,10 @@ namespace LumTomofunCustomization.Graph
                         if (!isTaxCalculate)
                         {
                             soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, row.Marketplace + "EC");
-                            soGraph.Taxes.Cache.SetValueExt<SOTaxTran.curyTaxAmt>(soGraph.Taxes.Current, row.Marketplace == "US" ? 0 : amzTotalTax);
+                            soGraph.Taxes.Cache.SetValueExt<SOTaxTran.curyTaxAmt>(soGraph.Taxes.Current, amzTotalTax);
 
-                            soGraph.Document.Cache.SetValueExt<SOOrder.curyTaxTotal>(soGraph.Document.Current, row.Marketplace == "US" ? 0 : amzTotalTax);
-                            soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + (row.Marketplace == "US" ? 0 : amzTotalTax));
+                            soGraph.Document.Cache.SetValueExt<SOOrder.curyTaxTotal>(soGraph.Document.Current, amzTotalTax);
+                            soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + amzTotalTax);
                         }
                         #endregion
 
@@ -192,8 +192,7 @@ namespace LumTomofunCustomization.Graph
                             };
                             // 判斷是否不產生Invoice
                             var isDoNotCreateInvoice =
-                                 (isTaxCalculate && (decimal?)amzOrder.Amount != soGraph.Document.Current.CuryOrderTotal - soGraph.Document.Current.CuryTaxTotal) ||
-                                 (!isTaxCalculate && (decimal?)amzOrder.Amount - (row.Marketplace == "US" ? amzTotalTax : 0) != soGraph.Document.Current.CuryOrderTotal);
+                                 (isTaxCalculate && (decimal?)amzOrder.Amount != soGraph.Document.Current.CuryOrderTotal - soGraph.Document.Current.CuryTaxTotal);
                             if (!isDoNotCreateInvoice)
                                 soGraph.PrepareInvoice(newAdapter);
                         }

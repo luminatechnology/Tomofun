@@ -195,15 +195,16 @@ namespace LumTomofunCustomization.Graph
                                 #endregion
 
                                 #region Adjustments
-                                var adjTrans = arGraph.Adjustments.Cache.CreateInstance() as ARAdjust;
-                                adjTrans.AdjdDocType = "INV";
-                                adjTrans.AdjdRefNbr = SelectFrom<ARInvoice>
+                                var mapInvoice = SelectFrom<ARInvoice>
                                                       .InnerJoin<ARTran>.On<ARInvoice.docType.IsEqual<ARTran.tranType>
                                                             .And<ARInvoice.refNbr.IsEqual<ARTran.refNbr>>>
                                                       .InnerJoin<SOOrder>.On<ARTran.sOOrderNbr.IsEqual<SOOrder.orderNbr>>
                                                       .Where<ARInvoice.invoiceNbr.IsEqual<P.AsString>
                                                         .And<SOOrder.orderType.IsEqual<P.AsString>>>
-                                                      .View.SelectSingleBound(baseGraph, null, amzGroupOrderData.Key.OrderID, "FA").TopFirst?.RefNbr;
+                                                      .View.SelectSingleBound(baseGraph, null, amzGroupOrderData.Key.OrderID, "FA").TopFirst;
+                                var adjTrans = arGraph.Adjustments.Cache.CreateInstance() as ARAdjust;
+                                adjTrans.AdjdDocType = "INV";
+                                adjTrans.AdjdRefNbr = mapInvoice?.RefNbr;
                                 arGraph.Adjustments.Insert(adjTrans);
                                 #endregion
 
@@ -228,11 +229,24 @@ namespace LumTomofunCustomization.Graph
                                         continue;
                                     arGraph.PaymentCharges.Insert(chargeTrans);
                                 }
+
                                 #endregion
                                 // set payment amount to apply amount
                                 arGraph.Document.SetValueExt<ARPayment.curyOrigDocAmt>(arGraph.Document.Current, arGraph.Document.Current.CuryApplAmt);
                                 // Save Payment
                                 arGraph.Actions.PressSave();
+                                #region CHARGS
+                                if(_marketplace == "US")
+                                {
+                                    var chargeTrans = arGraph.PaymentCharges.Cache.CreateInstance() as ARPaymentChargeTran;
+                                    chargeTrans.EntryTypeID = "WHTAX";
+                                    chargeTrans.CuryTranAmt = mapInvoice?.CuryTaxTotal;
+                                    arGraph.PaymentCharges.Insert(chargeTrans);
+                                    // Save Payment
+                                    arGraph.Actions.PressSave();
+                                }
+                                #endregion
+                                // Release Payment
                                 arGraph.release.Press();
                                 arGraph.releaseFromHold.Press();
                                 #endregion
