@@ -45,6 +45,7 @@ namespace LumTomofunCustomization.Graph
             PXUIFieldAttribute.SetEnabled<LUMAmazonTransData.isProcessed>(AmazonTransaction.Cache, null, true);
             foreach (var row in amazonList)
             {
+                decimal? systemTax = (decimal)0;
                 PXProcessing.SetCurrentItem(row);
                 try
                 {
@@ -166,11 +167,12 @@ namespace LumTomofunCustomization.Graph
                         // Setting SO Tax
                         if (!isTaxCalculate)
                         {
+                            systemTax = soGraph.Taxes.Current?.CuryTaxAmt ?? 0;
                             soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, row.Marketplace + "EC");
                             soGraph.Taxes.Cache.SetValueExt<SOTaxTran.curyTaxAmt>(soGraph.Taxes.Current, amzTotalTax);
 
                             soGraph.Document.Cache.SetValueExt<SOOrder.curyTaxTotal>(soGraph.Document.Current, amzTotalTax);
-                            soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + amzTotalTax);
+                            soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + amzTotalTax - systemTax);
                         }
                         #endregion
 
@@ -209,7 +211,7 @@ namespace LumTomofunCustomization.Graph
                                         .TopFirst;
                             // update docDate
                             invoiceGraph.Document.SetValueExt<ARInvoice.docDate>(invoiceGraph.Document.Current, order.RequestDate);
-                            if (soTax != null)
+                            if (soTax != null && !isTaxCalculate)
                             {
                                 // setting Tax
                                 invoiceGraph.Taxes.Current = invoiceGraph.Taxes.Select();
@@ -217,8 +219,8 @@ namespace LumTomofunCustomization.Graph
                                 invoiceGraph.Taxes.Cache.MarkUpdated(invoiceGraph.Taxes.Current);
                                 // setting Document
                                 invoiceGraph.Document.SetValueExt<ARInvoice.curyTaxTotal>(invoiceGraph.Document.Current, soTax.CuryTaxAmt);
-                                invoiceGraph.Document.SetValueExt<ARInvoice.curyDocBal>(invoiceGraph.Document.Current, invoiceGraph.Document.Current.CuryDocBal + (soTax.CuryTaxAmt ?? 0));
-                                invoiceGraph.Document.SetValueExt<ARInvoice.curyOrigDocAmt>(invoiceGraph.Document.Current, invoiceGraph.Document.Current.CuryOrigDocAmt + (soTax.CuryTaxAmt ?? 0));
+                                invoiceGraph.Document.SetValueExt<ARInvoice.curyDocBal>(invoiceGraph.Document.Current, invoiceGraph.Document.Current.CuryDocBal + (soTax.CuryTaxAmt ?? 0) - systemTax);
+                                invoiceGraph.Document.SetValueExt<ARInvoice.curyOrigDocAmt>(invoiceGraph.Document.Current, invoiceGraph.Document.Current.CuryOrigDocAmt + (soTax.CuryTaxAmt ?? 0) - systemTax);
                                 invoiceGraph.Document.Update(invoiceGraph.Document.Current);
                             }
                             // Save
@@ -236,15 +238,17 @@ namespace LumTomofunCustomization.Graph
                 catch (PXOuterException ex)
                 {
                     row.ErrorMessage = ex.InnerMessages[0];
+                    row.IsProcessed = false;
                 }
                 catch (Exception ex)
                 {
                     row.ErrorMessage = ex.Message;
+                    row.IsProcessed = false;
                 }
                 finally
                 {
                     if (!string.IsNullOrEmpty(row.ErrorMessage))
-                        PXProcessing.SetError<LUMAmazonTransData>(row.ErrorMessage);
+                        PXProcessing.SetError(row.ErrorMessage);
                     baseGraph.AmazonTransaction.Update(row);
                     // Save
                     baseGraph.Actions.PressSave();
