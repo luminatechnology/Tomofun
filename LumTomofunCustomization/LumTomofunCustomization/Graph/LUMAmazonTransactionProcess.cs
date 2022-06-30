@@ -192,11 +192,7 @@ namespace LumTomofunCustomization.Graph
                                     soGraph.Document.Current.OrderNbr
                                 }
                             };
-                            // 判斷是否不產生Invoice
-                            var isDoNotCreateInvoice =
-                                 (isTaxCalculate && (decimal?)amzOrder.Amount != soGraph.Document.Current.CuryOrderTotal - soGraph.Document.Current.CuryTaxTotal);
-                            if (!isDoNotCreateInvoice)
-                                soGraph.PrepareInvoice(newAdapter);
+                            soGraph.PrepareInvoice(newAdapter);
                         }
                         // Prepare Invoice Success
                         catch (PXRedirectRequiredException ex)

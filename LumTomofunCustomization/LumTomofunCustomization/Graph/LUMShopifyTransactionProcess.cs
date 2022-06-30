@@ -49,6 +49,7 @@ namespace LumTomofunCustomization.Graph
             PXUIFieldAttribute.SetEnabled<LUMShopifyTransData.isProcessed>(ShopifyTransaction.Cache, null, true);
             foreach (var row in shopifyList)
             {
+                decimal? systemTax = (decimal)0;
                 row.ErrorMessage = string.Empty;
                 PXProcessing.SetCurrentItem(row);
                 try
@@ -156,11 +157,12 @@ namespace LumTomofunCustomization.Graph
                             // Setting SO Tax
                             if (!isTaxCalculate)
                             {
+                                systemTax = soGraph.Taxes.Current?.CuryTaxAmt ?? 0;
                                 soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, row.Marketplace + "EC");
                                 soGraph.Taxes.Cache.SetValueExt<SOTaxTran.curyTaxAmt>(soGraph.Taxes.Current, spOrder.current_total_tax);
 
                                 soGraph.Document.Cache.SetValueExt<SOOrder.curyTaxTotal>(soGraph.Document.Current, spOrder.current_total_tax);
-                                soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + decimal.Parse(spOrder.current_total_tax));
+                                soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + decimal.Parse(spOrder.current_total_tax) - systemTax);
                             }
                             #endregion
 
@@ -210,12 +212,6 @@ namespace LumTomofunCustomization.Graph
                                 GoPrepareInvoice = false;
                                 row.ErrorMessage = @"SO Order.CuryOrderTotal is 0 and Upper(JSON\Tags) DOEST NOT INCLUDE ‘KOL’ or ‘REPLACE’ or ‘FAAS’";
                             }
-                            // Shoipify Market Preference ‘Tax Calculation’ is SELECTED  AND ([SOOrder.AttributeORDERAMT] <> ( [SOOrder.CuryOrderTotal] - [SOOrder.CuryTaxTotal] ))
-                            else if (isTaxCalculate && decimal.Parse(spOrder.current_total_price) != soGraph.Document.Current.CuryOrderTotal - soGraph.Document.Current.CuryTaxTotal)
-                            {
-                                GoPrepareInvoice = false;
-                                row.ErrorMessage = @"Shoipify Market Preference ‘Tax Calculation’ is SELECTED  AND ([SOOrder.AttributeORDERAMT] <> ( [SOOrder.CuryOrderTotal] - [SOOrder.CuryTaxTotal] ))";
-                            }
                             // Shopify Market Preference ‘Tax Calculation’ is NOT SELECTED AND ([SOOrder.AttributeORDERAMT] - [SOOrder.AttributeTAXCOLLECT] ) <> [SOOrder.CuryOrderTotal]
                             else if (!isTaxCalculate && decimal.Parse(spOrder.current_total_price) - 0 != soGraph.Document.Current.CuryOrderTotal)
                             { 
@@ -239,7 +235,7 @@ namespace LumTomofunCustomization.Graph
                                              .And<SOTaxTran.orderType.IsEqual<P.AsString>>>
                                         .View.SelectSingleBound(this, null, soGraph.Document.Current.OrderNbr, soGraph.Document.Current.OrderType)
                                         .TopFirst;
-                            if (soTax != null)
+                            if (soTax != null && !isTaxCalculate)
                             {
                                 // setting Tax
                                 invoiceGraph.Taxes.Current = invoiceGraph.Taxes.Select();
@@ -247,8 +243,8 @@ namespace LumTomofunCustomization.Graph
                                 invoiceGraph.Taxes.Cache.MarkUpdated(invoiceGraph.Taxes.Current);
                                 // setting Document
                                 invoiceGraph.Document.SetValueExt<ARInvoice.curyTaxTotal>(invoiceGraph.Document.Current, soTax.CuryTaxAmt);
-                                invoiceGraph.Document.SetValueExt<ARInvoice.curyDocBal>(invoiceGraph.Document.Current, invoiceGraph.Document.Current.CuryDocBal + (soTax.CuryTaxAmt ?? 0));
-                                invoiceGraph.Document.SetValueExt<ARInvoice.curyOrigDocAmt>(invoiceGraph.Document.Current, invoiceGraph.Document.Current.CuryOrigDocAmt + (soTax.CuryTaxAmt ?? 0));
+                                invoiceGraph.Document.SetValueExt<ARInvoice.curyDocBal>(invoiceGraph.Document.Current, invoiceGraph.Document.Current.CuryDocBal + (soTax.CuryTaxAmt ?? 0) - systemTax);
+                                invoiceGraph.Document.SetValueExt<ARInvoice.curyOrigDocAmt>(invoiceGraph.Document.Current, invoiceGraph.Document.Current.CuryOrigDocAmt + (soTax.CuryTaxAmt ?? 0) - systemTax);
                                 invoiceGraph.Document.Update(invoiceGraph.Document.Current);
                             }
                             // Save
