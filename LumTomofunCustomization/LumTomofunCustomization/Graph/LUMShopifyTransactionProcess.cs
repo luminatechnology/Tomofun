@@ -200,10 +200,10 @@ namespace LumTomofunCustomization.Graph
                         try
                         {
                             // 判斷是否需要Create Invoice
-                            var tagConditions = new string[] { "KOL", "REPLACE", "FAAS" };
+                            var tagConditions = new string[] { "KOL", "REPLACE", "FAAS", "MANUAL_ORDER_CREATED" };
 
-                            // JSON\Tags is not Empty and Upper(JSON\Tags) NOT INCLUDES ‘KOL’ or ‘REPLACE’ or ‘FAAS
-                            if (!string.IsNullOrEmpty(spOrder.tags) && tagConditions.Any(x => (spOrder.tags ?? "").ToUpper().Contains(x)))
+                            // JSON\Tags is not Empty and Upper(JSON\Tags) NOT INCLUDES ‘KOL’ or ‘REPLACE’ or ‘FAAS' or 'MANUAL_ORDER_CREATED'
+                            if (!string.IsNullOrEmpty(spOrder.tags) && !tagConditions.Any(x => (spOrder.tags ?? "").ToUpper().Contains(x)))
                             { 
                                 GoPrepareInvoice = false;
                                 row.ErrorMessage = @"JSON\Tags is not Empty and Upper(JSON\Tags) NOT INCLUDES ‘KOL’ or ‘REPLACE’ or ‘FAAS";
