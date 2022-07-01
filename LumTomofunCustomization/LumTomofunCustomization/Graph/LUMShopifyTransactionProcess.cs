@@ -166,9 +166,13 @@ namespace LumTomofunCustomization.Graph
                             }
                             #endregion
 
+                            // Write json into note
+                            PXNoteAttribute.SetNote(soGraph.Document.Cache, soGraph.Document.Current, row.TransJson);
+
                             #region Create Payment
                             if ((spOrder.gateway ?? string.Empty).ToUpper().Contains("HITRUSTPAY"))
                             {
+                                soGraph.Save.Press();
                                 var spCashAccount = SelectFrom<CashAccount>
                                             .Where<CashAccount.cashAccountCD.IsEqual<P.AsString>>
                                             .View.SelectSingleBound(baseGraph, null, $"TWDHITRUST").TopFirst;
@@ -183,8 +187,6 @@ namespace LumTomofunCustomization.Graph
                             }
                             #endregion
 
-                            // Write json into note
-                            PXNoteAttribute.SetNote(soGraph.Document.Cache, soGraph.Document.Current, row.TransJson);
                             // Sales Order Save
                             soGraph.Save.Press();
                         }
@@ -201,7 +203,7 @@ namespace LumTomofunCustomization.Graph
                             var tagConditions = new string[] { "KOL", "REPLACE", "FAAS" };
 
                             // JSON\Tags is not Empty and Upper(JSON\Tags) NOT INCLUDES ‘KOL’ or ‘REPLACE’ or ‘FAAS
-                            if (!string.IsNullOrEmpty(spOrder.tags) && Array.IndexOf(tagConditions, spOrder.tags?.ToUpper()) == -1)
+                            if (!string.IsNullOrEmpty(spOrder.tags) && tagConditions.Any(x => (spOrder.tags ?? "").ToUpper().Contains(x)))
                             { 
                                 GoPrepareInvoice = false;
                                 row.ErrorMessage = @"JSON\Tags is not Empty and Upper(JSON\Tags) NOT INCLUDES ‘KOL’ or ‘REPLACE’ or ‘FAAS";
