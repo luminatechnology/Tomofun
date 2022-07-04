@@ -143,9 +143,17 @@ c7+6v2ZP1207b03EXAuw1TOjS2SCNkKsVKDlUl9e3ifjiVx4xa9cYz0C1+3trhDQCnUx0epveeTLGgt8
         <Locale>=[Vendor.LocaleName]</Locale>
         <MailSettings>
             <ActivitySource>POOrder.NoteID</ActivitySource>
+            <Bcc>
+            </Bcc>
             <Body>='Dear Vendor, This is an automatic email to notify you that you have a new Purchase Order available on your account.  You will find a copy of Purchase Order #'+[POOrder.OrderNbr]+' '+'attached to this email.  #010;#010;If you have any questions, please don’t hesitate to contact us at email.  #010;#010;Thank you for choosing'+' '+[CompanyContact.FullName]+'.'</Body>
+            <Cc>
+            </Cc>
+            <Format>
+            </Format>
             <ParentSource>Vendor.NoteID</ParentSource>
             <Subject>=[CompanyContact.FullName]+' '+'Purchase Order #'+[POOrder.OrderNbr]+' '+'is now available'</Subject>
+            <TemplateID>
+            </TemplateID>
             <To>=[RemitContact.EMail]</To>
         </MailSettings>
         <PageSettings>
@@ -4186,6 +4194,9 @@ c7+6v2ZP1207b03EXAuw1TOjS2SCNkKsVKDlUl9e3ifjiVx4xa9cYz0C1+3trhDQCnUx0epveeTLGgt8
                                         <Left>1px</Left>
                                         <Right>1px</Right>
                                     </BorderWidth>
+                                    <Font>
+                                        <Name>Microsoft YaHei UI</Name>
+                                    </Font>
                                     <Padding>
                                         <Left>3px</Left>
                                         <Top>3px</Top>
@@ -4258,6 +4269,9 @@ c7+6v2ZP1207b03EXAuw1TOjS2SCNkKsVKDlUl9e3ifjiVx4xa9cYz0C1+3trhDQCnUx0epveeTLGgt8
                                         <Left>1px</Left>
                                         <Right>1px</Right>
                                     </BorderWidth>
+                                    <Font>
+                                        <Name>Microsoft YaHei UI</Name>
+                                    </Font>
                                     <Padding>
                                         <Left>3px</Left>
                                         <Top>3px</Top>

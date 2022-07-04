@@ -5081,7 +5081,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
         <Version>20201103</Version>
         <Sections>
             <PageHeader Name="pageHeaderSection1">
-                <Height>13.33333cm</Height>
+                <Height>13.75661cm</Height>
                 <Items>
                     <PictureBox Name="pictureBox3">
                         <Excel>
@@ -5113,7 +5113,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>17</row>
                             <width>4</width>
                         </Excel>
-                        <Location>0px, 360px</Location>
+                        <Location>0px, 368px</Location>
                         <Size>304px, 16px</Size>
                         <Style>
                             <BorderStyle>
@@ -5139,7 +5139,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>18</row>
                             <width>4</width>
                         </Excel>
-                        <Location>0px, 376px</Location>
+                        <Location>0px, 384px</Location>
                         <Size>304px, 16px</Size>
                         <Style>
                             <BorderStyle>
@@ -5166,7 +5166,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <width>4</width>
                             <height>2</height>
                         </Excel>
-                        <Location>0px, 392px</Location>
+                        <Location>0px, 400px</Location>
                         <Size>304px, 32px</Size>
                         <Style>
                             <BorderStyle>
@@ -5192,7 +5192,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>21</row>
                             <width>4</width>
                         </Excel>
-                        <Location>0px, 424px</Location>
+                        <Location>0px, 432px</Location>
                         <Size>304px, 16px</Size>
                         <Style>
                             <BorderStyle>
@@ -5218,7 +5218,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>22</row>
                             <width>4</width>
                         </Excel>
-                        <Location>0px, 440px</Location>
+                        <Location>0px, 448px</Location>
                         <Size>304px, 16px</Size>
                         <Style>
                             <BorderStyle>
@@ -5244,7 +5244,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>23</row>
                             <width>4</width>
                         </Excel>
-                        <Location>0px, 456px</Location>
+                        <Location>0px, 464px</Location>
                         <Size>304px, 24px</Size>
                         <Style>
                             <BorderStyle>
@@ -5850,7 +5850,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>16</row>
                             <width>4</width>
                         </Excel>
-                        <Location>328px, 344px</Location>
+                        <Location>328px, 352px</Location>
                         <Size>368px, 16px</Size>
                         <Style>
                             <BorderStyle>
@@ -5879,7 +5879,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>17</row>
                             <width>4</width>
                         </Excel>
-                        <Location>328px, 360px</Location>
+                        <Location>328px, 368px</Location>
                         <Size>368px, 16px</Size>
                         <Style>
                             <BorderStyle>
@@ -5907,7 +5907,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <width>4</width>
                             <height>3</height>
                         </Excel>
-                        <Location>328px, 376px</Location>
+                        <Location>328px, 384px</Location>
                         <Size>368px, 48px</Size>
                         <Style>
                             <BorderStyle>
@@ -5926,7 +5926,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>= IsNull([SOShipmentAddress.AddressLine1], '')#010;+ '{br}' + IsNull([SOShipmentAddress.AddressLine2], '')#010;+ IIf([SOShipmentAddress.City] &lt;&gt; Null, '{br}' + [SOShipmentAddress.City], '')#010;+ IIf([SOShipmentAddress.State] &lt;&gt; Null, ' ' + [SOShipmentAddress.State], '')#010;+ IIf([SOShipmentAddress.CountryID_description] &lt;&gt; Null, ' ' + [SOShipmentAddress.CountryID_description], '') +#010;IIF([SOShipmentAddress.PostalCode] &lt;&gt; Null,' ' + [SOShipmentAddress.PostalCode],'')</Value>
+                        <Value>= IsNull([SOShipmentAddress.AddressLine1], '')#010;+ '{br}' + IsNull([SOShipmentAddress.AddressLine2], '')#010;+ IIf([SOShipmentAddress.City] &lt;&gt; Null, '{br}' + [SOShipmentAddress.City], '')#010;+ IIf([SOShipmentAddress.State] &lt;&gt; Null, ' ' + [SOShipmentAddress.State], '')#010;+ IIf([SOShipmentAddress.CountryID_description] &lt;&gt; Null, ' ' + [SOShipmentAddress.CountryID_description], '')</Value>
                     </TextBox>
                     <TextBox Name="textBox4">
                         <Excel>
@@ -5962,7 +5962,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>21</row>
                             <width>4</width>
                         </Excel>
-                        <Location>328px, 472px</Location>
+                        <Location>328px, 480px</Location>
                         <Size>368px, 16px</Size>
                         <Style>
                             <BorderStyle>
@@ -5989,7 +5989,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>22</row>
                             <width>4</width>
                         </Excel>
-                        <Location>328px, 488px</Location>
+                        <Location>328px, 496px</Location>
                         <Size>368px, 16px</Size>
                         <Style>
                             <BorderStyle>
@@ -6144,7 +6144,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>16</row>
                             <width>4</width>
                         </Excel>
-                        <Location>0px, 344px</Location>
+                        <Location>0px, 352px</Location>
                         <Size>304px, 16px</Size>
                         <Style>
                             <BorderStyle>
@@ -6197,7 +6197,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>23</row>
                             <width>4</width>
                         </Excel>
-                        <Location>0px, 480px</Location>
+                        <Location>0px, 488px</Location>
                         <Size>304px, 24px</Size>
                         <Style>
                             <BorderStyle>
@@ -6225,7 +6225,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>21</row>
                             <width>4</width>
                         </Excel>
-                        <Location>328px, 424px</Location>
+                        <Location>328px, 432px</Location>
                         <Size>368px, 16px</Size>
                         <Style>
                             <BorderStyle>
@@ -6251,7 +6251,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>22</row>
                             <width>4</width>
                         </Excel>
-                        <Location>328px, 440px</Location>
+                        <Location>328px, 448px</Location>
                         <Size>368px, 16px</Size>
                         <Style>
                             <BorderStyle>
@@ -6277,7 +6277,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>23</row>
                             <width>4</width>
                         </Excel>
-                        <Location>328px, 456px</Location>
+                        <Location>328px, 464px</Location>
                         <Size>368px, 16px</Size>
                         <Style>
                             <BorderStyle>
@@ -6457,7 +6457,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 </Items>
             </Detail>
             <PageFooter Name="pageFooterSection1">
-                <Height>4.86772cm</Height>
+                <Height>5.29101cm</Height>
                 <PrintAtBottom>False</PrintAtBottom>
                 <Items>
                     <Line Name="line2">
@@ -7110,7 +7110,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                     <row>9</row>
                                 </Excel>
                                 <Location>88px, 104px</Location>
-                                <Size>192px, 16px</Size>
+                                <Size>96px, 16px</Size>
                                 <Style>
                                     <Font>
                                         <Size>10px</Size>
@@ -7151,7 +7151,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                     <column>3</column>
                                     <row>9</row>
                                 </Excel>
-                                <Location>280px, 104px</Location>
+                                <Location>184px, 104px</Location>
                                 <Size>120px, 16px</Size>
                                 <Style>
                                     <Font>

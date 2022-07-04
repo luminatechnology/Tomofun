@@ -209,7 +209,7 @@ namespace LumTomofunCustomization.Graph
                                 row.ErrorMessage = @"JSON\Tags is not Empty and Upper(JSON\Tags) NOT INCLUDES ‘KOL’ or ‘REPLACE’ or ‘FAAS";
                             }
                             // SO Order.CuryOrderTotal is 0 and Upper(JSON\Tags) DOEST NOT INCLUDE ‘KOL’ or ‘REPLACE’ or ‘FAAS’
-                            else if (soGraph.Document.Current.CuryOrderTotal == 0 && !string.IsNullOrEmpty(spOrder.tags) && Array.IndexOf(tagConditions, spOrder.tags?.ToUpper()) == -1)
+                            else if (soGraph.Document.Current.CuryOrderTotal == 0 && !string.IsNullOrEmpty(spOrder.tags) && !tagConditions.Any(x => (spOrder.tags ?? "").ToUpper().Contains(x)))
                             { 
                                 GoPrepareInvoice = false;
                                 row.ErrorMessage = @"SO Order.CuryOrderTotal is 0 and Upper(JSON\Tags) DOEST NOT INCLUDE ‘KOL’ or ‘REPLACE’ or ‘FAAS’";
