@@ -338,7 +338,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 <ParentName>Customer</ParentName>
             </ReportRelation>
         </Relations>
-        <SchemaUrl>https://tomofun.acumatica.com/</SchemaUrl>
+        <SchemaUrl>http://localhost/Tomofun1/</SchemaUrl>
         <Tables>
             <ReportTable Name="SOShipmentAddress">
                 <Fields>
@@ -6457,8 +6457,14 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 </Items>
             </Detail>
             <PageFooter Name="pageFooterSection1">
-                <Height>5.29101cm</Height>
+                <Expanded>False</Expanded>
+                <Height>0.21164cm</Height>
                 <PrintAtBottom>False</PrintAtBottom>
+                <PrintEmpty>False</PrintEmpty>
+                <Visible>False</Visible>
+            </PageFooter>
+            <ReportFooter Name="reportFooterSection1">
+                <Height>4.86772cm</Height>
                 <Items>
                     <Line Name="line2">
                         <Excel>
@@ -6466,14 +6472,14 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <row>7</row>
                             <width>2</width>
                         </Excel>
-                        <Location>400px, 160px</Location>
+                        <Location>408px, 152px</Location>
                         <Size>264px, 8px</Size>
                     </Line>
                     <PictureBox Name="pictureBox1">
                         <Excel>
                             <row>4</row>
                         </Excel>
-                        <Location>0px, 24px</Location>
+                        <Location>0px, 16px</Location>
                         <MimeType>image/jpeg</MimeType>
                         <QRCodeSettings />
                         <Size>112px, 56px</Size>
@@ -6485,7 +6491,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <column>7</column>
                             <row>6</row>
                         </Excel>
-                        <Location>400px, 48px</Location>
+                        <Location>408px, 40px</Location>
                         <MimeType>image/png</MimeType>
                         <QRCodeSettings />
                         <Size>184px, 112px</Size>
@@ -6496,7 +6502,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                         <Excel>
                             <row>7</row>
                         </Excel>
-                        <Location>0px, 96px</Location>
+                        <Location>0px, 88px</Location>
                         <Size>224px, 16px</Size>
                         <Value>=IsNull([SOShipmentAddress.CountryID_Country_description], '')</Value>
                     </TextBox>
@@ -6504,7 +6510,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                         <Excel>
                             <row>3</row>
                         </Excel>
-                        <Location>0px, 8px</Location>
+                        <Location>0px, 0px</Location>
                         <Size>160px, 16px</Size>
                         <Style>
                             <BorderStyle>
@@ -6528,7 +6534,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                         <Excel>
                             <row>6</row>
                         </Excel>
-                        <Location>0px, 80px</Location>
+                        <Location>0px, 72px</Location>
                         <Size>120px, 16px</Size>
                         <Value>TOMOFUN</Value>
                     </TextBox>
@@ -6537,7 +6543,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <column>7</column>
                             <row>8</row>
                         </Excel>
-                        <Location>400px, 168px</Location>
+                        <Location>408px, 160px</Location>
                         <Size>120px, 16px</Size>
                         <Value>Tomofun Co., Ltd.</Value>
                     </TextBox>
@@ -6545,7 +6551,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                         <Excel>
                             <row>8</row>
                         </Excel>
-                        <Location>0px, 112px</Location>
+                        <Location>0px, 104px</Location>
                         <Size>224px, 16px</Size>
                         <Value>='PLT No. 1-' + Ceiling(CDec($SumTotalCTNS) / CDec($CartonsPerPallet))</Value>
                     </TextBox>
@@ -6553,7 +6559,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                         <Excel>
                             <row>9</row>
                         </Excel>
-                        <Location>0px, 128px</Location>
+                        <Location>0px, 120px</Location>
                         <Size>224px, 16px</Size>
                         <Value>='MADE IN ' + UCase(IsNull([InventoryItem.CountryOfOrigin_description], ''))</Value>
                     </TextBox>
@@ -6561,7 +6567,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                         <Excel>
                             <row>10</row>
                         </Excel>
-                        <Location>0px, 144px</Location>
+                        <Location>0px, 136px</Location>
                         <Size>224px, 16px</Size>
                         <Value>=[SOShipment.AttributeSHIPMARK1]</Value>
                     </TextBox>
@@ -6569,12 +6575,12 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                         <Excel>
                             <row>11</row>
                         </Excel>
-                        <Location>0px, 160px</Location>
+                        <Location>0px, 152px</Location>
                         <Size>224px, 16px</Size>
                         <Value>=[SOShipment.AttributeSHIPMARK2]</Value>
                     </TextBox>
                 </Items>
-            </PageFooter>
+            </ReportFooter>
         </Sections>
         <Items />
         <Groups>
@@ -7110,13 +7116,13 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                     <row>9</row>
                                 </Excel>
                                 <Location>88px, 104px</Location>
-                                <Size>96px, 16px</Size>
+                                <Size>464px, 16px</Size>
                                 <Style>
                                     <Font>
                                         <Size>10px</Size>
                                     </Font>
                                 </Style>
-                                <Value>=[SOShipment.AttributePLTSIZE]</Value>
+                                <Value>=[SOShipment.AttributePLTSIZE]+#010;'  (' + $CartonsPerPallet + ' cartons/per pallet)'</Value>
                             </TextBox>
                             <TextBox Name="textBox86">
                                 <Excel>
@@ -7145,20 +7151,6 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                     </Font>
                                 </Style>
                                 <Value>Forwarder :</Value>
-                            </TextBox>
-                            <TextBox Name="textBox94">
-                                <Excel>
-                                    <column>3</column>
-                                    <row>9</row>
-                                </Excel>
-                                <Location>184px, 104px</Location>
-                                <Size>120px, 16px</Size>
-                                <Style>
-                                    <Font>
-                                        <Size>10px</Size>
-                                    </Font>
-                                </Style>
-                                <Value>='(' + $CartonsPerPallet + ' cartons/per pallet)'</Value>
                             </TextBox>
                         </Items>
                     </Footer>
