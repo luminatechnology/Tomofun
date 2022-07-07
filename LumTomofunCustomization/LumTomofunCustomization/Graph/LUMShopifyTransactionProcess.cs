@@ -200,23 +200,23 @@ namespace LumTomofunCustomization.Graph
                         try
                         {
                             // 判斷是否需要Create Invoice
-                            var tagConditions = new string[] { "KOL", "REPLACE", "FAAS", "MANUAL_ORDER_CREATED" };
+                            var tagConditions = new string[] { "KOL", "REPLACE", "FAAS", "MANUAL_ORDER_CREATED", "FRAUD_FILTER" };
 
                             // JSON\Tags is not Empty and Upper(JSON\Tags) NOT INCLUDES ‘KOL’ or ‘REPLACE’ or ‘FAAS' or 'MANUAL_ORDER_CREATED'
                             if (!string.IsNullOrEmpty(spOrder.tags) && !tagConditions.Any(x => (spOrder.tags ?? "").ToUpper().Contains(x)))
-                            { 
+                            {
                                 GoPrepareInvoice = false;
                                 row.ErrorMessage = @"JSON\Tags is not Empty and Upper(JSON\Tags) NOT INCLUDES ‘KOL’ or ‘REPLACE’ or ‘FAAS";
                             }
                             // SO Order.CuryOrderTotal is 0 and Upper(JSON\Tags) DOEST NOT INCLUDE ‘KOL’ or ‘REPLACE’ or ‘FAAS’
                             else if (soGraph.Document.Current.CuryOrderTotal == 0 && !string.IsNullOrEmpty(spOrder.tags) && !tagConditions.Any(x => (spOrder.tags ?? "").ToUpper().Contains(x)))
-                            { 
+                            {
                                 GoPrepareInvoice = false;
                                 row.ErrorMessage = @"SO Order.CuryOrderTotal is 0 and Upper(JSON\Tags) DOEST NOT INCLUDE ‘KOL’ or ‘REPLACE’ or ‘FAAS’";
                             }
                             // Shopify Market Preference ‘Tax Calculation’ is NOT SELECTED AND ([SOOrder.AttributeORDERAMT] - [SOOrder.AttributeTAXCOLLECT] ) <> [SOOrder.CuryOrderTotal]
                             else if (!isTaxCalculate && decimal.Parse(spOrder.current_total_price) - 0 != soGraph.Document.Current.CuryOrderTotal)
-                            { 
+                            {
                                 GoPrepareInvoice = false;
                                 row.ErrorMessage = @"Shopify Market Preference ‘Tax Calculation’ is NOT SELECTED AND ([SOOrder.AttributeORDERAMT] - [SOOrder.AttributeTAXCOLLECT] ) <> [SOOrder.CuryOrderTotal]";
                             }
