@@ -283,7 +283,7 @@ namespace LumTomofunCustomization.API_Entity.ShopifyOrder
         public long checkout_id { get; set; }
         public string checkout_token { get; set; }
         public ClientDetails client_details { get; set; }
-        public object closed_at { get; set; }
+        public DateTime? closed_at { get; set; }
         public bool confirmed { get; set; }
         public string contact_email { get; set; }
         public DateTime created_at { get; set; }

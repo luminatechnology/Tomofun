@@ -99,6 +99,7 @@ namespace LumTomofunCustomization.Graph
                             orderTrans.OrderID = order.id.ToString();
                             orderTrans.FullfillmentStatus = order.fulfillment_status ?? string.Empty;
                             orderTrans.FinancialStatus = order.financial_status;
+                            orderTrans.ClosedAt = order?.closed_at;
                             orderTrans.TransJson = JsonConvert.SerializeObject(order);
                             break;
                     }

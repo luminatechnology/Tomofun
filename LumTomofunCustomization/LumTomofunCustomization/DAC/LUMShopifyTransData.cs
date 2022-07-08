@@ -103,6 +103,13 @@ namespace LUMTomofunCustomization.DAC
         public abstract class errorMessage : PX.Data.BQL.BqlString.Field<errorMessage> { }
         #endregion
 
+        #region ClosedAt
+        [PXDBDate]
+        [PXUIField(DisplayName = "Closed_At")]
+        public virtual DateTime? ClosedAt { get; set; }
+        public abstract class closedAt : PX.Data.BQL.BqlDateTime.Field<closedAt> { }
+        #endregion
+
         #region CreatedByID
         [PXDBCreatedByID()]
         public virtual Guid? CreatedByID { get; set; }

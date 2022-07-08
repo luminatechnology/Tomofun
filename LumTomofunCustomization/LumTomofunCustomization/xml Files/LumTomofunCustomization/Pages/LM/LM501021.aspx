@@ -30,6 +30,7 @@
                     <px:PXGridColumn DataField="OrderID" Width="120"></px:PXGridColumn>
                     <px:PXGridColumn DataField="FinancialStatus" Width="120"></px:PXGridColumn>
                     <px:PXGridColumn DataField="FullfillmentStatus" Width="120"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="ClosedAt" Width="120"></px:PXGridColumn>
                     <px:PXGridColumn DataField="IsProcessed" Width="120" Type="CheckBox"></px:PXGridColumn>
                     <px:PXGridColumn DataField="ErrorMessage" Width="200"></px:PXGridColumn>
                     <px:PXGridColumn DataField="TransJson" Width="400"></px:PXGridColumn>
