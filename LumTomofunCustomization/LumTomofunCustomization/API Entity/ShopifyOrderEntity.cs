@@ -344,7 +344,7 @@ namespace LumTomofunCustomization.API_Entity.ShopifyOrder
         public TotalTaxSet total_tax_set { get; set; }
         public string total_tip_received { get; set; }
         public int total_weight { get; set; }
-        public DateTime updated_at { get; set; }
+        public DateTime? updated_at { get; set; }
         public object user_id { get; set; }
         public BillingAddress billing_address { get; set; }
         public Customer customer { get; set; }
