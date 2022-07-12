@@ -232,6 +232,8 @@ namespace LumTomofunCustomization.Graph
                             SOInvoiceEntry invoiceGraph = ex.Graph as SOInvoiceEntry;
                             // Update docDate
                             invoiceGraph.Document.SetValueExt<ARInvoice.docDate>(invoiceGraph.Document.Current, shopifySOOrder.RequestDate);
+                            // Update invoiceDate
+                            invoiceGraph.Document.SetValueExt<ARInvoice.invoiceDate>(invoiceGraph.Document.Current, (spOrder.closed_at ?? spOrder.updated_at));
                             var soTax = SelectFrom<SOTaxTran>
                                         .Where<SOTaxTran.orderNbr.IsEqual<P.AsString>
                                              .And<SOTaxTran.orderType.IsEqual<P.AsString>>>

@@ -195,7 +195,7 @@ namespace LumTomofunCustomization.Graph
 
                                 #region Header
                                 var soDoc = soGraph.Document.Cache.CreateInstance() as SOOrder;
-                                soDoc.OrderType = "CM";
+                                soDoc.OrderType = "RT";
                                 soDoc.CustomerOrderNbr = row.OrderID;
                                 soDoc.OrderDate = row.TransactionDate;
                                 soDoc.RequestDate = Accessinfo.BusinessDate;
