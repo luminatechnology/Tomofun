@@ -115,40 +115,30 @@ namespace LUMTomofunCustomization.Graph
         #endregion
 
         #region Methods
-        public Dictionary<string, string> Markerplaces = new Dictionary<string, string>()
+        public virtual (string marketPlaceID, string refreshToken) GetAmzCredentialInfo(LUMMWSPreference preference, string marketPlace)
         {
-            { "US", "ATVPDKIKX0DER" },
-            { "CA", "ATVPDKIKX0DER" },
-            { "MX", "ATVPDKIKX0DER" },
-            { "AU", "A39IBJ37TRP1C6" },      
-            { "UK", "A13V1IB3VIYZZH" },
-            { "FR", "A13V1IB3VIYZZH" },
-            { "DE", "A13V1IB3VIYZZH" },
-            { "IT", "A13V1IB3VIYZZH" },
-            { "ES", "A13V1IB3VIYZZH" },
-            { "NL", "A13V1IB3VIYZZH" },
-            { "SE", "A13V1IB3VIYZZH" },
-            { "JP", "A1VC38T7YXB528" },
-            { "SG", "A19VAU5U5O7RUS" } 
-        };
+            switch (marketPlace)
+            {
+                case "US":
+                case "CA":
+                case "MX":
+                    return (preference.USMarketplaceID, preference.USRefreshToken);
+                case "AU":
+                    return (preference.AUMarketplaceID, preference.AURefreshToken);
+                case "JP":
+                    return (preference.JPMarketplaceID, preference.JPRefreshToken);
+                case "SG":
+                    return (preference.SGMarketplaceID, preference.SGRefreshToken);
+                default :
+                    return (preference.EUMarketplaceID, preference.EURefreshToken);
+            }
+        }
 
-        public Dictionary<string, string> RefreshTokens = new Dictionary<string, string>()
+        public virtual AmazonConnection GetAmazonConnObject(LUMMWSPreference preference, string marketPlace, bool IsSingapore, out string mpID)
         {
-            // 美洲都用這個
-            { "ATVPDKIKX0DER" ,"Atzr|IwEBIIp0ZezYucHWyk0OLYR0bgWdNSgw7zbyhB1_zwKpEoc9VBK4RRe2mXr3VQlnv7nO8237Q5fwIhiCxdUkdtKePVcNsxglJobyJa5Fo7KbebCHis5PF2rvcQd6rMfEbVFkD2R2hI4CW-_8dGFcvtriScAdhMcUzDh3jh6UZ_QOLP8X9_af2qzfkwrUHQfxNECLjWl5QjL6jOm8_7Mthi2yOFf0LKPtIcSD87Z6McQWAia0zETu4pBxwVZv_783BULKT42JbGO9KnLbCtGPVvMXSmHy-mD8GIYmlgsRs9cpM8ch3R410E1LB2kzqVtm_TdMMXM" },
-            // EU都用這個
-            { "A13V1IB3VIYZZH", "Atzr|IwEBIDT3Gt6rpMY0XFBy5Y8yqVYTT5l-EYa7xagDwlDYf3LPCsqKy80PaTMDsSZwpp6Tq6tK9BSSPBjS9ca8xfhR_KPiV528-WeifurxrHvG2rF0VDWto1yMZ0VVrB_4GKrM0jsJ-CBzgPqG8ukeXb1iLsF6X9StcAsxa6ZS7R6zxQy2fNaZ8lmitVMQ49Lzyl0Oj2glMH8QbPy5cDhzbrPt80VV1KPymSB-9EPvfl7FKmYZ6H9lYbIAJPAQ1u9PMmlS5mGBJOB-XipoTogvW4i1IzLrJz-2kPE9K2ukVB1oZUIpGe3287ubwQq95yhFYE9-oGnGqZO0dMa7HMS-O19VADGz" },
-            // MarketPlace.Japan
-            { "A1VC38T7YXB528", "Atzr|IwEBIKaD4GZIyIrsPeq_eGShNISwCUWrph77-5wFIMR-8aZmv47EMDgJhR4as4WU6j4qymsdX2q8HU5aiW1SOL1XcxzUIYJrlv2w3ei2pDqsMEcYmGiiq09JoN6AwVYSXeOSHIWZ4WS23FzP6hiPVtxjmRiXmsS9POOzzM5KxF5hhCBnkRD6Kx_te_ycO0yhsHu8tMH-qjBBgDkdg_id17E-B4snDU3AFg5oZhaFzr_BsUaI6riDb2wMIu3koT4oHk-8YgdXMRe2TTRGu82n63BjT4LINXsVHB70tg4OYsM1fvzVJWjdOPgNCbrU46GwOcM2ALU" },
-            // MarketPlace.Australia
-            { "A39IBJ37TRP1C6", "Atzr|IwEBIMYdx7q_sBo_a1jlsshAUd6cBnCEIClRzQVaNZS5y7tE7nGV6qjp2a0RgYHKduOhee-Xl54q-gi2S17S5om7GwGj6vCc44enCQP6FK0ZN5DjXbjd-_cq0vMQwqP5e1HSRDJ6Oc8y32QRN7_QPow_PCm6hglLUsLvg4KW7OXXowRswkNBYMUA-3KnGCTpotrbV0u2IhOZnl0bP3vxmZ8nul3iw9htYhhhDw-Xb-FMmTfPQGkC3TPbDeyC6tDej3GANGuiWfRxqZTJBo3RDR2u0RDu0-WtFf3RqHQLUza38gmtMJt2Wj_PtKC83ugS6kFfwVA" },
-            // MarketPlace.Singapore
-            { "A19VAU5U5O7RUS", "Atzr|IwEBIA7GJ4sFj4Qt8snK0uEJRmzx1fEnUtsGTFmERMR1aIeD_lVf2kH2sOIfDZ3X-HUwm0c9q5DP0VESE59wzn-h2o28m5Uds-LhvBN9GDk-CJS_T92THt89qXOv-S01HlalsoYDpX5yvNROnGpHXgYAIPuXZCRobHCZWndo2PAf-2ZlC1KX3KLymsmDG2_fvB9wgL0fzxHbapgv-Lly5R2N79wz2Bfc0X59pfcJ3zRTbgStT_VHiIAXOOr__RXdoATJZ40-oCSKdUaX8XFbg9DohLMMQ2ttsM-akf8q0Hy3CxOTQA83c3XgKlUOp2aofmF9Nz8" }
-        };
+            (string marketPlaceID, string refreshToken) = GetAmzCredentialInfo(preference, marketPlace);
 
-        public virtual AmazonConnection GetAmazonConnObject(LUMMWSPreference preference, string marketPlace, bool IsSingapore)
-        {
-            RefreshTokens.TryGetValue(marketPlace, out string refeshToken);
+            mpID = marketPlaceID;
 
             return new AmazonConnection(new AmazonCredential()
             {
@@ -157,8 +147,8 @@ namespace LUMTomofunCustomization.Graph
                 RoleArn      = IsSingapore == false ? preference.RoleArn      : preference.SGRoleArn,
                 ClientId     = IsSingapore == false ? preference.ClientID     : preference.SGClientID,
                 ClientSecret = IsSingapore == false ? preference.ClientSecret : preference.SGClientSecret,
-                RefreshToken = refeshToken,
-                MarketPlace  = MarketPlace.GetMarketPlaceByID(marketPlace),
+                RefreshToken = refreshToken,
+                MarketPlace  = MarketPlace.GetMarketPlaceByID(marketPlaceID),
             });
         }
 
@@ -186,14 +176,19 @@ namespace LUMTomofunCustomization.Graph
             {
                 LUMMWSPreference preference = PXSelect<LUMMWSPreference>.SelectSingleBound(this, null);
                 
-                string dicValue = null;
+                string mpID = null;
                 foreach (LUMMarketplacePreference mfPref in SelectFrom<LUMMarketplacePreference>.View.Select(this))
                 {
-                    Markerplaces.TryGetValue(mfPref.Marketplace, out dicValue);
+                    AmazonConnection amzConnection = GetAmazonConnObject(preference, mfPref.Marketplace, mfPref.Marketplace == "SG", out mpID);
 
-                    AmazonConnection amzConnection = GetAmazonConnObject(preference, dicValue, mfPref.Marketplace == "SG");
+                    if (string.IsNullOrEmpty(mpID)) 
+                    {
+                        string MarketplaceNull = $"No Marketplace {mfPref.Marketplace} Token Is Defined.";
 
-                    var reports = GetFulfillmentInventoryReports(amzConnection, Filter.Current.FromDate, dicValue);
+                        throw new PXException(MarketplaceNull); 
+                    }
+
+                    var reports = GetFulfillmentInventoryReports(amzConnection, Filter.Current.FromDate, mpID);
 
                     reports.RemoveAll(r => r.ReportDocumentId == null);
 
@@ -201,9 +196,9 @@ namespace LUMTomofunCustomization.Graph
 
                     for (int i = 0; i < reports.Count; i++)
                     {
-                        var reportData = amzConnection.Reports.GetReportFile(reports[i].ReportDocumentId);
-
                         DeleteSameOrEmptyData(reports[i].ReportId);
+
+                        var reportData = amzConnection.Reports.GetReportFile(reports[i].ReportDocumentId);
 
                         int dataCount = 1;
                         using (StreamReader sr = new StreamReader(reportData))
@@ -223,6 +218,8 @@ namespace LUMTomofunCustomization.Graph
                 }
 
                 this.Actions.PressSave();
+
+                DeleteSameOrEmptyData(string.Empty);
             }
             catch (Exception e)
             {
@@ -235,12 +232,13 @@ namespace LUMTomofunCustomization.Graph
         {
             string country = list[7].Replace("\r", "");
 
-            if (string.IsNullOrEmpty(country) ) { return; }
+            //if (string.IsNullOrEmpty(country) ) { return; }
 
             LUMAmzINReconcilition reconcilition = new LUMAmzINReconcilition()
             {
                 SnapshotDate = DateTime.Parse(list[0]),
-                Sku = InventoryItem.UK.Find(this, list[2])?.InventoryID,
+                FNSku = list[1],
+                Sku = list[2],
                 ProductName = list[3],
                 Qty = Convert.ToDecimal(list[4]),
                 FBACenterID = list[5],
@@ -287,7 +285,7 @@ namespace LUMTomofunCustomization.Graph
             {
                 INTran tran = new INTran()
                 {
-                    InventoryID = aggrList[i].Sku,
+                    InventoryID = InventoryItem.UK.Find(adjustEntry, aggrList[i].Sku).InventoryID,
                     SiteID = aggrList[i].Warehouse,
                     LocationID = aggrList[i].Location
                 };
@@ -353,8 +351,11 @@ namespace LUMTomofunCustomization.Graph
 
         private void DeleteSameOrEmptyData(string reportID)
         {
-            PXDatabase.Delete<LUMAmzINReconcilition>(new PXDataFieldRestrict<LUMAmzINReconcilition.reportID>(string.Empty),
-                                                     new PXDataFieldRestrict<LUMAmzINReconcilition.isProcesses>(false));
+            if (reportID == string.Empty)
+            {
+                PXDatabase.Delete<LUMAmzINReconcilition>(new PXDataFieldRestrict<LUMAmzINReconcilition.reportID>(string.Empty),
+                                                         new PXDataFieldRestrict<LUMAmzINReconcilition.isProcesses>(false));
+            }
 
             PXDatabase.Delete<LUMAmzINReconcilition>(new PXDataFieldRestrict<LUMAmzINReconcilition.reportID>(reportID),
                                                      new PXDataFieldRestrict<LUMAmzINReconcilition.isProcesses>(false));
