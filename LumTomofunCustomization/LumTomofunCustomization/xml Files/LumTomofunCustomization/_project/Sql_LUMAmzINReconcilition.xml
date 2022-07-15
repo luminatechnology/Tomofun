@@ -3,8 +3,8 @@
   <col name="CompanyID" type="Int" default="Zero" />
   <col name="IdentityID" type="Int" identity="true" />
   <col name="SnapshotDate" type="DateTime" nullable="true" />
-  <col name="FNSku" type="Int" nullable="true" />
-  <col name="Sku" type="Int" nullable="true" />
+  <col name="FNSku" type="NVarChar(50)" nullable="true" />
+  <col name="Sku" type="NVarChar(50)" nullable="true" />
   <col name="ProductName" type="NVarChar(255)" nullable="true" />
   <col name="Qty" type="Decimal(25,6)" nullable="true" />
   <col name="FBACenterID" type="NVarChar(10)" nullable="true" />
