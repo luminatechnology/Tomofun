@@ -23,22 +23,24 @@ namespace LUMTomofunCustomization.DAC
         #endregion
     
         #region SnapshotDate
-        [PXDBDateAndTime(PreserveTime = true)]
+        [PXDBDateAndTime(PreserveTime = true, UseTimeZone = false)]
         [PXUIField(DisplayName = "Snapshot Date")]
         public virtual DateTime? SnapshotDate { get; set; }
         public abstract class snapshotDate : PX.Data.BQL.BqlDateTime.Field<snapshotDate> { }
         #endregion
     
         #region FNSku
-        [Inventory(DisplayName = "FN Sku")]
-        public virtual int? FNSku { get; set; }
-        public abstract class fNSku : PX.Data.BQL.BqlInt.Field<fNSku> { }
+        [PXDBString(50, IsUnicode = true)]
+        [PXUIField(DisplayName = "FN Sku")]
+        public virtual string FNSku { get; set; }
+        public abstract class fNSku : PX.Data.BQL.BqlString.Field<fNSku> { }
         #endregion
-    
+
         #region Sku
-        [Inventory(DisplayName = "Sku")]
-        public virtual int? Sku { get; set; }
-        public abstract class sku : PX.Data.BQL.BqlInt.Field<sku> { }
+        [PXDBString(50, IsUnicode = true)]
+        [PXUIField(DisplayName = "Sku")]
+        public virtual string Sku { get; set; }
+        public abstract class sku : PX.Data.BQL.BqlString.Field<sku> { }
         #endregion
     
         #region ProductName
@@ -72,7 +74,6 @@ namespace LUMTomofunCustomization.DAC
         #region CountryID
         [PXDBString(2, IsUnicode = true, InputMask = "")]
         [PXUIField(DisplayName = "Country")]
-        [Country]
         public virtual string CountryID { get; set; }
         public abstract class countryID : PX.Data.BQL.BqlString.Field<countryID> { }
         #endregion
