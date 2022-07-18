@@ -205,8 +205,9 @@ namespace LumTomofunCustomization.Graph
                                              .And<SOTaxTran.orderType.IsEqual<P.AsString>>>
                                         .View.SelectSingleBound(this, null, soGraph.Document.Current.OrderNbr, soGraph.Document.Current.OrderType)
                                         .TopFirst;
-                            // update docDate
-                            invoiceGraph.Document.SetValueExt<ARInvoice.docDate>(invoiceGraph.Document.Current, order.RequestDate);
+                            // update invoice Date
+                            invoiceGraph.Document.SetValueExt<ARInvoice.invoiceDate>(invoiceGraph.Document.Current, amzOrder?.LastUpdateDate == null ? DateTime.Now : CalculateAmazonDateTime(amzOrder?.LastUpdateDate));
+                            // update invoice tax
                             if (soTax != null && !isTaxCalculate)
                             {
                                 // setting Tax
