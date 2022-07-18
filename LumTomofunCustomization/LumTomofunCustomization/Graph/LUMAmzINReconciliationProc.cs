@@ -228,9 +228,7 @@ namespace LUMTomofunCustomization.Graph
                 
                 for (int i = 0; i < dicList.Count; i++)
                 {
-                    string reportID = null;
-
-                    dicRpt.TryGetValue(dic.Keys.ToList()[i], out reportID);
+                    dicRpt.TryGetValue(dic.Keys.ToList()[i], out string reportID);
 
                     CreateAmzINReconciliation(dicList[i], reportID);
                 }
