@@ -175,7 +175,10 @@ namespace LUMTomofunCustomization.Graph
             try
             {
                 LUMMWSPreference preference = PXSelect<LUMMWSPreference>.SelectSingleBound(this, null);
-                
+
+                Dictionary<string, string> dicRpt = new Dictionary<string, string>();
+                Dictionary<string, List<string>> dic = new Dictionary<string, List<string>>();
+
                 string mpID = null;
                 foreach (LUMMarketplacePreference mfPref in SelectFrom<LUMMarketplacePreference>.View.Select(this))
                 {
@@ -207,14 +210,29 @@ namespace LUMTomofunCustomization.Graph
 
                             while (data.Length > dataCount)
                             {
-                                lines = data[dataCount].Split('\t').ToList();
+                                lines = data[dataCount++].Split('\t').ToList();
+                                
+                                string key = $"{lines[0]}-{lines[2]}-{lines[5]}-{lines[6]}";
 
-                                CreateAmzINReconciliation(lines, reports[i].ReportId);
-
-                                dataCount++;
+                                if (dic.ContainsKey(key) == false)
+                                {
+                                    dic.Add(key, lines);
+                                    dicRpt.Add(key, reports[i].ReportId);
+                                }
                             }
                         }
                     }
+                }
+
+                var dicList = dic.Values.ToList();
+                
+                for (int i = 0; i < dicList.Count; i++)
+                {
+                    string reportID = null;
+
+                    dicRpt.TryGetValue(dic.Keys.ToList()[i], out reportID);
+
+                    CreateAmzINReconciliation(dicList[i], reportID);
                 }
 
                 this.Actions.PressSave();
