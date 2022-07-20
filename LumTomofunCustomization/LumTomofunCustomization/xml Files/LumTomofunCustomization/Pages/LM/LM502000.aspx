@@ -22,17 +22,18 @@
 				<px:PXGridColumn DataField="Selected" Width="40" Type="CheckBox" TextAlign="Center" AllowCheckAll="True" CommitChanges="True"></px:PXGridColumn>
 				<px:PXGridColumn DataField="CreatedDateTime" Width="90" ></px:PXGridColumn>
 				<px:PXGridColumn DataField="SnapshotDate" Width="90" DisplayFormat="g" ></px:PXGridColumn>
-				<px:PXGridColumn DataField="Fnsku" Width="70" />
-				<px:PXGridColumn DataField="Sku" Width="70" />
-				<px:PXGridColumn DataField="ProductName" Width="280" />
-				<px:PXGridColumn DataField="Qty" Width="100" />
-				<px:PXGridColumn DataField="Fbacenterid" Width="120" />
-				<px:PXGridColumn DataField="DetailedDesc" Width="220" />
-				<px:PXGridColumn DataField="CountryID" Width="70" />
-				<px:PXGridColumn DataField="Warehouse" Width="70" />
-				<px:PXGridColumn DataField="Location" Width="70" />
-				<px:PXGridColumn DataField="CreatedByID" Width="280" />
-				<px:PXGridColumn DataField="IsProcesses" Width="60" Type="CheckBox" /></Columns>
+				<px:PXGridColumn DataField="Fnsku" Width="70" ></px:PXGridColumn>
+				<px:PXGridColumn DataField="Sku" Width="70" ></px:PXGridColumn>
+				<px:PXGridColumn DataField="ProductName" Width="280" ></px:PXGridColumn>
+				<px:PXGridColumn DataField="Qty" Width="100" ></px:PXGridColumn>
+				<px:PXGridColumn DataField="Fbacenterid" Width="120" ></px:PXGridColumn>
+				<px:PXGridColumn DataField="DetailedDesc" Width="220" ></px:PXGridColumn>
+				<px:PXGridColumn DataField="CountryID" Width="70" ></px:PXGridColumn>
+				<px:PXGridColumn DataField="Warehouse" Width="70" ></px:PXGridColumn>
+				<px:PXGridColumn DataField="Location" Width="70" ></px:PXGridColumn>
+				<px:PXGridColumn DataField="ERPSku" Width="180" />
+				<px:PXGridColumn DataField="CreatedByID" Width="280" ></px:PXGridColumn>
+				<px:PXGridColumn DataField="IsProcesses" Width="60" Type="CheckBox" ></px:PXGridColumn></Columns>
 			</px:PXGridLevel>
 		</Levels>
 		<AutoSize Container="Window" Enabled="True" MinHeight="150" />

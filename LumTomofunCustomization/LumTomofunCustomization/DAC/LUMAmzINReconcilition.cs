@@ -105,6 +105,13 @@ namespace LUMTomofunCustomization.DAC
         public abstract class reportID : PX.Data.BQL.BqlString.Field<reportID> { }
         #endregion
 
+        #region ERPSku
+        [PXDBString(50, IsUnicode = true)]
+        [PXUIField(DisplayName = "ERP Sku")]
+        public virtual string ERPSku { get; set; }
+        public abstract class eRPSku : PX.Data.BQL.BqlString.Field<eRPSku> { }
+        #endregion
+
         #region CreatedByID
         [PXDBCreatedByID()]
         public virtual Guid? CreatedByID { get; set; }

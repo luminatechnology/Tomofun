@@ -72,7 +72,7 @@ namespace LUMTomofunCustomization.Graph
             {
                 ImportAmzRecords();
             });
-            
+
             return adapter.Get();
         }
 
@@ -129,7 +129,7 @@ namespace LUMTomofunCustomization.Graph
                     return (preference.JPMarketplaceID, preference.JPRefreshToken);
                 case "SG":
                     return (preference.SGMarketplaceID, preference.SGRefreshToken);
-                default :
+                default:
                     return (preference.EUMarketplaceID, preference.EURefreshToken);
             }
         }
@@ -142,13 +142,13 @@ namespace LUMTomofunCustomization.Graph
 
             return new AmazonConnection(new AmazonCredential()
             {
-                AccessKey    = IsSingapore == false ? preference.AccessKey    : preference.SGAccessKey,
-                SecretKey    = IsSingapore == false ? preference.SecretKey    : preference.SGSecretKey,
-                RoleArn      = IsSingapore == false ? preference.RoleArn      : preference.SGRoleArn,
-                ClientId     = IsSingapore == false ? preference.ClientID     : preference.SGClientID,
+                AccessKey = IsSingapore == false ? preference.AccessKey : preference.SGAccessKey,
+                SecretKey = IsSingapore == false ? preference.SecretKey : preference.SGSecretKey,
+                RoleArn = IsSingapore == false ? preference.RoleArn : preference.SGRoleArn,
+                ClientId = IsSingapore == false ? preference.ClientID : preference.SGClientID,
                 ClientSecret = IsSingapore == false ? preference.ClientSecret : preference.SGClientSecret,
                 RefreshToken = refreshToken,
-                MarketPlace  = MarketPlace.GetMarketPlaceByID(marketPlaceID),
+                MarketPlace = MarketPlace.GetMarketPlaceByID(marketPlaceID),
             });
         }
 
@@ -184,11 +184,11 @@ namespace LUMTomofunCustomization.Graph
                 {
                     AmazonConnection amzConnection = GetAmazonConnObject(preference, mfPref.Marketplace, mfPref.Marketplace == "SG", out mpID);
 
-                    if (string.IsNullOrEmpty(mpID)) 
+                    if (string.IsNullOrEmpty(mpID))
                     {
                         string MarketplaceNull = $"No Marketplace {mfPref.Marketplace} Token Is Defined.";
 
-                        throw new PXException(MarketplaceNull); 
+                        throw new PXException(MarketplaceNull);
                     }
 
                     var reports = GetFulfillmentInventoryReports(amzConnection, Filter.Current.FromDate, mpID);
@@ -210,8 +210,23 @@ namespace LUMTomofunCustomization.Graph
 
                             while (data.Length > dataCount)
                             {
-                                lines = data[dataCount++].Split('\t').ToList();
-                                
+                                lines = data[dataCount].Split('\t').ToList();
+
+                                if (lines[0].Length <= 0) 
+                                { 
+                                    break; 
+                                }
+                                ///<remarks>Since MWS will provide content files in different formats from time to time, add the following logic to read the files.</remarks>
+                                else if (lines.Count < 8)
+                                {
+                                    lines = data[dataCount].Split(new string[] { "\",\"" }, StringSplitOptions.None).Select(s => s.Replace("\"", "")).ToList();
+                                    // Sometimes the column of Country will be empty.
+                                    if (lines.Count <= 7)
+                                    {
+                                        lines.Add(string.Empty);
+                                    }
+                                }
+
                                 string key = $"{lines[0]}-{lines[2]}-{lines[5]}-{lines[6]}";
 
                                 if (dic.ContainsKey(key) == false)
@@ -219,16 +234,18 @@ namespace LUMTomofunCustomization.Graph
                                     dic.Add(key, lines);
                                     dicRpt.Add(key, reports[i].ReportId);
                                 }
+
+                                dataCount++;
                             }
                         }
                     }
                 }
 
                 var dicList = dic.Values.ToList();
-                
+
                 for (int i = 0; i < dicList.Count; i++)
                 {
-                    dicRpt.TryGetValue(dic.Keys.ToList()[i], out string reportID);
+                     dicRpt.TryGetValue(dic.Keys.ToList()[i], out string reportID);
 
                     CreateAmzINReconciliation(dicList[i], reportID);
                 }
@@ -248,7 +265,8 @@ namespace LUMTomofunCustomization.Graph
         {
             string country = list[7].Replace("\r", "");
 
-            //if (string.IsNullOrEmpty(country) ) { return; }
+            ///<remarks> Country GB = UK, Warehouse ID = AMZUK  (這個較特殊)</remarks>
+            if (country == "GB") { country = "UK"; }
 
             LUMAmzINReconcilition reconcilition = new LUMAmzINReconcilition()
             {
@@ -260,20 +278,20 @@ namespace LUMTomofunCustomization.Graph
                 FBACenterID = list[5],
                 DetailedDesc = list[6],
                 CountryID = country,
-                Warehouse = INSite.UK.Find(this, $"AMZ{country}00")?.SiteID,
+                Warehouse = INSite.UK.Find(this, list[5].Contains("*XFR") ? "FBAINTR" : $"AMZ{country}00")?.SiteID,
                 ReportID = reportID
             };
 
-            //reconcilition.FNSku    = GetStockItemByCrossRefer(list[1], reconcilition.Sku);
-            reconcilition.Location = SelectFrom<INLocation>.Where<INLocation.siteID.IsEqual<@P.AsInt>
-                                                                  .And<INLocation.locationCD.IsEqual<@P.AsString>>>.View
-                                                           .Select(this, reconcilition.Warehouse, list[6].ToUpper() == "SELLABLE" ? "601" : "602").TopFirst?.LocationID;
+            reconcilition.ERPSku    = GetStockItemOrCrossRef(reconcilition.Sku);
+            reconcilition.Location  = SelectFrom<INLocation>.Where<INLocation.siteID.IsEqual<@P.AsInt>
+                                                                   .And<INLocation.locationCD.IsEqual<@P.AsString>>>.View
+                                                            .Select(this, reconcilition.Warehouse, list[6].ToUpper() == "SELLABLE" ? "601" : "602").TopFirst?.LocationID;
             Reconcilition.Insert(reconcilition);
         }
 
         public virtual void CreateInvAdjustment(List<LUMAmzINReconcilition> lists)
         {
-            if (lists.Count == 0) 
+            if (lists.Count == 0)
             {
                 const string NoSelectedRec = "Please Tick At Least One Record.";
 
@@ -306,7 +324,7 @@ namespace LUMTomofunCustomization.Graph
                     LocationID = aggrList[i].Location
                 };
 
-                tran.Qty        = aggrList[i].Qty - (GetINLocationQtyAvail(tran.InventoryID, tran.SiteID, tran.LocationID) ?? 0m);
+                tran.Qty = aggrList[i].Qty - (GetINLocationQtyAvail(tran.InventoryID, tran.SiteID, tran.LocationID) ?? 0m);
                 tran.ReasonCode = "INRECONCILE";
 
                 adjustEntry.transactions.Insert(tran);
@@ -316,29 +334,18 @@ namespace LUMTomofunCustomization.Graph
         }
 
         /// <summary>
-        /// 1. search in cross reference, 如果搜出來超過1個stock item -> 報錯
-        /// 2. cross reference 只有mapp到一個 stock item -> OK 
-        /// 3. cross reference 找不到，則用SKU 去找stock item，找得到 OK, 找不到 報錯這樣
+        /// Search ERP Stock Item & Inventory Cross Reference (Global Type).If Not Found then ERP SKU = ‘*****’
         /// </summary>
-        private int? GetStockItemByCrossRefer(string fNSku, int? sku)
+        private string GetStockItemOrCrossRef(string sku)
         {
-            const string MultipleStockItems  = "There Are Multiple Stock Items Found.";
-            const string NoCorrespondingItem = "There Is No Corresponding Stock Item In System.";
-
-            var xRefs = SelectFrom<INItemXRef>.Where<INItemXRef.alternateID.IsEqual<@P.AsString>>.View.Select(this, fNSku).ToList();
-            
-            if (xRefs.Count > 1)
-            {
-                throw new PXException(MultipleStockItems);
-            }
-            if (xRefs.Count <= 0 && sku == null)
-            {
-                throw new PXException(NoCorrespondingItem);
-            }
-
-            return xRefs.Count == 1 ? xRefs.FirstOrDefault().Record?.InventoryID : sku;
+            return InventoryItem.UK.Find(this, sku)?.InventoryCD ?? 
+                   SelectFrom<INItemXRef>.Where<INItemXRef.alternateID.IsEqual<@P.AsString>.And<INItemXRef.alternateType.IsEqual<INAlternateType.global>>>.View.Select(this, sku).TopFirst?.AlternateID ?? 
+                   "*****";
         }
 
+        /// <summary>
+        /// [FBA IN Quantity (group by SKU+WH+Location)] – [Acumatica On Hand quantity in Warehouse Location]
+        /// </summary>
         private decimal? GetINLocationQtyAvail(int? inventoryID, int? siteID, int? locationID)
         {
             return SelectFrom<INLocationStatus>.Where<INLocationStatus.inventoryID.IsEqual<@P.AsInt>
@@ -362,7 +369,7 @@ namespace LUMTomofunCustomization.Graph
                                                      new PXDataFieldAssign<LUMAmzINReconcilition.lastModifiedDateTime>(this.Accessinfo.BusinessDate),
                                                      new PXDataFieldAssign<LUMAmzINReconcilition.noteID>(Guid.NewGuid()),
                                                      new PXDataFieldAssign<LUMAmzINReconcilition.isProcesses>(false),
-                                                     new PXDataFieldAssign<LUMAmzINReconcilition.reportID>(string.Empty) );
+                                                     new PXDataFieldAssign<LUMAmzINReconcilition.reportID>(string.Empty));
         }
 
         private void DeleteSameOrEmptyData(string reportID)
