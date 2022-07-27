@@ -236,7 +236,7 @@ namespace LumTomofunCustomization.Graph
                                 // Save Payment
                                 arGraph.Actions.PressSave();
                                 #region CHARGS
-                                if(_marketplace == "US")
+                                if (_marketplace == "US" && mapInvoice?.CuryTaxTotal > 0)
                                 {
                                     var chargeTrans = arGraph.PaymentCharges.Cache.CreateInstance() as ARPaymentChargeTran;
                                     chargeTrans.EntryTypeID = "WHTAX";
