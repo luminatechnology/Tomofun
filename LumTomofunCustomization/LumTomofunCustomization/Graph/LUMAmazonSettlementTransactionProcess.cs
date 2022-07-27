@@ -247,8 +247,8 @@ namespace LumTomofunCustomization.Graph
                                 }
                                 #endregion
                                 // Release Payment
-                                arGraph.release.Press();
                                 arGraph.releaseFromHold.Press();
+                                arGraph.release.Press();
                                 #endregion
                                 break;
                             case "REFUND":
