@@ -60,6 +60,10 @@ namespace LumTomofunCustomization.Graph
                         var isTaxCalculate = GetMarketplaceTaxCalculation(row.Marketplace);
                         // Amazon Order Object
                         var amzOrder = JsonConvert.DeserializeObject<LumTomofunCustomization.API_Entity.AmazonOrder.Order>(row.TransJson);
+
+                        if (CalculateAmazonDateTime(amzOrder.PurchaseDate) < new DateTime(2022, 07, 01))
+                            throw new Exception("Legacy Order");
+
                         // Amazon Total Tax Amount
                         var amzTotalTax = (decimal?)amzOrder.Items.Sum(x => x.ItemTaxAmount - x.PromotionDiscountTaxAmount + x.GiftWrapTaxAmount + (x.ShippingPriceAmount - x.ShippingDiscountAmount == 0 ? 0 : x.ShippingTaxAmount));
 
@@ -261,7 +265,7 @@ namespace LumTomofunCustomization.Graph
                     // 建立Invoice後，在Release。即使失敗也照常產生
                     var invGraph = PXGraph.CreateInstance<SOInvoiceEntry>();
                     invGraph.Document.Current = invGraph.Document.Search<ARInvoice.docType, ARInvoice.refNbr>(invType, invNbr);
-                    if(invGraph.Document.Current != null)
+                    if (invGraph.Document.Current != null)
                         invGraph.release.Press();
                 }
                 catch (Exception)
