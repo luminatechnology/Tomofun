@@ -107,7 +107,7 @@ namespace LumTomofunCustomization.Graph
                         trans.AmountType = item.AmountType;
                         trans.AmountDescription = item.AmountDescription;
                         trans.Amount = item.Amount;
-                        trans.PostedDate = item.PostedDate;
+                        trans.PostedDate = item?.PostedDateTime;
                         trans.MarketPlaceName = item.MarketplaceName;
                         trans.MerchantOrderID = item.MerchantOrderId;
                         trans.MerchantOrderItemID = item.MerchantOrderItemId;
