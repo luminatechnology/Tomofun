@@ -28,7 +28,7 @@ namespace LUMTomofunCustomization.DAC
         public virtual DateTime? SnapshotDate { get; set; }
         public abstract class snapshotDate : PX.Data.BQL.BqlDateTime.Field<snapshotDate> { }
         #endregion
-    
+
         #region FNSku
         [PXDBString(50, IsUnicode = true)]
         [PXUIField(DisplayName = "FN Sku")]
@@ -110,6 +110,13 @@ namespace LUMTomofunCustomization.DAC
         [PXUIField(DisplayName = "ERP Sku")]
         public virtual string ERPSku { get; set; }
         public abstract class eRPSku : PX.Data.BQL.BqlString.Field<eRPSku> { }
+        #endregion
+
+        #region INDate
+        [PXDBDate()]
+        [PXUIField(DisplayName = "IN Date")]
+        public virtual DateTime? INDate { get; set; }
+        public abstract class iNDate : PX.Data.BQL.BqlDateTime.Field<iNDate> { }
         #endregion
 
         #region CreatedByID

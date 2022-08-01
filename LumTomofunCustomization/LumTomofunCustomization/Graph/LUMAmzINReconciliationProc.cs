@@ -121,8 +121,9 @@ namespace LUMTomofunCustomization.Graph
             {
                 case "US":
                 case "CA":
-                case "MX":
                     return (preference.USMarketplaceID, preference.USRefreshToken);
+                case "MX":
+                    return (preference.MXMarketplaceID, preference.MXRefreshToken);
                 case "AU":
                     return (preference.AUMarketplaceID, preference.AURefreshToken);
                 case "JP":
@@ -154,6 +155,17 @@ namespace LUMTomofunCustomization.Graph
 
         public virtual List<FikaAmazonAPI.AmazonSpApiSDK.Models.Reports.Report> GetFulfillmentInventoryReports(AmazonConnection amzConnection, DateTime? filterDate, string marketPlace)
         {
+            //var parameters = new ParameterCreateReportSpecification();
+
+            //parameters.reportType = ReportTypes.GET_FBA_FULFILLMENT_CURRENT_INVENTORY_DATA;
+
+            //parameters.reportOptions = new FikaAmazonAPI.AmazonSpApiSDK.Models.Reports.ReportOptions();
+            //parameters.dataStartTime = filterDate;
+            //parameters.dataEndTime   = filterDate;
+
+            //parameters.marketplaceIds = new MarketplaceIds();
+            //parameters.marketplaceIds.Add(marketPlace);
+
             var parameters = new ParameterReportList
             {
                 pageSize = 100,
@@ -183,7 +195,7 @@ namespace LUMTomofunCustomization.Graph
                 foreach (LUMMarketplacePreference mfPref in SelectFrom<LUMMarketplacePreference>.View.Select(this))
                 {
                     AmazonConnection amzConnection = GetAmazonConnObject(preference, mfPref.Marketplace, mfPref.Marketplace == "SG", out mpID);
-
+                    
                     if (string.IsNullOrEmpty(mpID))
                     {
                         string MarketplaceNull = $"No Marketplace {mfPref.Marketplace} Token Is Defined.";
@@ -245,7 +257,7 @@ namespace LUMTomofunCustomization.Graph
 
                 for (int i = 0; i < dicList.Count; i++)
                 {
-                     dicRpt.TryGetValue(dic.Keys.ToList()[i], out string reportID);
+                    dicRpt.TryGetValue(dic.Keys.ToList()[i], out string reportID);
 
                     CreateAmzINReconciliation(dicList[i], reportID);
                 }
@@ -265,12 +277,12 @@ namespace LUMTomofunCustomization.Graph
         {
             string country = list[7].Replace("\r", "");
 
-            ///<remarks> Country GB = UK, Warehouse ID = AMZUK  (這個較特殊)</remarks>
+            ///<remarks> Country GB = UK, Warehouse ID = AMZUK (這個較特殊)</remarks>
             if (country == "GB") { country = "UK"; }
 
             LUMAmzINReconcilition reconcilition = new LUMAmzINReconcilition()
             {
-                SnapshotDate = DateTime.Parse(list[0]),
+                SnapshotDate = DateTimeOffset.Parse(list[0]).DateTime,
                 FNSku = list[1],
                 Sku = list[2],
                 ProductName = list[3],
@@ -282,13 +294,19 @@ namespace LUMTomofunCustomization.Graph
                 ReportID = reportID
             };
 
-            reconcilition.ERPSku    = GetStockItemOrCrossRef(reconcilition.Sku);
-            reconcilition.Location  = SelectFrom<INLocation>.Where<INLocation.siteID.IsEqual<@P.AsInt>
-                                                                   .And<INLocation.locationCD.IsEqual<@P.AsString>>>.View
-                                                            .Select(this, reconcilition.Warehouse, list[6].ToUpper() == "SELLABLE" ? "601" : "602").TopFirst?.LocationID;
+            reconcilition.ERPSku   = GetStockItemOrCrossRef(reconcilition.Sku);
+            reconcilition.Location = SelectFrom<INLocation>.Where<INLocation.siteID.IsEqual<@P.AsInt>
+                                                                  .And<INLocation.locationCD.IsEqual<@P.AsString>>>.View
+                                                           .Select(this, reconcilition.Warehouse, list[6].ToUpper() == "SELLABLE" ? "601" : "602").TopFirst?.LocationID;
+            // FBA publish IN report after 12:00 am, so the snapshot date actually is one day before .
+            reconcilition.INDate   = reconcilition.SnapshotDate.Value.AddDays(-1);
+
             Reconcilition.Insert(reconcilition);
         }
 
+        /// <summary>
+        /// Date = IIF( [snapshot-date] = End of Month , [snapshot-date], SKIP the Record ), 僅針對月底(End of Month) 產生 IN ADJ
+        /// </summary>
         public virtual void CreateInvAdjustment(List<LUMAmzINReconcilition> lists)
         {
             if (lists.Count == 0)
@@ -298,33 +316,37 @@ namespace LUMTomofunCustomization.Graph
                 throw new PXException(NoSelectedRec);
             }
 
+            lists.RemoveAll(r => r.INDate != new DateTime(Accessinfo.BusinessDate.Value.Year, Accessinfo.BusinessDate.Value.Month, DateTime.DaysInMonth(Accessinfo.BusinessDate.Value.Year, Accessinfo.BusinessDate.Value.Month)));
+
+            if (lists.Count <= 0) { return; }
+
             INAdjustmentEntry adjustEntry = CreateInstance<INAdjustmentEntry>();
 
             adjustEntry.CurrentDocument.Insert(new INRegister()
             {
-                DocType = INDocType.Adjustment,
+                DocType  = INDocType.Adjustment,
                 TranDate = lists[0].SnapshotDate,
                 TranDesc = "FBA IN Reconciliation"
             });
 
-            var aggrList = lists.GroupBy(g => new { g.Sku, g.Warehouse, g.Location }).Select(v => new
+            var aggrList = lists.GroupBy(g => new { g.ERPSku, g.Warehouse, g.Location }).Select(v => new
             {
-                Sku = v.Key.Sku,
+                ERPSku    = v.Key.ERPSku,
                 Warehouse = v.Key.Warehouse,
-                Location = v.Key.Location,
-                Qty = v.Sum(s => s.Qty)
+                Location  = v.Key.Location,
+                Qty       = v.Sum(s => s.Qty)
             }).ToList();
 
             for (int i = 0; i < aggrList.Count; i++)
             {
                 INTran tran = new INTran()
                 {
-                    InventoryID = InventoryItem.UK.Find(adjustEntry, aggrList[i].Sku).InventoryID,
+                    InventoryID = InventoryItem.UK.Find(adjustEntry, aggrList[i].ERPSku)?.InventoryID,
                     SiteID = aggrList[i].Warehouse,
                     LocationID = aggrList[i].Location
                 };
 
-                tran.Qty = aggrList[i].Qty - (GetINLocationQtyAvail(tran.InventoryID, tran.SiteID, tran.LocationID) ?? 0m);
+                tran.Qty = (aggrList[i].Qty ?? 0m) - (GetINFinYtdQtyAvail(tran.InventoryID, tran.SiteID, tran.LocationID) ?? 0m);
                 tran.ReasonCode = "INRECONCILE";
 
                 adjustEntry.transactions.Insert(tran);
@@ -338,20 +360,20 @@ namespace LUMTomofunCustomization.Graph
         /// </summary>
         private string GetStockItemOrCrossRef(string sku)
         {
-            return InventoryItem.UK.Find(this, sku)?.InventoryCD ?? 
-                   SelectFrom<INItemXRef>.Where<INItemXRef.alternateID.IsEqual<@P.AsString>.And<INItemXRef.alternateType.IsEqual<INAlternateType.global>>>.View.Select(this, sku).TopFirst?.AlternateID ?? 
+            return InventoryItem.UK.Find(this, sku)?.InventoryCD ??
+                   InventoryItem.PK.Find(this, SelectFrom<INItemXRef>.Where<INItemXRef.alternateID.IsEqual<@P.AsString>.And<INItemXRef.alternateType.IsEqual<INAlternateType.global>>>.View.Select(this, sku).TopFirst?.InventoryID)?.InventoryCD ?? 
                    "*****";
         }
 
         /// <summary>
-        /// [FBA IN Quantity (group by SKU+WH+Location)] – [Acumatica On Hand quantity in Warehouse Location]
+        /// Quantity = discrepancy qty between Acumatica and FBA [FBA IN Quantity(group by SKU + WH + Location)] – [Acumatica Hist Period End Quantity] where same SKU+WH+Location
         /// </summary>
-        private decimal? GetINLocationQtyAvail(int? inventoryID, int? siteID, int? locationID)
+        private decimal? GetINFinYtdQtyAvail(int? inventoryID, int? siteID, int? locationID)
         {
-            return SelectFrom<INLocationStatus>.Where<INLocationStatus.inventoryID.IsEqual<@P.AsInt>
-                                                      .And<INLocationStatus.siteID.IsEqual<@P.AsInt>
-                                                           .And<INLocationStatus.locationID.IsEqual<@P.AsInt>>>>.View
-                                               .SelectSingleBound(this, null, inventoryID, siteID, locationID).TopFirst?.QtyAvail;
+            return SelectFrom<INItemSiteHist>.Where<INItemSiteHist.inventoryID.IsEqual<@P.AsInt>
+                                                    .And<INItemSiteHist.siteID.IsEqual<@P.AsInt>
+                                                         .And<INItemSiteHist.locationID.IsEqual<@P.AsInt>>>>.View
+                                             .SelectSingleBound(this, null, inventoryID, siteID, locationID).TopFirst?.FinYtdQty;
         }
 
         /// <summary>

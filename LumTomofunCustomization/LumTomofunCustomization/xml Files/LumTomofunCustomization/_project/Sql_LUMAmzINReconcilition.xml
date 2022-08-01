@@ -14,6 +14,8 @@
   <col name="Location" type="Int" nullable="true" />
   <col name="IsProcesses" type="Bit" nullable="true" />
   <col name="ReportID" type="NVarChar(20)" nullable="true" />
+  <col name="ERPSku" type="NVarChar(50)" nullable="true" />
+  <col name="INDate" type="DateTime" nullable="true" />
   <col name="CreatedByID" type="UniqueIdentifier" />
   <col name="CreatedByScreenID" type="Char(8)" />
   <col name="CreatedDateTime" type="DateTime" />
@@ -22,6 +24,10 @@
   <col name="LastModifiedDateTime" type="DateTime" />
   <col name="NoteID" type="UniqueIdentifier" nullable="true" />
   <col name="tstamp" type="Timestamp" />
+  <index name="LUMAmzINReconcilition_NoteID" unique="true">
+    <col name="NoteID" />
+    <col name="CompanyID" />
+  </index>
   <index name="PK_LUMAmzINReconcilition" clustered="true" primary="true" unique="true">
     <col name="CompanyID" />
     <col name="IdentityID" />
