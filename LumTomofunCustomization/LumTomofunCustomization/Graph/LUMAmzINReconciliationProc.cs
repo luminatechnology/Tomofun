@@ -216,7 +216,8 @@ namespace LUMTomofunCustomization.Graph
                         var reportData = amzConnection.Reports.GetReportFile(reports[i].ReportDocumentId);
 
                         int dataCount = 1;
-                        using (StreamReader sr = new StreamReader(reportData))
+                        // Since Jananese has special font, a condition for getting the encoding is added.
+                        using (StreamReader sr = new StreamReader(reportData, System.Text.Encoding.GetEncoding(mfPref.Marketplace == "JP" ? "Shift-JIS" : nameof(System.Text.Encoding.ASCII)), true))
                         {
                             var data = sr.ReadToEnd().Split('\n').ToArray();
 
