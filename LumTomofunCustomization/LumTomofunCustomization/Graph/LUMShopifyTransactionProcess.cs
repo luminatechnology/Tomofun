@@ -61,6 +61,10 @@ namespace LumTomofunCustomization.Graph
                         // Create Sales Order Graph
                         var soGraph = PXGraph.CreateInstance<SOOrderEntry>();
                         var spOrder = JsonConvert.DeserializeObject<API_Entity.ShopifyOrder.ShopifyOrderEntity>(row.TransJson);
+
+                        if(spOrder?.created_at < new DateTime(2022,07,01))
+                            throw new Exception("Legacy Order");
+
                         // validation
                         Validation(row);
                         // 判斷是否需要建立Invoice

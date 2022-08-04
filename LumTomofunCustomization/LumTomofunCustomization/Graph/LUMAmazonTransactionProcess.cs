@@ -46,6 +46,8 @@ namespace LumTomofunCustomization.Graph
             foreach (var row in amazonList)
             {
                 decimal? systemTax = (decimal)0;
+                var invType = string.Empty;
+                var invNbr = string.Empty;
                 PXProcessing.SetCurrentItem(row);
                 try
                 {
@@ -58,6 +60,10 @@ namespace LumTomofunCustomization.Graph
                         var isTaxCalculate = GetMarketplaceTaxCalculation(row.Marketplace);
                         // Amazon Order Object
                         var amzOrder = JsonConvert.DeserializeObject<LumTomofunCustomization.API_Entity.AmazonOrder.Order>(row.TransJson);
+
+                        if (CalculateAmazonDateTime(amzOrder.PurchaseDate) < new DateTime(2022, 07, 01))
+                            throw new Exception("Legacy Order");
+
                         // Amazon Total Tax Amount
                         var amzTotalTax = (decimal?)amzOrder.Items.Sum(x => x.ItemTaxAmount - x.PromotionDiscountTaxAmount + x.GiftWrapTaxAmount + (x.ShippingPriceAmount - x.ShippingDiscountAmount == 0 ? 0 : x.ShippingTaxAmount));
 
@@ -200,6 +206,8 @@ namespace LumTomofunCustomization.Graph
                             #region Override Invoice Tax
                             // Invoice Graph
                             SOInvoiceEntry invoiceGraph = ex.Graph as SOInvoiceEntry;
+                            invType = invoiceGraph.Document.Current?.DocType;
+                            invNbr = invoiceGraph.Document.Current?.RefNbr;
                             var soTax = SelectFrom<SOTaxTran>
                                         .Where<SOTaxTran.orderNbr.IsEqual<P.AsString>
                                              .And<SOTaxTran.orderType.IsEqual<P.AsString>>>
@@ -224,9 +232,11 @@ namespace LumTomofunCustomization.Graph
                             invoiceGraph.Save.Press();
                             // Release Invoice
                             invoiceGraph.releaseFromCreditHold.Press();
-                            invoiceGraph.release.Press();
+                            // Release 失敗不Rollback
+                            //invoiceGraph.release.Press();
                             #endregion
                         }
+
                         row.IsProcessed = true;
                         row.ErrorMessage = string.Empty;
                         sc.Complete();
@@ -249,6 +259,18 @@ namespace LumTomofunCustomization.Graph
                     baseGraph.AmazonTransaction.Update(row);
                     // Save
                     baseGraph.Actions.PressSave();
+                }
+                try
+                {
+                    // 建立Invoice後，在Release。即使失敗也照常產生
+                    var invGraph = PXGraph.CreateInstance<SOInvoiceEntry>();
+                    invGraph.Document.Current = invGraph.Document.Search<ARInvoice.docType, ARInvoice.refNbr>(invType, invNbr);
+                    if (invGraph.Document.Current != null)
+                        invGraph.release.Press();
+                }
+                catch (Exception)
+                {
+                    //PXProcessing.SetError(releaseInvEx.Message);
                 }
             }
         }

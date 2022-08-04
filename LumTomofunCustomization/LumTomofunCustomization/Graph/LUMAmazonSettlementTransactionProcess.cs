@@ -107,7 +107,7 @@ namespace LumTomofunCustomization.Graph
                         trans.AmountType = item.AmountType;
                         trans.AmountDescription = item.AmountDescription;
                         trans.Amount = item.Amount;
-                        trans.PostedDate = item.PostedDate;
+                        trans.PostedDate = item?.PostedDateTime;
                         trans.MarketPlaceName = item.MarketplaceName;
                         trans.MerchantOrderID = item.MerchantOrderId;
                         trans.MerchantOrderItemID = item.MerchantOrderItemId;
@@ -236,7 +236,7 @@ namespace LumTomofunCustomization.Graph
                                 // Save Payment
                                 arGraph.Actions.PressSave();
                                 #region CHARGS
-                                if(_marketplace == "US")
+                                if (_marketplace == "US" && mapInvoice?.CuryTaxTotal > 0)
                                 {
                                     var chargeTrans = arGraph.PaymentCharges.Cache.CreateInstance() as ARPaymentChargeTran;
                                     chargeTrans.EntryTypeID = "WHTAX";
@@ -247,8 +247,8 @@ namespace LumTomofunCustomization.Graph
                                 }
                                 #endregion
                                 // Release Payment
-                                arGraph.release.Press();
                                 arGraph.releaseFromHold.Press();
+                                arGraph.release.Press();
                                 #endregion
                                 break;
                             case "REFUND":
