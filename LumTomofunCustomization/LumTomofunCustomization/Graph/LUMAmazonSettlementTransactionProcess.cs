@@ -933,8 +933,10 @@ namespace LumTomofunCustomization.Graph
                 AccessKey = _marketPlace == "SG" ? setup.SGAccessKey : setup.AccessKey,
                 SecretKey = _marketPlace == "SG" ? setup.SGSecretKey : setup.SecretKey,
                 RoleArn = _marketPlace == "SG" ? setup.SGRoleArn : setup.RoleArn,
-                ClientId = _marketPlace == "SG" ? setup.SGClientID : setup.ClientID,
-                ClientSecret = _marketPlace == "SG" ? setup.SGClientSecret : setup.ClientSecret,
+                ClientId = _marketPlace == "SG" ? setup.SGClientID :
+                           _marketPlace == "MX" ? setup.MXClientID : setup.ClientID,
+                ClientSecret = _marketPlace == "SG" ? setup.SGClientSecret :
+                               _marketPlace == "MX" ? setup.MXClientSecret : setup.ClientSecret,
                 MarketPlace = _marketPlace == "SG" ? MarketPlace.GetMarketPlaceByID(setup.SGMarketplaceID) :
                               _marketPlace == "US" ? MarketPlace.GetMarketPlaceByID(setup.USMarketplaceID) :
                               _marketPlace == "MX" ? MarketPlace.GetMarketPlaceByID(setup.MXMarketplaceID) :

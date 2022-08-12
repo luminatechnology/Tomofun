@@ -112,6 +112,20 @@ namespace LUMTomofunCustomization.DAC
         public abstract class mXRefreshToken : PX.Data.BQL.BqlString.Field<mXRefreshToken> { }
         #endregion
 
+        #region MXClientID
+        [PXRSACryptString(IsUnicode = true)]
+        [PXUIField(DisplayName = "MX Client ID")]
+        public virtual string MXClientID { get; set; }
+        public abstract class mxClientID : PX.Data.BQL.BqlString.Field<mxClientID> { }
+        #endregion
+
+        #region MXClientSecret
+        [PXRSACryptString(IsUnicode = true)]
+        [PXUIField(DisplayName = "MX Client Secret")]
+        public virtual string MXClientSecret { get; set; }
+        public abstract class mxClientSecret : PX.Data.BQL.BqlString.Field<mxClientSecret> { }
+        #endregion
+
         #region SGAccessKey
         [PXRSACryptString(IsUnicode = true)]
         [PXUIField(DisplayName = "SG Access Key")]

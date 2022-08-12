@@ -36,6 +36,8 @@
                     <px:PXLayoutRule ControlSize="" GroupCaption="MX Marketplace" runat="server" ID="PXLayoutRule4" StartGroup="True"></px:PXLayoutRule>
                     <px:PXTextEdit runat="server" ID="PXTextEdit7" DataField="MXMarketplaceID" />
                     <px:PXTextEdit runat="server" ID="PXTextEdit8" DataField="MXRefreshToken" />
+                    <px:PXTextEdit runat="server" ID="PXTextEdit16" DataField="MXClientID"></px:PXTextEdit>
+                    <px:PXTextEdit runat="server" ID="PXTextEdit17" DataField="MXClientSecret"></px:PXTextEdit>
                     <px:PXLayoutRule ControlSize="" runat="server" ID="PXLayoutRule5" StartGroup="True" GroupCaption="MWS SG API Settings"></px:PXLayoutRule>
                     <px:PXTextEdit runat="server" ID="PXTextEdit9" DataField="SGAccessKey"></px:PXTextEdit>
                     <px:PXTextEdit runat="server" ID="PXTextEdit10" DataField="SGSecretKey"></px:PXTextEdit>

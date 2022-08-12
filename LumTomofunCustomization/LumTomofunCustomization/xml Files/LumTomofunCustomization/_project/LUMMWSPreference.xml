@@ -8,4 +8,6 @@
     <Column TableName="LUMMWSPreference" ColumnName="SGMarketplaceID" ColumnType="string" AllowNull="True" MaxLength="200" DecimalPrecision="0" DecimalLength="0" IsNewColumn="True" IsUnicode="True" />
     <Column TableName="LUMMWSPreference" ColumnName="SGRefreshToken" ColumnType="string" AllowNull="True" MaxLength="400" DecimalPrecision="0" DecimalLength="0" IsNewColumn="True" IsUnicode="True" />
     <Column TableName="LUMMWSPreference" ColumnName="MXRefreshToken" ColumnType="string" AllowNull="True" MaxLength="400" DecimalPrecision="0" DecimalLength="0" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="LUMMWSPreference" ColumnName="MXClientID" ColumnType="string" AllowNull="True" MaxLength="200" DecimalPrecision="0" DecimalLength="0" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="LUMMWSPreference" ColumnName="MXClientSecret" ColumnType="string" AllowNull="True" MaxLength="200" DecimalPrecision="0" DecimalLength="0" IsNewColumn="True" IsUnicode="True" />
 </Table>
