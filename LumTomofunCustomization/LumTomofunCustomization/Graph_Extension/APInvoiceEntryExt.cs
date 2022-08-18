@@ -31,5 +31,8 @@ namespace LumTomofunCustomization.Graph_Extension
             }
             return adapter.Get();
         }
+
+        [PXButton(CommitChanges = true), PXUIField(DisplayName = "AP Bill Application Form (Release)", MapEnableRights = PXCacheRights.Select)]
+        public virtual IEnumerable PrintAPRegister(PXAdapter adapter, string reportID = null) => Base.PrintAPRegister(adapter,reportID);
     }
 }

@@ -409,7 +409,7 @@
                 <ParentName>Vendor</ParentName>
             </ReportRelation>
         </Relations>
-        <SchemaUrl>https://tomofun.acumatica.com/</SchemaUrl>
+        <SchemaUrl>http://35.164.58.147/UAT/</SchemaUrl>
         <StylesTemplate>TemplateReport.rpx</StylesTemplate>
         <Tables>
             <ReportTable Name="APInvoice">
@@ -4738,8 +4738,12 @@
                         <Name>SignTax</Name>
                         <ValueExpr>=IIF(([APInvoice.DrCr]='D' And [Tax.ReverseTax]= False Or [APInvoice.DrCr]='C' And [Tax.ReverseTax]= True) And [Tax.TaxType] &lt;&gt; 'P', 'D', 'C')</ValueExpr>
                     </ReportVariable>
+                    <ReportVariable>
+                        <Name>LumDocTax</Name>
+                        <ValueExpr>=$LumDocTax + IIF($SignTax='D',[APTaxTran.CuryTaxAmt],0.0)</ValueExpr>
+                    </ReportVariable>
                 </Variables>
-                <VisibleExpr>=(([APRegister.Released] = False Or [APRegister.Status] = 'X') And [APTaxTran.AccountID] &lt;&gt; Null And $DocGroup = False)</VisibleExpr>
+                <Visible>False</Visible>
                 <Items>
                     <TextBox Name="textBox152">
                         <Excel>
@@ -4920,6 +4924,7 @@
                         <Size>428px, 14px</Size>
                         <StyleName>Normal</StyleName>
                         <Value>* Indicates that document is out of balance.</Value>
+                        <Visible>False</Visible>
                         <VisibleExpr>=$PrepaymentsCount &gt; 0 or $UnbalancedCount &gt; 0</VisibleExpr>
                     </TextBox>
                     <TextBox Name="textBox134">
@@ -4931,6 +4936,7 @@
                         <Size>552px, 14px</Size>
                         <StyleName>Normal</StyleName>
                         <Value>** No GL transactions will be generated on releasing Prepayment Request.</Value>
+                        <Visible>False</Visible>
                         <VisibleExpr>=$PrepaymentsCount &gt; 0 or $UnbalancedCount &gt; 0</VisibleExpr>
                     </TextBox>
                     <TextBox Name="textBox209">
@@ -4952,6 +4958,7 @@
                         <Size>332px, 14px</Size>
                         <StyleName>Normal</StyleName>
                         <Value>**** Purchase price variance (if any) is not reflected in the report.</Value>
+                        <Visible>False</Visible>
                         <VisibleExpr>=$PriceVarianceVisible = True</VisibleExpr>
                     </TextBox>
                     <TextBox Name="textBox34">
@@ -4973,6 +4980,7 @@
                         <Size>552px, 14px</Size>
                         <StyleName>Normal</StyleName>
                         <Value>*** The account and subaccount will be replaced due to the deferral of expense recognition.</Value>
+                        <Visible>False</Visible>
                         <VisibleExpr>=$DeferVisible = True</VisibleExpr>
                     </TextBox>
                 </Items>
@@ -6511,7 +6519,7 @@
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
-                                <Value>=IsNull($DrTot,0)</Value>
+                                <Value>=IsNull($DrTot,0) -ISNull($LumDocTax,0)</Value>
                             </TextBox>
                             <TextBox Name="textBox86">
                                 <Excel>
@@ -6578,7 +6586,103 @@
                             <bottom>1</bottom>
                         </ExcelMargin>
                         <GridSize>8px, 8px</GridSize>
-                        <Height>8px</Height>
+                        <Height>0.5291cm</Height>
+                        <VisibleExpr>=(([APRegister.Released] = False Or [APRegister.Status] = 'X') And [APTaxTran.AccountID] &lt;&gt; Null And $DocGroup = False)</VisibleExpr>
+                        <Items>
+                            <TextBox Name="textBox210">
+                                <Excel>
+                                    <column>9</column>
+                                </Excel>
+                                <ExcelVisible>False</ExcelVisible>
+                                <Location>652px, 8px</Location>
+                                <Size>16px, 14px</Size>
+                                <StyleName>Normal</StyleName>
+                                <Value>=Assign('$DrTot', $DrTot+ IIF([APInvoice.Released] = False And $DocGroup = False And ($SignTax='D' Or [Tax.TaxType] = 'P'), [APTaxTran.CuryTaxAmt],0))</Value>
+                                <Visible>False</Visible>
+                            </TextBox>
+                            <TextBox Name="textBox214">
+                                <Excel>
+                                    <column>9</column>
+                                </Excel>
+                                <ExcelVisible>False</ExcelVisible>
+                                <Location>668px, 8px</Location>
+                                <Size>20px, 14px</Size>
+                                <StyleName>Normal</StyleName>
+                                <Value>=Assign('$CrTot', $CrTot+ IIF([APInvoice.Released] = False And $DocGroup = False And ($SignTax='C' Or [Tax.TaxType] = 'P'), [APTaxTran.CuryTaxAmt], 0))</Value>
+                                <Visible>False</Visible>
+                            </TextBox>
+                            <TextBox Name="textBox215">
+                                <Excel>
+                                    <column>11</column>
+                                </Excel>
+                                <Format>=[APRegister.CuryOrigDocAmt.Format]</Format>
+                                <Location>880px, 8px</Location>
+                                <Size>140px, 14px</Size>
+                                <Style>
+                                    <TextAlign>Right</TextAlign>
+                                </Style>
+                                <StyleName>Normal</StyleName>
+                                <Value>=IIF($SignTax='D',0.0,[APTaxTran.CuryTaxAmt])</Value>
+                            </TextBox>
+                            <TextBox Name="textBox216">
+                                <Excel>
+                                    <column>10</column>
+                                </Excel>
+                                <Format>=[APRegister.CuryOrigDocAmt.Format]</Format>
+                                <Location>740px, 8px</Location>
+                                <Size>140px, 14px</Size>
+                                <Style>
+                                    <TextAlign>Right</TextAlign>
+                                </Style>
+                                <StyleName>Normal</StyleName>
+                                <Value>=IIF($SignTax='D',[APTaxTran.CuryTaxAmt],0.0)</Value>
+                            </TextBox>
+                            <TextBox Name="textBox217">
+                                <Excel>
+                                    <column>7</column>
+                                </Excel>
+                                <Location>360px, 8px</Location>
+                                <Size>244px, 14px</Size>
+                                <StyleName>Normal</StyleName>
+                                <Value>=[Tax.Descr]</Value>
+                            </TextBox>
+                            <TextBox Name="textBox218">
+                                <Excel>
+                                    <column>5</column>
+                                </Excel>
+                                <Location>220px, 8px</Location>
+                                <Size>140px, 14px</Size>
+                                <StyleName>Normal</StyleName>
+                                <Value>=[APTaxTran.SubID]</Value>
+                            </TextBox>
+                            <TextBox Name="textBox219">
+                                <Excel>
+                                    <column>2</column>
+                                </Excel>
+                                <Location>72px, 8px</Location>
+                                <Size>96px, 14px</Size>
+                                <StyleName>Normal</StyleName>
+                                <Value>=[APTaxTran.AccountID]</Value>
+                            </TextBox>
+                            <TextBox Name="textBox220">
+                                <Location>4px, 8px</Location>
+                                <Size>68px, 14px</Size>
+                                <StyleName>Normal</StyleName>
+                                <Value>=[APRegister.BranchID]</Value>
+                            </TextBox>
+                            <TextBox Name="textBox221">
+                                <Excel>
+                                    <column>9</column>
+                                </Excel>
+                                <Location>688px, 8px</Location>
+                                <Size>52px, 14px</Size>
+                                <Style>
+                                    <TextAlign>Right</TextAlign>
+                                </Style>
+                                <StyleName>Normal</StyleName>
+                                <Value>=[APRegister.CuryID]</Value>
+                            </TextBox>
+                        </Items>
                     </Footer>
                 </Footers>
             </Group>
