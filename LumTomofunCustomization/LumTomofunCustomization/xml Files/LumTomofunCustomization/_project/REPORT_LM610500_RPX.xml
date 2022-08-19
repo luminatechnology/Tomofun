@@ -409,7 +409,7 @@
                 <ParentName>Vendor</ParentName>
             </ReportRelation>
         </Relations>
-        <SchemaUrl>http://35.164.58.147/UAT/</SchemaUrl>
+        <SchemaUrl>https://tomofun.acumatica.com/</SchemaUrl>
         <StylesTemplate>TemplateReport.rpx</StylesTemplate>
         <Tables>
             <ReportTable Name="APInvoice">
@@ -4915,30 +4915,6 @@
             <PageFooter Name="pageFooterSection1">
                 <Height>3.06878cm</Height>
                 <Items>
-                    <TextBox Name="textBox10">
-                        <Excel>
-                            <column>2</column>
-                            <row>2</row>
-                        </Excel>
-                        <Location>8px, 44px</Location>
-                        <Size>428px, 14px</Size>
-                        <StyleName>Normal</StyleName>
-                        <Value>* Indicates that document is out of balance.</Value>
-                        <Visible>False</Visible>
-                        <VisibleExpr>=$PrepaymentsCount &gt; 0 or $UnbalancedCount &gt; 0</VisibleExpr>
-                    </TextBox>
-                    <TextBox Name="textBox134">
-                        <Excel>
-                            <column>2</column>
-                            <row>3</row>
-                        </Excel>
-                        <Location>8px, 60px</Location>
-                        <Size>552px, 14px</Size>
-                        <StyleName>Normal</StyleName>
-                        <Value>** No GL transactions will be generated on releasing Prepayment Request.</Value>
-                        <Visible>False</Visible>
-                        <VisibleExpr>=$PrepaymentsCount &gt; 0 or $UnbalancedCount &gt; 0</VisibleExpr>
-                    </TextBox>
                     <TextBox Name="textBox209">
                         <Excel>
                             <column>2</column>
@@ -4949,18 +4925,6 @@
                         <StyleName>Normal</StyleName>
                         <Value>='Requested By: '+Report.GetDefUI('RowAccessInfo.UserName')</Value>
                     </TextBox>
-                    <TextBox Name="textBox32">
-                        <Excel>
-                            <column>2</column>
-                            <row>3</row>
-                        </Excel>
-                        <Location>8px, 92px</Location>
-                        <Size>332px, 14px</Size>
-                        <StyleName>Normal</StyleName>
-                        <Value>**** Purchase price variance (if any) is not reflected in the report.</Value>
-                        <Visible>False</Visible>
-                        <VisibleExpr>=$PriceVarianceVisible = True</VisibleExpr>
-                    </TextBox>
                     <TextBox Name="textBox34">
                         <Excel>
                             <column>2</column>
@@ -4970,18 +4934,6 @@
                         <Size>428px, 14px</Size>
                         <StyleName>Normal</StyleName>
                         <Value>Approved By:</Value>
-                    </TextBox>
-                    <TextBox Name="textBox83">
-                        <Excel>
-                            <column>2</column>
-                            <row>3</row>
-                        </Excel>
-                        <Location>8px, 76px</Location>
-                        <Size>552px, 14px</Size>
-                        <StyleName>Normal</StyleName>
-                        <Value>*** The account and subaccount will be replaced due to the deferral of expense recognition.</Value>
-                        <Visible>False</Visible>
-                        <VisibleExpr>=$DeferVisible = True</VisibleExpr>
                     </TextBox>
                 </Items>
             </PageFooter>
