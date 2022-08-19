@@ -16,6 +16,7 @@
                     <px:PXGridColumn DataField="BAccountID" Width="150px" DisplayMode="Hint" CommitChanges="true"></px:PXGridColumn>
                     <px:PXGridColumn DataField="Marketplace" Width="120px"></px:PXGridColumn>
                     <px:PXGridColumn DataField="IsTaxCalculation" Width="100px" Type="CheckBox"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="TimeZone" Width="120px"></px:PXGridColumn>
                 </Columns>
             </px:PXGridLevel>
         </Levels>

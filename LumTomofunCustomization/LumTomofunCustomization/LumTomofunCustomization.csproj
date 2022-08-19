@@ -86,6 +86,7 @@
     <Compile Include="DAC\LUMShopifyMarketplacePreference.cs" />
     <Compile Include="DAC\LUMShopifySourceData.cs" />
     <Compile Include="DAC\LUMForecastUpload.cs" />
+    <Compile Include="Graph\LUMAmazonFulfillmentProcess.cs" />
     <Compile Include="Graph\LUMAmazonInterfaceMaint.cs" />
     <Compile Include="Graph\LUMAmazonPaymentProcess.cs" />
     <Compile Include="Graph\LUMAmazonSettlementTransactionProcess.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="DAC\LUMPaypalPaymentTransData.cs" />
     <Compile Include="DAC\LUMPaypalJP_NPPaymentTransData.cs" />
     <Compile Include="DAC\LUMPaypalJP_DocomoPaymentTransData.cs" />
+    <Compile Include="DAC\LUMAmazonFulfillmentTransData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,54 +1,58 @@
 using System;
 using PX.Data;
-using PX.Data.BQL.Fluent;
 using PX.Data.ReferentialIntegrity.Attributes;
-using PX.Objects.AR;
-using PX.Objects.CR;
 
 namespace LUMTomofunCustomization.DAC
 {
     [Serializable]
-    [PXCacheName("LUMMarketplacePreference")]
-    public class LUMMarketplacePreference : IBqlTable
+    [PXCacheName("LUMAmazonFulfillmentTransData")]
+    public class LUMAmazonFulfillmentTransData : IBqlTable
     {
-        #region BAccount
-        [PXDBInt(IsKey = true)]
-        [PXSelector(typeof(Search<Customer.bAccountID>),
-            typeof(Customer.acctCD),
-            typeof(Customer.acctName),
-            DescriptionField = typeof(Customer.acctName),
-            SubstituteKey = typeof(Customer.acctCD))]
-        [PXUIField(DisplayName = "CustomerID")]
-        public virtual int? BAccountID { get; set; }
-        public abstract class bAccountID : PX.Data.BQL.BqlInt.Field<bAccountID> { }
+        public class PK : PrimaryKeyOf<LUMAmazonFulfillmentTransData>.By<amazonOrderID, marketPlace>
+        {
+            public static LUMAmazonFulfillmentTransData Find(PXGraph graph, string amazonOrderID, string marketPlace) => FindBy(graph, amazonOrderID, marketPlace);
+        }
+
+        #region Selected
+        [PXBool()]
+        [PXUIField(DisplayName = "Selected")]
+        public virtual bool? Selected { get; set; }
+        public abstract class selected : PX.Data.BQL.BqlBool.Field<selected> { }
         #endregion
 
-        #region Marketplace
+        #region AmazonOrderID
         [PXDBString(20, IsKey = true, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Marketplace")]
-        public virtual string Marketplace { get; set; }
-        public abstract class marketplace : PX.Data.BQL.BqlString.Field<marketplace> { }
+        [PXUIField(DisplayName = "Amazon Order ID")]
+        public virtual string AmazonOrderID { get; set; }
+        public abstract class amazonOrderID : PX.Data.BQL.BqlString.Field<amazonOrderID> { }
         #endregion
 
-        #region IsTaxCalculation
-        [PXDBBool]
-        [PXDefault(false)]
-        [PXUIField(DisplayName = "Tax Calculation")]
-        public virtual bool? IsTaxCalculation { get; set; }
-        public abstract class isTaxCalculation : PX.Data.BQL.BqlBool.Field<isTaxCalculation> { }
+        #region MarketPlace
+        [PXDBString(20, IsKey = true, IsUnicode = true, InputMask = "")]
+        [PXUIField(DisplayName = "Market Place")]
+        public virtual string MarketPlace { get; set; }
+        public abstract class marketPlace : PX.Data.BQL.BqlString.Field<marketPlace> { }
         #endregion
 
-        #region TimeZone
-        [PXDBInt]
-        [PXUIField(DisplayName = "Time Zone(GMT+?)")]
-        public virtual int? TimeZone { get;set;}
-        public abstract class timeZone : PX.Data.BQL.BqlInt.Field<timeZone> { }
+        #region ShipmentDate
+        [PXDBDateAndTime(InputMask = "g", UseTimeZone = false)]
+        [PXUIField(DisplayName = "Shipment Date (GMT+?)")]
+        public virtual DateTime? ShipmentDate { get; set; }
+        public abstract class shipmentDate : PX.Data.BQL.BqlGuid.Field<shipmentDate> { }
         #endregion
 
-        #region Noteid
-        [PXNote()]
-        public virtual Guid? Noteid { get; set; }
-        public abstract class noteid : PX.Data.BQL.BqlGuid.Field<noteid> { }
+        #region ReportID
+        [PXDBString(100, IsUnicode = true, InputMask = "")]
+        [PXUIField(DisplayName = "Amazon Fulfillment ReportID")]
+        public virtual string ReportID { get; set; }
+        public abstract class reportID : PX.Data.BQL.BqlString.Field<reportID> { }
+        #endregion
+
+        #region IsProcessed
+        [PXDBBool()]
+        [PXUIField(DisplayName = "Is Processed")]
+        public virtual bool? IsProcessed { get; set; }
+        public abstract class isProcessed : PX.Data.BQL.BqlBool.Field<isProcessed> { }
         #endregion
 
         #region CreatedByID

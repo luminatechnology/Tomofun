@@ -1,0 +1,22 @@
+﻿<Sql TableName="LUMAmazonFulfillmentTransData" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="LUMAmazonFulfillmentTransData">
+  <col name="CompanyID" type="Int" default="Zero" />
+  <col name="AmazonOrderID" type="NVarChar(20)" />
+  <col name="MarketPlace" type="NVarChar(20)" />
+  <col name="ShipmentDate" type="DateTime" nullable="true" />
+  <col name="ReportID" type="NVarChar(100)" nullable="true" />
+  <col name="IsProcessed" type="Bit" nullable="true" />
+  <col name="CreatedByID" type="UniqueIdentifier" />
+  <col name="CreatedByScreenID" type="Char(8)" />
+  <col name="CreatedDateTime" type="DateTime" />
+  <col name="LastModifiedByID" type="UniqueIdentifier" />
+  <col name="LastModifiedByScreenID" type="Char(8)" />
+  <col name="LastModifiedDateTime" type="DateTime" />
+  <col name="tstamp" type="Timestamp" />
+  <index name="PK_LUMAmazonFulfillmentTransData" clustered="true" primary="true" unique="true">
+    <col name="CompanyID" />
+    <col name="AmazonOrderID" />
+    <col name="MarketPlace" />
+  </index>
+</table>]]></CDATA>
+</Sql>

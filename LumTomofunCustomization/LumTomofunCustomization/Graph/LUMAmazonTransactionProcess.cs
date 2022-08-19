@@ -20,6 +20,7 @@ namespace LumTomofunCustomization.Graph
         public PXSave<LUMAmazonTransData> Save;
         public PXCancel<LUMAmazonTransData> Cancel;
         public PXProcessing<LUMAmazonTransData> AmazonTransaction;
+        public SelectFrom<LUMAmazonFulfillmentTransData>.View FulfillmentTransactions;
 
         public LUMAmazonTransactionProcess()
         {
@@ -72,7 +73,9 @@ namespace LumTomofunCustomization.Graph
                         SOOrder order = soGraph.Document.Cache.CreateInstance() as SOOrder;
                         order.OrderType = "FA";
                         order.OrderDate = CalculateAmazonDateTime(amzOrder.PurchaseDate);
-                        order.RequestDate = CalculateAmazonDateTime(amzOrder.LatestShipDate ?? amzOrder.PurchaseDate);
+                        order.RequestDate = GetShipmentDate(baseGraph, amzOrder.OrderId, row.Marketplace);
+                        if (order.RequestDate == null)
+                            throw new Exception("Can not find Fulfilement report data");
                         order.CustomerID = GetMarketplaceCustomer(row.Marketplace);
                         order.OrderDesc = $"Amazon Order ID: {amzOrder.OrderId}";
                         order.CustomerOrderNbr = amzOrder.OrderId;
@@ -214,7 +217,7 @@ namespace LumTomofunCustomization.Graph
                                         .View.SelectSingleBound(this, null, soGraph.Document.Current.OrderNbr, soGraph.Document.Current.OrderType)
                                         .TopFirst;
                             // update invoice Date
-                            invoiceGraph.Document.SetValueExt<ARInvoice.invoiceDate>(invoiceGraph.Document.Current, amzOrder?.LastUpdateDate == null ? DateTime.Now : CalculateAmazonDateTime(amzOrder?.LastUpdateDate));
+                            invoiceGraph.Document.SetValueExt<ARInvoice.invoiceDate>(invoiceGraph.Document.Current, GetShipmentDate(baseGraph, amzOrder.OrderId, row.Marketplace));
                             // update invoice tax
                             if (soTax != null && !isTaxCalculate)
                             {
@@ -239,6 +242,12 @@ namespace LumTomofunCustomization.Graph
 
                         row.IsProcessed = true;
                         row.ErrorMessage = string.Empty;
+
+                        // Update Fulfilment report Processed
+                        PXDatabase.Update<LUMAmazonFulfillmentTransData>(
+                            new PXDataFieldAssign<LUMAmazonFulfillmentTransData.isProcessed>(true),
+                            new PXDataFieldRestrict<LUMAmazonFulfillmentTransData.amazonOrderID>(amzOrder.OrderId),
+                            new PXDataFieldRestrict<LUMAmazonFulfillmentTransData.marketPlace>(row.Marketplace));
                         sc.Complete();
                     }
                 }
@@ -314,6 +323,15 @@ namespace LumTomofunCustomization.Graph
                SelectFrom<INItemXRef>
                .Where<INItemXRef.alternateID.IsEqual<P.AsString>>
                .View.SelectSingleBound(graph, null, sku).TopFirst?.InventoryID;
+
+        public DateTime? GetShipmentDate(LUMAmazonTransactionProcess baseGraph, string amazonOrderId, string markeplace)
+        {
+            var marketplacePreference = SelectFrom<LUMMarketplacePreference>
+                                        .Where<LUMMarketplacePreference.marketplace.IsEqual<P.AsString>>
+                                        .View.Select(baseGraph, markeplace).TopFirst;
+            var data = LUMAmazonFulfillmentTransData.PK.Find(baseGraph, amazonOrderId, markeplace);
+            return data == null ? null : data.ShipmentDate?.AddHours(marketplacePreference?.TimeZone ?? 0);
+        }
 
         #endregion
     }
