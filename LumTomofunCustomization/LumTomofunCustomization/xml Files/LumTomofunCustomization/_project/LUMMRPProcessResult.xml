@@ -1,3 +1,0 @@
-﻿<Table TableName="LUMMRPProcessResult">
-    <Column TableName="LUMMRPProcessResult" ColumnName="TransactionExistsFlag" ColumnType="string" AllowNull="True" MaxLength="1" DecimalPrecision="0" DecimalLength="0" IsNewColumn="True" IsUnicode="True" />
-</Table>

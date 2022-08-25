@@ -1,3 +1,0 @@
-﻿<Table TableName="LUMAmzINReconcilition">
-    <Column TableName="LUMAmzINReconcilition" ColumnName="ERPSku" ColumnType="string" AllowNull="True" MaxLength="50" DecimalPrecision="0" DecimalLength="0" IsNewColumn="True" IsUnicode="True" />
-</Table>

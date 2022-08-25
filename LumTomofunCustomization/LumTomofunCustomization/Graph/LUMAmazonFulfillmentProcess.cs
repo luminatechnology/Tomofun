@@ -17,10 +17,11 @@ namespace LumTomofunCustomization.Graph
 {
     public class LUMAmazonFulfillmentProcess : PXGraph<LUMAmazonFulfillmentProcess>
     {
-        public PXSave<LUMAmazonFulfillmentTransData> Save;
-        public PXCancel<LUMAmazonFulfillmentTransData> Cancel;
+        public PXSave<FulfillmentFilter> Save;
+        public PXCancel<FulfillmentFilter> Cancel;
 
         public PXFilter<FulfillmentFilter> Filter;
+        [PXImport(typeof(LUMAmazonFulfillmentTransData))]
         public PXFilteredProcessing<LUMAmazonFulfillmentTransData, FulfillmentFilter> FulfillmentTransactions;
         public SelectFrom<LUMMWSPreference>.View Setup;
 
@@ -30,7 +31,12 @@ namespace LumTomofunCustomization.Graph
         public LUMAmazonFulfillmentProcess()
         {
             var filter = this.Filter.Current;
-            this.FulfillmentTransactions.AllowUpdate = true;
+            this.FulfillmentTransactions.Cache.AllowInsert = this.FulfillmentTransactions.Cache.AllowUpdate = this.FulfillmentTransactions.Cache.AllowDelete = true;
+            PXUIFieldAttribute.SetEnabled<LUMAmazonFulfillmentTransData.amazonOrderID>(this.FulfillmentTransactions.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMAmazonFulfillmentTransData.marketPlace>(this.FulfillmentTransactions.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMAmazonFulfillmentTransData.shipmentDate>(this.FulfillmentTransactions.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMAmazonFulfillmentTransData.reportID>(this.FulfillmentTransactions.Cache, null, true);
+
             this.FulfillmentTransactions.SetProcessVisible(false);
             FulfillmentTransactions.SetProcessDelegate(delegate (List<LUMAmazonFulfillmentTransData> list)
             {

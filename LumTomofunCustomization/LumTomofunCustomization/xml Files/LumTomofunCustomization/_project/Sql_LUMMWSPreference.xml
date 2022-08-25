@@ -29,5 +29,7 @@
   <col name="SGClientSecret" type="NVarChar(200)" nullable="true" />
   <col name="SGMarketplaceID" type="NVarChar(200)" nullable="true" />
   <col name="SGRefreshToken" type="NVarChar(400)" nullable="true" />
+  <col name="MXClientID" type="NVarChar(200)" nullable="true" />
+  <col name="MXClientSecret" type="NVarChar(200)" nullable="true" />
 </table>]]></CDATA>
 </Sql>

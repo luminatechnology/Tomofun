@@ -1,3 +1,0 @@
-﻿<Table TableName="LUMMarketplacePreference">
-    <Column TableName="LUMMarketplacePreference" ColumnName="TimeZone" ColumnType="int" AllowNull="True" DecimalPrecision="0" DecimalLength="0" IsNewColumn="True" IsUnicode="True" />
-</Table>

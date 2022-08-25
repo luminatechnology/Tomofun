@@ -8,11 +8,6 @@ namespace LUMTomofunCustomization.DAC
     [PXCacheName("LUMAmazonFulfillmentTransData")]
     public class LUMAmazonFulfillmentTransData : IBqlTable
     {
-        public class PK : PrimaryKeyOf<LUMAmazonFulfillmentTransData>.By<amazonOrderID, marketPlace>
-        {
-            public static LUMAmazonFulfillmentTransData Find(PXGraph graph, string amazonOrderID, string marketPlace) => FindBy(graph, amazonOrderID, marketPlace);
-        }
-
         #region Selected
         [PXBool()]
         [PXUIField(DisplayName = "Selected")]

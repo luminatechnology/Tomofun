@@ -329,7 +329,9 @@ namespace LumTomofunCustomization.Graph
             var marketplacePreference = SelectFrom<LUMMarketplacePreference>
                                         .Where<LUMMarketplacePreference.marketplace.IsEqual<P.AsString>>
                                         .View.Select(baseGraph, markeplace).TopFirst;
-            var data = LUMAmazonFulfillmentTransData.PK.Find(baseGraph, amazonOrderId, markeplace);
+            var data = SelectFrom<LUMAmazonFulfillmentTransData>
+                       .Where<LUMAmazonFulfillmentTransData.amazonOrderID.IsEqual<P.AsString>>
+                       .View.Select(baseGraph, amazonOrderId).TopFirst;
             return data == null ? null : data.ShipmentDate?.AddHours(marketplacePreference?.TimeZone ?? 0);
         }
 
