@@ -4740,7 +4740,7 @@
                     </ReportVariable>
                     <ReportVariable>
                         <Name>LumDocTax</Name>
-                        <ValueExpr>=$LumDocTax + IIF($SignTax='D',[APTaxTran.CuryTaxAmt],0.0)</ValueExpr>
+                        <ValueExpr>=IIF($SignTax='D',[APTaxTran.CuryTaxAmt],0.0)</ValueExpr>
                     </ReportVariable>
                 </Variables>
                 <Visible>False</Visible>
