@@ -3946,7 +3946,7 @@ c7+6v2ZP1207b03EXAuw1TOjS2SCNkKsVKDlUl9e3ifjiVx4xa9cYz0C1+3trhDQCnUx0epveeTLGgt8
                                     </Padding>
                                 </Style>
                                 <StyleName>Normal</StyleName>
-                                <Value>= IsNull([OrgContact.FullName], '')#010;+ '{br}'#010;+ '{br}'#010;+ IsNull([OrgAddress.AddressLine1], '')#010;+ IIf([OrgAddress.City] &lt;&gt; Null, ',' + [OrgAddress.City]+',', '')#010;+ IIf([OrgAddress.CountryID_description] &lt;&gt; Null,[OrgAddress.CountryID_description]+',', '')#010;+ IIF([OrgAddress.State]&lt;&gt;Null,[OrgAddress.State]+',','')#010;+ IIf([OrgAddress.PostalCode] &lt;&gt; Null, ' ' + [OrgAddress.PostalCode], '')#010;+ '{br}'#010;+ 'TEL: ' + IsNull([OrgContact.Phone1], '')</Value>
+                                <Value>= IsNull([OrgContact.FullName], '')#010;+ '{br}'#010;+ '{br}'#010;+ IsNull([OrgAddress.AddressLine1], '')#010;+ IIf([OrgAddress.City] &lt;&gt; Null, ',' + [OrgAddress.City]+',', '')#010;+ IIf([OrgAddress.CountryID_description] &lt;&gt; Null,[OrgAddress.CountryID_description]+',', '')#010;+ IIF([OrgAddress.State]&lt;&gt;Null,[OrgAddress.State]+',','')#010;+ IIf([OrgAddress.PostalCode] &lt;&gt; Null, ' ' + [OrgAddress.PostalCode], '')#010;+ '{br}'#010;+ 'TEL: ' + IIF([OrgContact.Phone1] &lt;&gt; Null, #010;IIF(InStr([OrgContact.Phone1],'#') &lt;&gt; -1,#010; SubString([OrgContact.Phone1],0,InStr([OrgContact.Phone1],'#')),[OrgContact.Phone1]),'')</Value>
                             </TextBox>
                             <TextBox Name="textBox11">
                                 <Location>176px, 232px</Location>
