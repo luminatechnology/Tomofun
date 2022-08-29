@@ -62,6 +62,7 @@ namespace LumTomofunCustomization.Graph
                         // Amazon Order Object
                         var amzOrder = JsonConvert.DeserializeObject<LumTomofunCustomization.API_Entity.AmazonOrder.Order>(row.TransJson);
 
+                        // Fulfillment date < 2022/07/01
                         if (CalculateAmazonDateTime(amzOrder.PurchaseDate) < new DateTime(2022, 07, 01))
                             throw new Exception("Legacy Order");
 
