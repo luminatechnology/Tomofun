@@ -61,9 +61,11 @@ namespace LumTomofunCustomization.Graph
                         var isTaxCalculate = GetMarketplaceTaxCalculation(row.Marketplace);
                         // Amazon Order Object
                         var amzOrder = JsonConvert.DeserializeObject<LumTomofunCustomization.API_Entity.AmazonOrder.Order>(row.TransJson);
-
+                        var amzShipmentDate = GetShipmentDate(baseGraph, amzOrder.OrderId, row.Marketplace);
+                        if (!amzShipmentDate.HasValue)
+                            throw new Exception("Can not find Fulfilement report data");
                         // Fulfillment date < 2022/07/01
-                        if (CalculateAmazonDateTime(amzOrder.PurchaseDate) < new DateTime(2022, 07, 01))
+                        if (amzShipmentDate < new DateTime(2022, 07, 01))
                             throw new Exception("Legacy Order");
 
                         // Amazon Total Tax Amount
@@ -74,7 +76,7 @@ namespace LumTomofunCustomization.Graph
                         SOOrder order = soGraph.Document.Cache.CreateInstance() as SOOrder;
                         order.OrderType = "FA";
                         order.OrderDate = CalculateAmazonDateTime(amzOrder.PurchaseDate);
-                        order.RequestDate = GetShipmentDate(baseGraph, amzOrder.OrderId, row.Marketplace);
+                        order.RequestDate = amzShipmentDate;
                         if (order.RequestDate == null)
                             throw new Exception("Can not find Fulfilement report data");
                         order.CustomerID = GetMarketplaceCustomer(row.Marketplace);
