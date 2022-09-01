@@ -114,7 +114,12 @@ namespace LumTomofunCustomization.Graph
                             // Skpe First row (header)
                             for (int idx = 1; idx < data.Length; idx++)
                             {
-                                var line = data[idx].Split('\t');
+                                if (string.IsNullOrEmpty(data[idx]))
+                                    continue;
+                                var line = data[idx].Replace("\"", "").Split('\t');
+                                // 代表不是用\t切割
+                                if (line.Count() < 9)
+                                    line = data[idx].Replace("\"", "").Split(',');
                                 // Find old data
                                 var oldRow = oldDatas.FirstOrDefault(x => x.AmazonOrderID == line[0] && x.MarketPlace == connItem.Key);
                                 var isExists = oldRow == null ? false : true;

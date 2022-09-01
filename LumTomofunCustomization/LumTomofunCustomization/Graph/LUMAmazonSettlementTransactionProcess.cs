@@ -131,6 +131,11 @@ namespace LumTomofunCustomization.Graph
         /// <summary> 執行 Process Amazon payment </summary>
         public virtual void CreatePaymentByOrder(LUMAmazonSettlementTransactionProcess baseGraph, List<LUMAmazonSettlementTransData> amazonList, SettlementFilter filter)
         {
+            // 先找DB內所有Settlement id 符合條件的MarketplaceName
+            var AllMarketplaceNameList = SelectFrom<LUMAmazonSettlementTransData>
+                                        .View.Select(baseGraph)
+                                        .RowCast<LUMAmazonSettlementTransData>()
+                                        .Where(x => (x?.MarketPlaceName ?? string.Empty).ToUpper().StartsWith("AMAZON")).Select(x => new { x.SettlementID, x.MarketPlaceName }).Distinct();
             // 相同OrderID只會Create一張Payment
             foreach (var amzGroupOrderData in amazonList.GroupBy(x => new { x.Marketplace, x.SettlementID, x.TransactionType, x.OrderID, x.PostedDate }))
             {
@@ -141,8 +146,8 @@ namespace LumTomofunCustomization.Graph
                 try
                 {
                     #region Setting Marketplace
-                    // 先找相同Settlement的MarketplaceName (非non-Amazon)
-                    var _marketplace = amazonList.FirstOrDefault(x => x.SettlementID == amzGroupOrderData.Key.SettlementID && (x.MarketPlaceName ?? string.Empty).ToUpper().StartsWith("AMAZON"))?.MarketPlaceName;
+                    // 找DB相同Settlement ID的MarketPlaceName資料(非non-Amazon)
+                    var _marketplace = AllMarketplaceNameList.FirstOrDefault(x => x.SettlementID == amzGroupOrderData.Key.SettlementID)?.MarketPlaceName;
                     if (string.IsNullOrEmpty(_marketplace) && string.IsNullOrEmpty(amzGroupOrderData.Key.OrderID))
                         throw new Exception("Settlement Market Place Not Found");
                     else if (string.IsNullOrEmpty(_marketplace) || _marketplace?.ToUpper() == "NON-AMAZON")

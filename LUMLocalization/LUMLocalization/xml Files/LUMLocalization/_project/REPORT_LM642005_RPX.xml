@@ -337,8 +337,23 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 </Links>
                 <ParentName>Customer</ParentName>
             </ReportRelation>
+            <ReportRelation>
+                <ChildAlias>ImportVATCombo</ChildAlias>
+                <ChildName>CSAttributeDetail</ChildName>
+                <Links>
+                    <RelationRow>
+                        <ChildField>ValueID</ChildField>
+                        <ParentField>AttributeIMPORTVAT</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>AttributeID</ChildField>
+                        <ParentField>='IMPORTVAT'</ParentField>
+                    </RelationRow>
+                </Links>
+                <ParentName>SOShipment</ParentName>
+            </ReportRelation>
         </Relations>
-        <SchemaUrl>http://localhost/Tomofun1/</SchemaUrl>
+        <SchemaUrl>https://tomofun.acumatica.com/</SchemaUrl>
         <Tables>
             <ReportTable Name="SOShipmentAddress">
                 <Fields>
@@ -4657,6 +4672,8 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                     </ReportField>
                     <ReportField Name="AttributeAMZSHIPID">
                     </ReportField>
+                    <ReportField Name="AttributeAPCURRENCY">
+                    </ReportField>
                     <ReportField Name="AttributeCMINVOICE1">
                     </ReportField>
                     <ReportField Name="AttributeCMINVOICE2">
@@ -4680,6 +4697,8 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                     <ReportField Name="AttributeFORWARDER">
                     </ReportField>
                     <ReportField Name="AttributeFREIGHT">
+                    </ReportField>
+                    <ReportField Name="AttributeIMPORTVAT">
                     </ReportField>
                     <ReportField Name="AttributeINBOUND">
                     </ReportField>
@@ -5083,6 +5102,78 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 </Fields>
                 <FullName>PX.Objects.SO.SOShipment</FullName>
             </ReportTable>
+            <ReportTable Name="CSAttributeDetail">
+                <Fields>
+                    <ReportField Name="AttributeID">
+                    </ReportField>
+                    <ReportField Name="CreatedByID">
+                    </ReportField>
+                    <ReportField Name="CreatedByID_Creator_displayName">
+                    </ReportField>
+                    <ReportField Name="CreatedByID_Creator_Username">
+                    </ReportField>
+                    <ReportField Name="CreatedByID_description">
+                    </ReportField>
+                    <ReportField Name="CreatedByScreenID">
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime">
+                        <DataType>DateTime</DataType>
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime_Day">
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime_Hour">
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime_Month">
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime_Quarter">
+                    </ReportField>
+                    <ReportField Name="Description">
+                    </ReportField>
+                    <ReportField Name="Disabled">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                    <ReportField Name="LastModifiedByID">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByID_description">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByID_Modifier_displayName">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByID_Modifier_Username">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByScreenID">
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime">
+                        <DataType>DateTime</DataType>
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime_Day">
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime_Hour">
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime_Month">
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime_Quarter">
+                    </ReportField>
+                    <ReportField Name="NoteActivity">
+                    </ReportField>
+                    <ReportField Name="NoteFiles">
+                    </ReportField>
+                    <ReportField Name="NoteID">
+                        <DataType>Object</DataType>
+                    </ReportField>
+                    <ReportField Name="NoteImages">
+                    </ReportField>
+                    <ReportField Name="NoteText">
+                    </ReportField>
+                    <ReportField Name="SortOrder">
+                        <DataType>Int16</DataType>
+                    </ReportField>
+                    <ReportField Name="tstamp">
+                    </ReportField>
+                    <ReportField Name="ValueID">
+                    </ReportField>
+                </Fields>
+                <FullName>PX.Objects.CS.CSAttributeDetail</FullName>
+            </ReportTable>
         </Tables>
         <Version>20201103</Version>
         <Sections>
@@ -5138,7 +5229,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             </Padding>
                             <TextAlign>Right</TextAlign>
                         </Style>
-                        <Value>=IIF([SOShipment.ShipmentType] = 'I', #010;IIf([SOShipment.AttributeEINNBR] &lt;&gt; Null, 'EIN #: ' + [SOShipment.AttributeEINNBR], ''),#010;[INSite.AttributeWHVAT])</Value>
+                        <Value>=IIF([SOShipment.ShipmentType] = 'I', #010;IIf([SOShipment.AttributeEINNBR] &lt;&gt; Null, 'EIN #: ' + [SOShipment.AttributeEINNBR], #010;IIf([SOShipment.AttributeIMPORTVAT] &lt;&gt; Null, [ImportVATCombo.Description],#010;[INSite.AttributeWHVAT])#010;),#010;[INSite.AttributeWHVAT])</Value>
                     </TextBox>
                     <TextBox Name="textBox11">
                         <Excel>
@@ -6832,6 +6923,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                     <TextAlign>Center</TextAlign>
                                 </Style>
                                 <Value>=Ceiling(CDec($SumTotalCTNS) / CDec($CartonsPerPallet))</Value>
+                                <VisibleExpr>=IIF([SOShipment.AttributePLTSIZE] = Null And [SOShipment.AttributePLTSIZE2] = Null, False, True)</VisibleExpr>
                             </TextBox>
                             <TextBox Name="textBox62">
                                 <Excel>
@@ -6860,6 +6952,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                     </Font>
                                 </Style>
                                 <Value>PALLETS</Value>
+                                <VisibleExpr>=IIF([SOShipment.AttributePLTSIZE] = Null And [SOShipment.AttributePLTSIZE2] = Null, False, True)</VisibleExpr>
                             </TextBox>
                             <TextBox Name="textBox64">
                                 <Excel>
@@ -6923,6 +7016,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                     <TextAlign>Center</TextAlign>
                                 </Style>
                                 <Value>=(Ceiling(CDec($SumTotalCTNS) / CDec($CartonsPerPallet))) * CDec([SOShipment.AttributePLTWHT])</Value>
+                                <VisibleExpr>=IIF([SOShipment.AttributePLTSIZE] = Null And [SOShipment.AttributePLTSIZE2] = Null, False, True)</VisibleExpr>
                             </TextBox>
                             <TextBox Name="textBox69">
                                 <Excel>
@@ -6937,6 +7031,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                     </Font>
                                 </Style>
                                 <Value>KGS</Value>
+                                <VisibleExpr>=IIF([SOShipment.AttributePLTSIZE] = Null And [SOShipment.AttributePLTSIZE2] = Null, False, True)</VisibleExpr>
                             </TextBox>
                             <TextBox Name="textBox70">
                                 <Excel>
@@ -6975,7 +7070,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                     </BorderWidth>
                                     <TextAlign>Center</TextAlign>
                                 </Style>
-                                <Value>=$SumGW + (Ceiling(CDec($SumTotalCTNS) / CDec($CartonsPerPallet))) * CDec([SOShipment.AttributePLTWHT])</Value>
+                                <Value>=$SumGW + IIF([SOShipment.AttributePLTSIZE] = Null And [SOShipment.AttributePLTSIZE2] = Null, 0, #010;(Ceiling(CDec($SumTotalCTNS) / CDec($CartonsPerPallet))) * CDec([SOShipment.AttributePLTWHT]))</Value>
                             </TextBox>
                             <TextBox Name="textBox72">
                                 <Excel>
@@ -7114,6 +7209,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                     </Font>
                                 </Style>
                                 <Value>Pallet Size :</Value>
+                                <VisibleExpr>=IIF([SOShipment.AttributePLTSIZE] = Null And [SOShipment.AttributePLTSIZE2] = Null, False, True)</VisibleExpr>
                             </TextBox>
                             <TextBox Name="textBox82">
                                 <CanGrow>True</CanGrow>

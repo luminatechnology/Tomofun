@@ -67,7 +67,7 @@ namespace LumTomofunCustomization.Graph
                             .View.Select(baseGraph, row.Marketplace).TopFirst;
                         amzFulfillmentDate = GetFulfillmentDate(baseGraph, amzOrder.OrderId, marketplacePreference);
                         // Fulfillment date < 2022/07/01
-                        if (amzFulfillmentDate < new DateTime(2022, 07, 01))
+                        if (amzFulfillmentDate < new DateTime(2022, 06, 01))
                             throw new Exception("Legacy Order");
 
                         // Amazon Total Tax Amount
@@ -203,7 +203,9 @@ namespace LumTomofunCustomization.Graph
                         else
                         {
                             soGraph.Document.Current = oldsoOrder;
-                            soGraph.Document.Cache.SetValueExt<SOOrder.requestDate>(soGraph.Document.Current, amzFulfillmentDate);
+                            // 執行同一張Report 但是還沒出貨，避免override request date
+                            if (amzFulfillmentDate.HasValue)
+                                soGraph.Document.Cache.SetValueExt<SOOrder.requestDate>(soGraph.Document.Current, amzFulfillmentDate);
                         }
                         // 有Fulfillment date 才Prepare invoice
                         if (amzFulfillmentDate.HasValue)
