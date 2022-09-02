@@ -207,6 +207,8 @@ namespace LumTomofunCustomization.Graph
                                                       .Where<ARInvoice.invoiceNbr.IsEqual<P.AsString>
                                                         .And<SOOrder.orderType.IsEqual<P.AsString>>>
                                                       .View.SelectSingleBound(baseGraph, null, amzGroupOrderData.Key.OrderID, "FA").TopFirst;
+                                if (mapInvoice == null)
+                                    throw new Exception($"Can not Find Invoice (OrderID: {amzGroupOrderData.Key.OrderID})");
                                 var adjTrans = arGraph.Adjustments.Cache.CreateInstance() as ARAdjust;
                                 adjTrans.AdjdDocType = "INV";
                                 adjTrans.AdjdRefNbr = mapInvoice?.RefNbr;
