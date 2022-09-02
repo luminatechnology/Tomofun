@@ -45,6 +45,13 @@ namespace LUMTomofunCustomization.DAC
         public abstract class timeZone : PX.Data.BQL.BqlInt.Field<timeZone> { }
         #endregion
 
+        #region PaymentFormat
+        [PXDBInt]
+        [PXUIField(DisplayName = "Payment Report Format")]
+        public virtual int? PaymentFormat { get; set; }
+        public abstract class paymentFormat : PX.Data.BQL.BqlInt.Field<paymentFormat> { }
+        #endregion
+
         #region Noteid
         [PXNote()]
         public virtual Guid? Noteid { get; set; }

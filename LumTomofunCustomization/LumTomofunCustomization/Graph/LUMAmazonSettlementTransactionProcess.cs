@@ -136,6 +136,8 @@ namespace LumTomofunCustomization.Graph
                                         .View.Select(baseGraph)
                                         .RowCast<LUMAmazonSettlementTransData>()
                                         .Where(x => (x?.MarketPlaceName ?? string.Empty).ToUpper().StartsWith("AMAZON")).Select(x => new { x.SettlementID, x.MarketPlaceName }).Distinct();
+            // 取Marketplace Preference Data
+            var marketplacePreference = SelectFrom<LUMMarketplacePreference>.View.Select(baseGraph).RowCast<LUMMarketplacePreference>();
             // 相同OrderID只會Create一張Payment
             foreach (var amzGroupOrderData in amazonList.GroupBy(x => new { x.Marketplace, x.SettlementID, x.TransactionType, x.OrderID, x.PostedDate }))
             {
@@ -148,9 +150,7 @@ namespace LumTomofunCustomization.Graph
                     #region Setting Marketplace
                     // 找DB相同Settlement ID的MarketPlaceName資料(非non-Amazon)
                     var _marketplace = AllMarketplaceNameList.FirstOrDefault(x => x.SettlementID == amzGroupOrderData.Key.SettlementID)?.MarketPlaceName;
-                    if (string.IsNullOrEmpty(_marketplace) && string.IsNullOrEmpty(amzGroupOrderData.Key.OrderID))
-                        throw new Exception("Settlement Market Place Not Found");
-                    else if (string.IsNullOrEmpty(_marketplace) || _marketplace?.ToUpper() == "NON-AMAZON")
+                    if (string.IsNullOrEmpty(_marketplace) || _marketplace?.ToUpper() == "NON-AMAZON")
                     {
                         var refOrderView = new SelectFrom<SOOrder>
                                        .Where<SOOrder.customerOrderNbr.IsEqual<P.AsString>>
@@ -166,9 +166,15 @@ namespace LumTomofunCustomization.Graph
                     else
                         // 如果是MX但是Marketplace name = us 
                         _marketplace = amzGroupOrderData.Key.Marketplace == "MX" && GetMarketplaceName(_marketplace) == "US" ? "MX" : GetMarketplaceName(_marketplace);
+
+                    if (string.IsNullOrEmpty(_marketplace))
+                        throw new Exception("Settlement Market Place Not Found");
                     #endregion
 
                     var isTaxCalculate = AmazonPublicFunction.GetMarketplaceTaxCalculation(_marketplace);
+                    // Recalculete Amount(處理歐洲美些國家金額放大一百倍問題)
+                    foreach (var item in amzGroupOrderData)
+                        item.Amount /= (marketplacePreference.FirstOrDefault(x => x.Marketplace == _marketplace)?.PaymentFormat ?? 1);
 
                     using (PXTransactionScope sc = new PXTransactionScope())
                     {
