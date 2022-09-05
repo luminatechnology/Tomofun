@@ -133,51 +133,7 @@ namespace LumTomofunCustomization.Graph
                             #region Create Sales Line
 
                             foreach (var item in amzOrder.Items)
-                            {
-                                // Sales Order Line
-                                var line = soGraph.Transactions.Cache.CreateInstance() as SOLine;
-                                line.InventoryID = GetInvetoryitemID(soGraph, item.SellerSKU);
-                                if (line.InventoryID == null)
-                                    throw new Exception($"can not find Inventory item ID ({item.SellerSKU})");
-                                if (item.QuantityShipped == 0)
-                                    continue;
-                                line.ManualPrice = true;
-                                line.OrderQty = item.QuantityShipped;
-                                line.CuryUnitPrice =
-                                     (row.Marketplace == "US" || row.Marketplace == "CA" || row.Marketplace == "MX") ?
-                                     (decimal?)item.ItemPriceAmount / item.QuantityShipped :
-                                     (decimal?)((item.ItemPriceAmount - item.ItemTaxAmount) / item.QuantityShipped);
-                                line.CuryDiscAmt =
-                                    (row.Marketplace == "US" || row.Marketplace == "CA" || row.Marketplace == "MX") ?
-                                    (decimal?)item.PromotionDiscountAmount :
-                                    (decimal?)(item.PromotionDiscountAmount + item.PromotionDiscountTaxAmount);
-                                soGraph.Transactions.Insert(line);
-                                // Non-stock Item(Shipping) 
-                                if (item.ShippingPriceAmount - item.ShippingDiscountAmount != 0)
-                                {
-                                    var soShipLine = soGraph.Transactions.Cache.CreateInstance() as SOLine;
-                                    soShipLine.InventoryID = GetFeeNonStockItem("Shipping");
-                                    soShipLine.OrderQty = 1;
-                                    soShipLine.CuryUnitPrice =
-                                        (row.Marketplace == "US" || row.Marketplace == "CA") ?
-                                        (decimal?)(item.ShippingPriceAmount - item.ShippingDiscountAmount) :
-                                        (decimal?)(item.ShippingPriceAmount - item.ShippingDiscountAmount - (item.ShippingPriceAmount - item.ShippingDiscountAmount == 0 ? 0 : item.ShippingTaxAmount));
-                                    soGraph.Transactions.Insert(soShipLine);
-                                }
-
-                                // Non-stock Item(Giftwrap)
-                                if (item.GiftWrapPriceAmount != 0)
-                                {
-                                    var soGiftLine = soGraph.Transactions.Cache.CreateInstance() as SOLine;
-                                    soGiftLine.InventoryID = GetFeeNonStockItem("Giftwrap");
-                                    soGiftLine.OrderQty = 1;
-                                    soGiftLine.CuryUnitPrice =
-                                        (row.Marketplace == "US" || row.Marketplace == "CA") ?
-                                        (decimal?)item.GiftWrapPriceAmount :
-                                        (decimal?)(item.GiftWrapPriceAmount - item.GiftWrapTaxAmount);
-                                    soGraph.Transactions.Insert(soGiftLine);
-                                }
-                            }
+                                CreateSOLine(soGraph,amzOrder,item,row);
 
                             #endregion
 
@@ -199,13 +155,25 @@ namespace LumTomofunCustomization.Graph
                             // Sales Order Save
                             soGraph.Save.Press();
                         }
-                        // 如果已經存在 則更改Request date
+                        // 如果已經存在 則更改Request date + 刪除所有SOLine 並重新建立
                         else
                         {
                             soGraph.Document.Current = oldsoOrder;
                             // 執行同一張Report 但是還沒出貨，避免override request date
                             if (amzFulfillmentDate.HasValue)
                                 soGraph.Document.Cache.SetValueExt<SOOrder.requestDate>(soGraph.Document.Current, amzFulfillmentDate);
+
+                            // 刪除所有SOLine 
+                            foreach (SOLine oldLine in soGraph.Transactions.Select().RowCast<SOLine>())
+                                soGraph.Transactions.Delete(oldLine);
+
+                            // 重新建立SOLine
+                            #region Create Sales Line
+
+                            foreach (var item in amzOrder.Items)
+                                CreateSOLine(soGraph, amzOrder, item, row);
+
+                            #endregion
                         }
                         // 有Fulfillment date 才Prepare invoice
                         if (amzFulfillmentDate.HasValue)
@@ -290,7 +258,7 @@ namespace LumTomofunCustomization.Graph
                     baseGraph.Actions.PressSave();
                 }
                 // 建立Invoice後，在Release。即使失敗也照常產生
-                if (amzFulfillmentDate.HasValue)
+                if (amzFulfillmentDate.HasValue && (row?.IsProcessed ?? false))
                 {
                     try
                     {
@@ -304,6 +272,51 @@ namespace LumTomofunCustomization.Graph
                         // Do nothing
                     }
                 }
+            }
+        }
+
+        public void CreateSOLine(SOOrderEntry soGraph, LumTomofunCustomization.API_Entity.AmazonOrder.Order amzOrder, LumTomofunCustomization.API_Entity.AmazonOrder.Item item, LUMAmazonTransData row)
+        {
+            // Sales Order Line
+            var line = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+            line.InventoryID = GetInvetoryitemID(soGraph, item.SellerSKU);
+            if (line.InventoryID == null)
+                throw new Exception($"can not find Inventory item ID ({item.SellerSKU})");
+            line.ManualPrice = true;
+            line.OrderQty = amzOrder.OrderStatus == "Shipped" ? item?.QuantityShipped : item?.QuantityOrdered;
+            line.CuryUnitPrice =
+                 (row.Marketplace == "US" || row.Marketplace == "CA" || row.Marketplace == "MX") ?
+                 (decimal?)item.ItemPriceAmount / item.QuantityShipped :
+                 (decimal?)((item.ItemPriceAmount - item.ItemTaxAmount) / item.QuantityShipped);
+            line.CuryDiscAmt =
+                (row.Marketplace == "US" || row.Marketplace == "CA" || row.Marketplace == "MX") ?
+                (decimal?)item.PromotionDiscountAmount :
+                (decimal?)(item.PromotionDiscountAmount + item.PromotionDiscountTaxAmount);
+            soGraph.Transactions.Insert(line);
+            // Non-stock Item(Shipping) 
+            if (item.ShippingPriceAmount - item.ShippingDiscountAmount != 0)
+            {
+                var soShipLine = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+                soShipLine.InventoryID = GetFeeNonStockItem("Shipping");
+                soShipLine.OrderQty = 1;
+                soShipLine.CuryUnitPrice =
+                    (row.Marketplace == "US" || row.Marketplace == "CA") ?
+                    (decimal?)(item.ShippingPriceAmount - item.ShippingDiscountAmount) :
+                    (decimal?)(item.ShippingPriceAmount - item.ShippingDiscountAmount - (item.ShippingPriceAmount - item.ShippingDiscountAmount == 0 ? 0 : item.ShippingTaxAmount));
+                soGraph.Transactions.Insert(soShipLine);
+            }
+
+            // Non-stock Item(Giftwrap)
+            if (item.GiftWrapPriceAmount != 0)
+            {
+                var soGiftLine = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+                soGiftLine.InventoryID = GetFeeNonStockItem("Giftwrap");
+                soGiftLine.OrderQty = 1;
+                soGiftLine.CuryUnitPrice =
+                    (row.Marketplace == "US" || row.Marketplace == "CA") ?
+                    (decimal?)item.GiftWrapPriceAmount :
+                    (decimal?)(item.GiftWrapPriceAmount - item.GiftWrapTaxAmount);
+                soGraph.Transactions.Insert(soGiftLine);
             }
         }
 
