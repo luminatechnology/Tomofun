@@ -20,6 +20,11 @@ namespace LumTomofunCustomization.LUMLibrary
                .Where<LUMShopifyMarketplacePreference.marketplace.IsEqual<P.AsString>>
                .View.Select(new PXGraph(), marketPlace).TopFirst?.BAccountID;
 
+        public static int? GetMarketplaceTimeZone(string marketplace)
+            => SelectFrom<LUMShopifyMarketplacePreference>
+               .Where<LUMShopifyMarketplacePreference.marketplace.IsEqual<P.AsString>>
+               .View.Select(new PXGraph(), marketplace).TopFirst?.TimeZone ?? 0;
+
         /// <summary> 取Marketplace 對應 Tax Calculation </summary>
         public static bool GetMarketplaceTaxCalculation(string marketPlace)
             => SelectFrom<LUMShopifyMarketplacePreference>
