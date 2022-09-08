@@ -434,6 +434,7 @@ namespace LumTomofunCustomization.Graph
                 // Save
                 invoiceGraph.Save.Press();
                 // Release Invoice
+                invoiceGraph.releaseFromHold.Press();
                 invoiceGraph.releaseFromCreditHold.Press();
                 invoiceGraph.release.Press();
                 #endregion

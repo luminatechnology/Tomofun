@@ -324,6 +324,9 @@ namespace LumTomofunCustomization.Graph
                                         continue;
                                     if (soTrans.InventoryID == null)
                                         throw new PXException($"Can not find SOLine InventoryID (OrderType: {amzGroupOrderData.Key.TransactionType}, Amount Descr:{row.AmountDescription})");
+                                    // isTaxCalculate = true then NONTAXABLE
+                                    if (isTaxCalculate)
+                                        soTrans.TaxCategoryID = "NONTAXABLE";
                                     soGraph.Transactions.Insert(soTrans);
                                 }
 
@@ -520,6 +523,9 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
                                         if (soTrans.InventoryID == null)
                                             throw new PXException($"Can not find SOLine InventoryID (OrderType: {amzGroupOrderData.Key.TransactionType}, Amount Descr:EC-SHIPPING)");
+                                        // isTaxCalculate = true then NONTAXABLE
+                                        if (isTaxCalculate)
+                                            soTrans.TaxCategoryID = "NONTAXABLE";
                                         soGraph.Transactions.Insert(soTrans);
                                     }
 
@@ -623,6 +629,9 @@ namespace LumTomofunCustomization.Graph
                                     soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
                                     if (soTrans.InventoryID == null)
                                         throw new PXException($"Can not find SOLine InventoryID (OrderType: {amzGroupOrderData.Key.TransactionType}, Amount Descr:{row.AmountDescription})");
+                                    // isTaxCalculate = true then NONTAXABLE
+                                    if (isTaxCalculate)
+                                        soTrans.TaxCategoryID = "NONTAXABLE";
                                     soGraph.Transactions.Insert(soTrans);
                                 }
 
@@ -834,6 +843,9 @@ namespace LumTomofunCustomization.Graph
                                     soTrans.CuryUnitPrice = soDoc.OrderType == "CM" ? (row.Amount ?? 0) * -1 : (row.Amount ?? 0);
                                     if (soTrans.InventoryID == null)
                                         throw new PXException($"Can not find SOLine InventoryID (OrderType: {amzGroupOrderData.Key.TransactionType}, Amount Descr:{row.AmountDescription})");
+                                    // isTaxCalculate = true then NONTAXABLE
+                                    if (isTaxCalculate)
+                                        soTrans.TaxCategoryID = "NONTAXABLE";
                                     soGraph.Transactions.Insert(soTrans);
                                 }
 
@@ -938,6 +950,9 @@ namespace LumTomofunCustomization.Graph
                                     soTrans.CuryUnitPrice = soDoc.OrderType == "CM" ? (row.Amount ?? 0) * -1 : (row.Amount ?? 0);
                                     if (soTrans.InventoryID == null)
                                         throw new PXException($"Can not find SOLine InventoryID (OrderType: Undefined Transactions, Amount Descr:{row.AmountDescription})");
+                                    // isTaxCalculate = true then NONTAXABLE
+                                    if(isTaxCalculate)
+                                        soTrans.TaxCategoryID = "NONTAXABLE";
                                     soGraph.Transactions.Insert(soTrans);
                                 }
 
@@ -997,9 +1012,9 @@ namespace LumTomofunCustomization.Graph
                         baseGraph.SettlementTransaction.Update(x);
                     });
                     // Save
+                    baseGraph.Actions.PressSave();
                 }
             }
-            baseGraph.Actions.PressSave();
         }
 
         /// <summary> Sales Order Prepare Invoice and Override Tax </summary>
