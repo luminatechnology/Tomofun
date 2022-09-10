@@ -78,7 +78,7 @@ namespace LumTomofunCustomization.Graph
                 {
                     amzConnObjs.Add("EU", GetAmazonConnObject("EU"));
                     amzConnObjs.Add("AU", GetAmazonConnObject("AU"));
-                    //amzConnObjs.Add("SG", GetAmazonConnObject("SG"));
+                    amzConnObjs.Add("SG", GetAmazonConnObject("SG"));
                 }
                 else if (actCompanyName == "US")
                 {
@@ -144,7 +144,6 @@ namespace LumTomofunCustomization.Graph
                 PXLongOperation.SetCurrentItem(amzGroupOrderData.FirstOrDefault());
                 string errorMsg = string.Empty;
                 string DisplayGroupKey = $"{amzGroupOrderData.Key.SettlementID},{amzGroupOrderData.Key.TransactionType},{amzGroupOrderData.Key.OrderID}";
-                var amzTotalTax = amzGroupOrderData.Where(x => x.AmountDescription == "Tax" || x.AmountDescription == "ShippingTax" || x.AmountDescription == "TaxDiscount" || x.AmountType == "ItemWithheldTax").Sum(x => (x.Amount ?? 0) * -1);
                 try
                 {
                     #region Setting Marketplace
@@ -172,9 +171,17 @@ namespace LumTomofunCustomization.Graph
                     #endregion
 
                     var isTaxCalculate = AmazonPublicFunction.GetMarketplaceTaxCalculation(_marketplace);
-                    // Recalculete Amount(處理歐洲美些國家金額放大一百倍問題)
+                    // Recalculete Amount(處理歐洲美些國家金額放大一百倍問題)(CouponRedemptionFee 除外)
                     foreach (var item in amzGroupOrderData)
-                        item.Amount /= (marketplacePreference.FirstOrDefault(x => x.Marketplace == _marketplace)?.PaymentFormat ?? 1);
+                    {
+                        // 如果CurrentMarketplace is not null 代表該筆資料已經重新計算過Amount, 無須再重新計算
+                        if(!string.IsNullOrEmpty(item.CurrentMarketplace))
+                            continue;
+                        item.CurrentMarketplace = _marketplace;
+                        if (item.AmountType != "CouponRedemptionFee")
+                            item.Amount /= (marketplacePreference.FirstOrDefault(x => x.Marketplace == _marketplace)?.PaymentFormat ?? 1);
+                    }
+                    var amzTotalTax = amzGroupOrderData.Where(x => x.AmountDescription == "Tax" || x.AmountDescription == "ShippingTax" || x.AmountDescription == "TaxDiscount" || x.AmountType == "ItemWithheldTax").Sum(x => (x.Amount ?? 0) * -1);
 
                     using (PXTransactionScope sc = new PXTransactionScope())
                     {
@@ -353,6 +360,7 @@ namespace LumTomofunCustomization.Graph
                                 paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
                                 paymentExt.QuickPayment.Current.ExtRefNbr = amzGroupOrderData.Key.SettlementID;
                                 ARPaymentEntry paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Refund);
+                                paymentEntry.Document.Cache.SetValueExt<ARPayment.adjDate>(paymentEntry.Document.Current, amzGroupOrderData.Key.PostedDate);
                                 paymentEntry.Save.Press();
                                 paymentEntry.releaseFromHold.Press();
                                 paymentEntry.release.Press();
@@ -423,6 +431,11 @@ namespace LumTomofunCustomization.Graph
                                             if (chargeTrans.CuryTranAmt == 0 || !chargeTrans.CuryTranAmt.HasValue)
                                                 continue;
                                         }
+                                        else if ((item?.Amount ?? 0) != 0 && (item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORVAT-PRINCIPAL" || item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORTAX-PRINCIPAL"))
+                                        {
+                                            chargeTrans.EntryTypeID = "WHTAX" + _marketplace;
+                                            chargeTrans.CuryTranAmt = item.Amount * -1;
+                                        }
                                         else
                                             continue;
                                         arGraph.PaymentCharges.Insert(chargeTrans);
@@ -433,17 +446,6 @@ namespace LumTomofunCustomization.Graph
                                     arGraph.Document.SetValueExt<ARPayment.curyOrigDocAmt>(arGraph.Document.Current, arGraph.Document.Current.CuryApplAmt);
                                     // Save Payment
                                     arGraph.Actions.PressSave();
-                                    #region CHARGS
-                                    if (_marketplace == "US" && mapInvoice?.CuryTaxTotal > 0)
-                                    {
-                                        var chargeTrans = arGraph.PaymentCharges.Cache.CreateInstance() as ARPaymentChargeTran;
-                                        chargeTrans.EntryTypeID = "WHTAX";
-                                        chargeTrans.CuryTranAmt = mapInvoice?.CuryTaxTotal;
-                                        arGraph.PaymentCharges.Insert(chargeTrans);
-                                        // Save Payment
-                                        arGraph.Actions.PressSave();
-                                    }
-                                    #endregion
                                     // Release Payment
                                     arGraph.releaseFromHold.Press();
                                     arGraph.release.Press();
@@ -548,6 +550,7 @@ namespace LumTomofunCustomization.Graph
                                     paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
                                     paymentExt.QuickPayment.Current.ExtRefNbr = amzGroupOrderData.Key.SettlementID;
                                     paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Refund);
+                                    paymentEntry.Document.Cache.SetValueExt<ARPayment.adjDate>(paymentEntry.Document.Current, amzGroupOrderData.Key.PostedDate);
                                     paymentEntry.Save.Press();
                                     paymentEntry.releaseFromHold.Press();
                                     paymentEntry.release.Press();
@@ -654,6 +657,7 @@ namespace LumTomofunCustomization.Graph
                                 paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
                                 paymentExt.QuickPayment.Current.ExtRefNbr = amzGroupOrderData.Key.SettlementID;
                                 paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Refund);
+                                paymentEntry.Document.Cache.SetValueExt<ARPayment.adjDate>(paymentEntry.Document.Current, amzGroupOrderData.Key.PostedDate);
                                 paymentEntry.Save.Press();
                                 paymentEntry.releaseFromHold.Press();
                                 paymentEntry.release.Press();
@@ -734,6 +738,9 @@ namespace LumTomofunCustomization.Graph
                                     soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
                                     if (soTrans.InventoryID == null)
                                         throw new PXException($"Can not find SOLine InventoryID (OrderType: {amzGroupOrderData.Key.TransactionType}, Amount Descr:{row.AmountDescription})");
+                                    // isTaxCalculate = true then NONTAXABLE
+                                    if (isTaxCalculate)
+                                        soTrans.TaxCategoryID = "NONTAXABLE";
                                     soGraph.Transactions.Insert(soTrans);
                                 }
 
@@ -756,6 +763,7 @@ namespace LumTomofunCustomization.Graph
                                 paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
                                 paymentExt.QuickPayment.Current.ExtRefNbr = amzGroupOrderData.Key.SettlementID;
                                 paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Refund);
+                                paymentEntry.Document.Cache.SetValueExt<ARPayment.adjDate>(paymentEntry.Document.Current, amzGroupOrderData.Key.PostedDate);
                                 paymentEntry.Save.Press();
                                 paymentEntry.releaseFromHold.Press();
                                 paymentEntry.release.Press();
@@ -868,6 +876,7 @@ namespace LumTomofunCustomization.Graph
                                 paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
                                 paymentExt.QuickPayment.Current.ExtRefNbr = amzGroupOrderData.Key.SettlementID;
                                 paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, soDoc.OrderType == "CM" ? ARPaymentType.Refund : ARPaymentType.Payment);
+                                paymentEntry.Document.Cache.SetValueExt<ARPayment.adjDate>(paymentEntry.Document.Current, amzGroupOrderData.Key.PostedDate);
                                 paymentEntry.Save.Press();
                                 paymentEntry.releaseFromHold.Press();
                                 paymentEntry.release.Press();
@@ -951,7 +960,7 @@ namespace LumTomofunCustomization.Graph
                                     if (soTrans.InventoryID == null)
                                         throw new PXException($"Can not find SOLine InventoryID (OrderType: Undefined Transactions, Amount Descr:{row.AmountDescription})");
                                     // isTaxCalculate = true then NONTAXABLE
-                                    if(isTaxCalculate)
+                                    if (isTaxCalculate)
                                         soTrans.TaxCategoryID = "NONTAXABLE";
                                     soGraph.Transactions.Insert(soTrans);
                                 }
@@ -975,6 +984,7 @@ namespace LumTomofunCustomization.Graph
                                 paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
                                 paymentExt.QuickPayment.Current.ExtRefNbr = amzGroupOrderData.Key.SettlementID;
                                 paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, soDoc.OrderType == "CM" ? ARPaymentType.Refund : ARPaymentType.Payment);
+                                paymentEntry.Document.Cache.SetValueExt<ARPayment.adjDate>(paymentEntry.Document.Current, amzGroupOrderData.Key.PostedDate);
                                 paymentEntry.Save.Press();
                                 paymentEntry.releaseFromHold.Press();
                                 paymentEntry.release.Press();

@@ -16,7 +16,7 @@ namespace LUMTomofunCustomization.DAC
         #endregion
 
         #region TransSequenceNumber
-        [PXDBIdentity(IsKey = true)]
+        [PXDBIdentity()]
         public virtual int? TransSequenceNumber { get; set; }
         public abstract class transSequenceNumber : PX.Data.BQL.BqlInt.Field<transSequenceNumber> { }
         #endregion
@@ -30,13 +30,13 @@ namespace LUMTomofunCustomization.DAC
 
         #region Marketplace
         [PXDBString(20, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Marketplace")]
+        [PXUIField(DisplayName = "Marketplace(Report Country)")]
         public virtual string Marketplace { get; set; }
         public abstract class marketplace : PX.Data.BQL.BqlString.Field<marketplace> { }
         #endregion
 
         #region SettlementID
-        [PXDBString(15, IsUnicode = true, InputMask = "")]
+        [PXDBString(15, IsUnicode = true, InputMask = "", IsKey = true)]
         [PXUIField(DisplayName = "Settlement ID")]
         public virtual string SettlementID { get; set; }
         public abstract class settlementID : PX.Data.BQL.BqlString.Field<settlementID> { }
@@ -78,28 +78,28 @@ namespace LUMTomofunCustomization.DAC
         #endregion
 
         #region OrderID
-        [PXDBString(100, IsUnicode = true, InputMask = "")]
+        [PXDBString(100, IsUnicode = true, InputMask = "", IsKey = true)]
         [PXUIField(DisplayName = "Order ID")]
         public virtual string OrderID { get; set; }
         public abstract class orderID : PX.Data.BQL.BqlString.Field<orderID> { }
         #endregion
 
         #region TransactionType
-        [PXDBString(20, IsUnicode = true, InputMask = "")]
+        [PXDBString(20, IsUnicode = true, InputMask = "", IsKey = true)]
         [PXUIField(DisplayName = "Transaction Type")]
         public virtual string TransactionType { get; set; }
         public abstract class transactionType : PX.Data.BQL.BqlString.Field<transactionType> { }
         #endregion
 
         #region AmountType
-        [PXDBString(50, IsUnicode = true, InputMask = "")]
+        [PXDBString(50, IsUnicode = true, InputMask = "", IsKey = true)]
         [PXUIField(DisplayName = "Amount Type")]
         public virtual string AmountType { get; set; }
         public abstract class amountType : PX.Data.BQL.BqlString.Field<amountType> { }
         #endregion
 
         #region AmountDescription
-        [PXDBString(200, IsUnicode = true, InputMask = "")]
+        [PXDBString(200, IsUnicode = true, InputMask = "", IsKey = true)]
         [PXUIField(DisplayName = "Amount Description")]
         public virtual string AmountDescription { get; set; }
         public abstract class amountDescription : PX.Data.BQL.BqlString.Field<amountDescription> { }
@@ -141,7 +141,7 @@ namespace LUMTomofunCustomization.DAC
         #endregion
 
         #region Sku
-        [PXDBString(50, IsUnicode = true, InputMask = "")]
+        [PXDBString(50, IsUnicode = true, InputMask = "", IsKey = true)]
         [PXUIField(DisplayName = "Sku")]
         public virtual string Sku { get; set; }
         public abstract class sku : PX.Data.BQL.BqlString.Field<sku> { }
@@ -166,6 +166,13 @@ namespace LUMTomofunCustomization.DAC
         [PXUIField(DisplayName = "Error Message")]
         public virtual string ErrorMessage { get; set; }
         public abstract class errorMessage : PX.Data.BQL.BqlString.Field<errorMessage> { }
+        #endregion
+
+        #region CurrentMarketplace
+        [PXDBString(20, IsUnicode = true)]
+        [PXUIField(DisplayName = "Current Marketplace(Process)", Visible = false)]
+        public virtual string CurrentMarketplace { get; set; }
+        public abstract class currentMarketplace : PX.Data.BQL.BqlString.Field<currentMarketplace> { }
         #endregion
 
         #region CreatedByID

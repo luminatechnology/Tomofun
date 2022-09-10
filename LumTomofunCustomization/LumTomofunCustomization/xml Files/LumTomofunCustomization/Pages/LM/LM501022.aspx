@@ -44,6 +44,7 @@
                     <px:PXGridColumn DataField="QuantityPurchased" Width="120"></px:PXGridColumn>
                     <px:PXGridColumn DataField="IsProcessed" Width="120" Type="CheckBox"></px:PXGridColumn>
                     <px:PXGridColumn DataField="ErrorMessage" Width="200"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="CurrentMarketplace" Width="120"></px:PXGridColumn>
                     <px:PXGridColumn DataField="CreatedDateTime" Width="130" DisplayFormat="g"></px:PXGridColumn>
                 </Columns>
                 <RowTemplate>

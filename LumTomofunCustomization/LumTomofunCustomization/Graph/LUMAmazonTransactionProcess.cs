@@ -133,7 +133,7 @@ namespace LumTomofunCustomization.Graph
                             #region Create Sales Line
 
                             foreach (var item in amzOrder.Items)
-                                CreateSOLine(soGraph,amzOrder,item,row);
+                                CreateSOLine(soGraph, amzOrder, item, row);
 
                             #endregion
 
@@ -284,10 +284,16 @@ namespace LumTomofunCustomization.Graph
                 throw new Exception($"can not find Inventory item ID ({item.SellerSKU})");
             line.ManualPrice = true;
             line.OrderQty = amzOrder.OrderStatus == "Shipped" ? item?.QuantityShipped : item?.QuantityOrdered;
-            line.CuryUnitPrice =
-                 (row.Marketplace == "US" || row.Marketplace == "CA" || row.Marketplace == "MX") ?
-                 (decimal?)item.ItemPriceAmount / item.QuantityShipped :
-                 (decimal?)((item.ItemPriceAmount - item.ItemTaxAmount) / item.QuantityShipped);
+            if ((item?.QuantityShipped ?? 0) == 0)
+                line.CuryUnitPrice =
+                    (row.Marketplace == "US" || row.Marketplace == "CA" || row.Marketplace == "MX") ?
+                    (decimal?)item.ItemPriceAmount / item.QuantityOrdered :
+                    (decimal?)((item.ItemPriceAmount - item.ItemTaxAmount) / item.QuantityOrdered);
+            else
+                line.CuryUnitPrice =
+                     (row.Marketplace == "US" || row.Marketplace == "CA" || row.Marketplace == "MX") ?
+                     (decimal?)item.ItemPriceAmount / item.QuantityShipped :
+                     (decimal?)((item.ItemPriceAmount - item.ItemTaxAmount) / item.QuantityShipped);
             line.CuryDiscAmt =
                 (row.Marketplace == "US" || row.Marketplace == "CA" || row.Marketplace == "MX") ?
                 (decimal?)item.PromotionDiscountAmount :
@@ -323,6 +329,9 @@ namespace LumTomofunCustomization.Graph
         /// <summary> 邏輯檢核 </summary>
         public void Validation(LUMAmazonTransData row)
         {
+            // Valid OrderStatus
+            if(row.OrderStatus.ToLower() == "canceled")
+                throw new Exception("Order Status can not equal Canceled");
             // Valid SalesChannel
             if (!row.SalesChannel.ToLower().StartsWith("amazon"))
                 throw new Exception("SalesChannel must starts with 'Amazon'!");
