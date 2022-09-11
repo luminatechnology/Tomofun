@@ -47,6 +47,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Bin\FikaAmazonAPI.dll</HintPath>
     </Reference>
+    <Reference Include="PX.Commerce.BigCommerce, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Bin\PX.Commerce.BigCommerce.dll</HintPath>
+    </Reference>
     <Reference Include="PX.Common">
       <HintPath>..\..\..\..\Bin\PX.Common.dll</HintPath>
     </Reference>
@@ -73,19 +77,30 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API Entity\AmazonOrderEntity.cs" />
+    <Compile Include="API Entity\FedExEntity.cs" />
+    <Compile Include="API Entity\ReturnHelperEntity.cs" />
     <Compile Include="API Entity\ShopifyOrderEntity.cs" />
     <Compile Include="API Entity\ShopifyPaymentEntity.cs" />
+    <Compile Include="API Entity\TopestEntity.cs" />
+    <Compile Include="API Helper\LUMAPIHelper.cs" />
+    <Compile Include="API Helper\ILUMAPIConfig.cs" />
+    <Compile Include="API Helper\LUMAPIResults.cs" />
+    <Compile Include="API Helper\LUMAPIConfig.cs" />
+    <Compile Include="DAC\LUM3PLINReconciliation.cs" />
+    <Compile Include="DAC\LUM3PLSetup.cs" />
     <Compile Include="DAC\LUMAmazonSettlementTransData.cs" />
     <Compile Include="DAC\LUMAmazonTransData.cs" />
     <Compile Include="DAC\LUMAmzINReconcilition.cs" />
     <Compile Include="DAC\LUMShopifyMarketplacePreference.cs" />
     <Compile Include="DAC\LUMShopifySourceData.cs" />
     <Compile Include="DAC\LUMForecastUpload.cs" />
+    <Compile Include="Graph\LUM3PLINReconciliationProc.cs" />
     <Compile Include="Graph\LUMAmazonFulfillmentProcess.cs" />
     <Compile Include="Graph\LUMAmazonInterfaceMaint.cs" />
     <Compile Include="Graph\LUMAmazonPaymentProcess.cs" />
@@ -124,6 +139,9 @@
     <Compile Include="DAC\LUMPaypalJP_NPPaymentTransData.cs" />
     <Compile Include="DAC\LUMPaypalJP_DocomoPaymentTransData.cs" />
     <Compile Include="DAC\LUMAmazonFulfillmentTransData.cs" />
+    <Compile Include="Graph\LUM3PLSetupMaint.cs" />
+    <Compile Include="Graph\LUM3PLWHMappingMaint.cs" />
+    <Compile Include="DAC\LUM3PLWarehouseMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
