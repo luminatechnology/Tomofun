@@ -296,9 +296,7 @@ namespace LUMTomofunCustomization.Graph
             };
 
             reconcilition.ERPSku   = GetStockItemOrCrossRef(reconcilition.Sku);
-            reconcilition.Location = SelectFrom<INLocation>.Where<INLocation.siteID.IsEqual<@P.AsInt>
-                                                                  .And<INLocation.locationCD.IsEqual<@P.AsString>>>.View
-                                                           .Select(this, reconcilition.Warehouse, list[6].ToUpper() == "SELLABLE" ? "601" : "602").TopFirst?.LocationID;
+            reconcilition.Location = GetLocationIDByWarehouse(reconcilition.Warehouse, list[6].ToUpper());
             // FBA publish IN report after 12:00 am, so the snapshot date actually is one day before .
             reconcilition.INDate   = reconcilition.SnapshotDate.Value.AddDays(-1);
 
@@ -359,11 +357,18 @@ namespace LUMTomofunCustomization.Graph
         /// <summary>
         /// Search ERP Stock Item & Inventory Cross Reference (Global Type).If Not Found then ERP SKU = ¡¥*****¡¦
         /// </summary>
-        private string GetStockItemOrCrossRef(string sku)
+        public virtual string GetStockItemOrCrossRef(string sku)
         {
             return InventoryItem.UK.Find(this, sku)?.InventoryCD ??
-                   InventoryItem.PK.Find(this, SelectFrom<INItemXRef>.Where<INItemXRef.alternateID.IsEqual<@P.AsString>.And<INItemXRef.alternateType.IsEqual<INAlternateType.global>>>.View.Select(this, sku).TopFirst?.InventoryID)?.InventoryCD ?? 
+                   InventoryItem.PK.Find(this, SelectFrom<INItemXRef>.Where<INItemXRef.alternateID.IsEqual<@P.AsString>
+                                                                           .And<INItemXRef.alternateType.IsEqual<INAlternateType.global>>>.View.Select(this, sku).TopFirst?.InventoryID)?.InventoryCD ?? 
                    "*****";
+        }
+
+        public virtual int? GetLocationIDByWarehouse(int? warehouse, string locationDescr)
+        {
+            return SelectFrom<INLocation>.Where<INLocation.siteID.IsEqual<@P.AsInt>.And<INLocation.locationCD.IsEqual<@P.AsString>>>.View
+                                         .Select(this, warehouse, locationDescr == "SELLABLE" ? "601" : "602").TopFirst?.LocationID;
         }
 
         /// <summary>
