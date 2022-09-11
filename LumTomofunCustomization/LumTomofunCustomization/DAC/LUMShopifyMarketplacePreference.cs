@@ -39,6 +39,13 @@ namespace LumTomofunCustomization.DAC
         public abstract class isTaxCalculation : PX.Data.BQL.BqlBool.Field<isTaxCalculation> { }
         #endregion
 
+        #region TimeZone
+        [PXDBInt]
+        [PXUIField(DisplayName = "Time Zone(GMT+?)")]
+        public virtual int? TimeZone { get; set; }
+        public abstract class timeZone : PX.Data.BQL.BqlInt.Field<timeZone> { }
+        #endregion
+
         #region Noteid
         [PXNote()]
         public virtual Guid? Noteid { get; set; }

@@ -184,14 +184,28 @@ namespace PX.Objects.SO
                 foreach (PXResult<SOShipLine> line in Base.Transactions.Select())
                 {
                     if (Base.Document.Current.ShipmentType == "I")
-                        sumUsrTotalCartons += (decimal)((SOShipLine)line).UnitPrice * (decimal)((SOShipLine)line).ShippedQty;
+                    {
+                        var _soShipline = SOShipLine.PK.Find(Base, ((SOShipLine)line).ShipmentNbr, ((SOShipLine)line).LineNbr);
+                        var _soLine = SOLine.PK.Find(Base, _soShipline.OrigOrderType, _soShipline.OrigOrderNbr, _soShipline.OrigLineNbr);
+                        sumUsrTotalCartons += (decimal)(_soLine?.CuryUnitPrice ?? 0) * (decimal)((SOShipLine)line).ShippedQty;
+                    }
                     else
                     {
-                        var currentPOLine = poLineData.RowCast< POLine >().FirstOrDefault(x => x.LineNbr == ((SOShipLine)line).LineNbr);
+                        var currentPOLine = poLineData.RowCast<POLine>().FirstOrDefault(x => x.LineNbr == ((SOShipLine)line).LineNbr);
                         sumUsrTotalCartons += (decimal)((currentPOLine?.CuryUnitCost ?? 0) * (decimal)((SOShipLine)line).ShippedQty);
                     }
                 }
 
+                var shipFreight = Base.Document.Cache.GetValueExt(Base.Document.Current, PX.Objects.CS.Messages.Attribute + "SPFREIGHT") as PXFieldState;
+                var shipInsuname = Base.Document.Cache.GetValueExt(Base.Document.Current, PX.Objects.CS.Messages.Attribute + "SPINSUR") as PXFieldState;
+                try
+                {
+                    sumUsrTotalCartons = sumUsrTotalCartons + decimal.Parse((string)shipFreight?.Value ?? "0") + decimal.Parse((string)shipInsuname?.Value ?? "0");
+                }
+                catch
+                {
+                    // 轉型失敗不做任何事
+                }
                 var _reportID = "LM642010";
                 Dictionary<string, string> parameters = new Dictionary<string, string>();
                 parameters["ShipmentNbr"] = Base.Document.Current.ShipmentNbr;

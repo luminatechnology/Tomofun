@@ -370,7 +370,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 <ParentName>SOShipment</ParentName>
             </ReportRelation>
         </Relations>
-        <SchemaUrl>https://tomofun.acumatica.com/</SchemaUrl>
+        <SchemaUrl>http://localhost/Tomofun1/</SchemaUrl>
         <Sorting>
             <SortExp>
                 <DataField>SOShipment.ShipmentNbr</DataField>
@@ -8096,6 +8096,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                     </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
+                                <Value>=CDec([SOShipment.AttributeSPFREIGHT])</Value>
                             </TextBox>
                             <TextBox Name="textBox68">
                                 <Excel>
@@ -8111,6 +8112,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                     </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
+                                <Value>=CDec([SOShipment.AttributeSPINSUR])</Value>
                             </TextBox>
                             <TextBox Name="textBox70">
                                 <Excel>
@@ -8157,7 +8159,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                     </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
-                                <Value>=$SumTotalVal</Value>
+                                <Value>=$SumTotalVal + CDec(IsNull([SOShipment.AttributeSPFREIGHT],'0')) + #010;CDec(IsNull([SOShipment.AttributeSPINSUR],'0'))</Value>
                             </TextBox>
                         </Items>
                     </Footer>

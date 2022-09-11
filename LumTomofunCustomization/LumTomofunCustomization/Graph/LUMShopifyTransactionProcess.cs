@@ -61,8 +61,8 @@ namespace LumTomofunCustomization.Graph
                         // Create Sales Order Graph
                         var soGraph = PXGraph.CreateInstance<SOOrderEntry>();
                         var spOrder = JsonConvert.DeserializeObject<API_Entity.ShopifyOrder.ShopifyOrderEntity>(row.TransJson);
-
-                        if(spOrder?.created_at < new DateTime(2022,07,01))
+                        var marketplaceTimezone = ShopifyPublicFunction.GetMarketplaceTimeZone(row.Marketplace);
+                        if (spOrder?.created_at < new DateTime(2022, 06, 01))
                             throw new Exception("Legacy Order");
 
                         // validation
@@ -83,8 +83,8 @@ namespace LumTomofunCustomization.Graph
                             shopifySOOrder.CustomerOrderNbr = spOrder.checkout_id.ToString();
                             shopifySOOrder.CustomerRefNbr = spOrder.id.ToString();
                             shopifySOOrder.OrderDesc = $"Shopify Order #{spOrder.order_number}";
-                            shopifySOOrder.OrderDate = spOrder.created_at;
-                            shopifySOOrder.RequestDate = spOrder.created_at;
+                            shopifySOOrder.OrderDate = spOrder.created_at.AddHours(marketplaceTimezone ?? 0);
+                            shopifySOOrder.RequestDate = spOrder.created_at.AddHours(marketplaceTimezone ?? 0);
                             shopifySOOrder.CustomerID = ShopifyPublicFunction.GetMarketplaceCustomer(row.Marketplace);
                             shopifySOOrder.TermsID = "0000";
                             #region User-Defined
@@ -196,7 +196,11 @@ namespace LumTomofunCustomization.Graph
                         }
                         // Assign Document Current
                         else if (GoPrepareInvoice && shopifySOOrder != null && shopifySOOrder.Status == "N")
+                        {
                             soGraph.Document.Current = shopifySOOrder;
+                            soGraph.Document.SetValueExt<SOOrder.requestDate>(soGraph.Document.Current, (row.ClosedAt??spOrder.updated_at).Value.AddHours(marketplaceTimezone ?? 0));
+                            PXNoteAttribute.SetNote(soGraph.Document.Cache, soGraph.Document.Current, row.TransJson);
+                        }
                         // Do nothing
                         else
                             throw new Exception($"FinancialStatus or FullfillmentStatus is not correct or Sales Order is already Invoiced");
