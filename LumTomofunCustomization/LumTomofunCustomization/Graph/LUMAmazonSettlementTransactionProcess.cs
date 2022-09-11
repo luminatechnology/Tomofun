@@ -464,7 +464,7 @@ namespace LumTomofunCustomization.Graph
                                     soDoc.OrderDate = amzGroupOrderData.Key.PostedDate;
                                     soDoc.RequestDate = amzGroupOrderData.Key.PostedDate;
                                     soDoc.CustomerID = AmazonPublicFunction.GetMarketplaceCustomer(_marketplace);
-                                    soDoc.OrderDesc = $"Amazon MCF {amzGroupOrderData.Key.OrderID} ({amzGroupOrderData.Key.MerchantOrderID})";
+                                    soDoc.OrderDesc = $"Amazon MCF: {amzGroupOrderData.Key.OrderID}";
                                     #endregion
 
                                     #region User-Defined
