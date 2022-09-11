@@ -431,7 +431,7 @@ namespace LumTomofunCustomization.Graph
                                             if (chargeTrans.CuryTranAmt == 0 || !chargeTrans.CuryTranAmt.HasValue)
                                                 continue;
                                         }
-                                        else if ((item?.Amount ?? 0) != 0 && (item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORVAT-PRINCIPAL" || item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORTAX-PRINCIPAL"))
+                                        else if ((item?.Amount ?? 0) != 0 && (item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORVAT-PRINCIPAL" || item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORTAX-PRINCIPAL" || item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORVAT-SHIPPING" || item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORTAX-OTHER"))
                                         {
                                             chargeTrans.EntryTypeID = "WHTAX" + _marketplace;
                                             chargeTrans.CuryTranAmt = item.Amount * -1;
