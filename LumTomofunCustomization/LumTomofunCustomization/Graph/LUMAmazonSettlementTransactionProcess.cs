@@ -199,7 +199,7 @@ namespace LumTomofunCustomization.Graph
                                 soDoc.OrderDate = amzGroupOrderData.Key.PostedDate;
                                 soDoc.RequestDate = amzGroupOrderData.Key.PostedDate;
                                 soDoc.CustomerID = AmazonPublicFunction.GetMarketplaceCustomer(_marketplace);
-                                soDoc.OrderDesc = $"Amazon {amzGroupOrderData.Key.TransactionType} {amzGroupOrderData.Key.OrderID}";
+                                soDoc.OrderDesc = $"Amazon ({amzGroupOrderData.Key.TransactionType}) {amzGroupOrderData.Key.OrderID}";
                                 #endregion
 
                                 #region User-Defined
@@ -286,7 +286,7 @@ namespace LumTomofunCustomization.Graph
                                         if (PrincipalLine != null)
                                         {
                                             PrincipalLine.ManualDisc = true;
-                                            PrincipalLine.CuryDiscAmt = row.Amount;
+                                            PrincipalLine.CuryDiscAmt += row.Amount;
                                             soGraph.Transactions.Update(PrincipalLine);
                                         }
                                         continue;
@@ -383,7 +383,7 @@ namespace LumTomofunCustomization.Graph
                                     arDoc.AdjDate = amzGroupOrderData.Key.PostedDate;
                                     arDoc.ExtRefNbr = amzGroupOrderData.Key.SettlementID;
                                     arDoc.CustomerID = AmazonPublicFunction.GetMarketplaceCustomer(_marketplace);
-                                    arDoc.DocDesc = $"Amazon Payment: {amzGroupOrderData.Key.OrderID}";
+                                    arDoc.DocDesc = $"Amazon ({amzGroupOrderData.Key.TransactionType}) {amzGroupOrderData.Key.OrderID}";
                                     arDoc.DepositDate = GetDepositDate(amzGroupOrderData.Key.SettlementID) ?? DateTime.Now;
                                     if (arDoc.DepositDate == null)
                                         throw new Exception($"can not find Deposit Date({amzGroupOrderData.Key.SettlementID})");
@@ -464,7 +464,7 @@ namespace LumTomofunCustomization.Graph
                                     soDoc.OrderDate = amzGroupOrderData.Key.PostedDate;
                                     soDoc.RequestDate = amzGroupOrderData.Key.PostedDate;
                                     soDoc.CustomerID = AmazonPublicFunction.GetMarketplaceCustomer(_marketplace);
-                                    soDoc.OrderDesc = $"Amazon MCF: {amzGroupOrderData.Key.OrderID}";
+                                    soDoc.OrderDesc = $"Amazon ({amzGroupOrderData.Key.TransactionType}) {amzGroupOrderData.Key.OrderID}";
                                     #endregion
 
                                     #region User-Defined
@@ -574,7 +574,7 @@ namespace LumTomofunCustomization.Graph
                                 soDoc.OrderDate = amzGroupOrderData.Key.PostedDate;
                                 soDoc.RequestDate = amzGroupOrderData.Key.PostedDate;
                                 soDoc.CustomerID = AmazonPublicFunction.GetMarketplaceCustomer(_marketplace);
-                                soDoc.OrderDesc = $"Amazon {amzGroupOrderData.Key.TransactionType} {amzGroupOrderData.Key.OrderID}";
+                                soDoc.OrderDesc = $"Amazon ({amzGroupOrderData.Key.TransactionType}) {amzGroupOrderData.Key.OrderID}";
                                 #endregion
 
                                 #region User-Defined
@@ -679,7 +679,7 @@ namespace LumTomofunCustomization.Graph
                                 soDoc.OrderDate = amzGroupOrderData.Key.PostedDate;
                                 soDoc.RequestDate = amzGroupOrderData.Key.PostedDate;
                                 soDoc.CustomerID = AmazonPublicFunction.GetMarketplaceCustomer(_marketplace);
-                                soDoc.OrderDesc = $"Amazon {amzGroupOrderData.Key.TransactionType} {amzGroupOrderData.Key.OrderID}";
+                                soDoc.OrderDesc = $"Amazon ({amzGroupOrderData.Key.TransactionType}) {amzGroupOrderData.Key.OrderID}";
                                 #endregion
 
                                 #region User-Defined
@@ -787,7 +787,7 @@ namespace LumTomofunCustomization.Graph
                                 soDoc.OrderDate = amzGroupOrderData.Key.PostedDate;
                                 soDoc.RequestDate = amzGroupOrderData.Key.PostedDate;
                                 soDoc.CustomerID = AmazonPublicFunction.GetMarketplaceCustomer(_marketplace);
-                                soDoc.OrderDesc = $"Amazon {amzGroupOrderData.Key.TransactionType} {amzGroupOrderData.Key.OrderID}";
+                                soDoc.OrderDesc = $"Amazon ({amzGroupOrderData.Key.TransactionType}) {amzGroupOrderData.Key.OrderID}";
                                 #endregion
 
                                 #region User-Defined
@@ -898,7 +898,7 @@ namespace LumTomofunCustomization.Graph
                                 soDoc.OrderDate = amzGroupOrderData.Key.PostedDate;
                                 soDoc.RequestDate = amzGroupOrderData.Key.PostedDate;
                                 soDoc.CustomerID = AmazonPublicFunction.GetMarketplaceCustomer(_marketplace);
-                                soDoc.OrderDesc = $"Amazon Undefined Transactions {amzGroupOrderData.Key.OrderID}";
+                                soDoc.OrderDesc = $"Amazon ({amzGroupOrderData.Key.TransactionType}) {amzGroupOrderData.Key.OrderID}";
                                 #endregion
 
                                 #region User-Defined
