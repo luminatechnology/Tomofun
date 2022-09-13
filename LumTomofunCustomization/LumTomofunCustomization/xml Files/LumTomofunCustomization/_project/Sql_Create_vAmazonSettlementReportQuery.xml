@@ -14,6 +14,7 @@ SELECT LUMAmazonSettlementTransData.CompanyID,
 	   LUMAmazonSettlementTransData.OrderID, 
 	   LUMAmazonSettlementTransData.TransactionType,
 	   SUM(LUMAmazonSettlementTransData.Amount) AS Amount,
+	   STRING_AGG(LUMAmazonSettlementTransData.AmountDescription, ',') AS AmountDescriptionSummary,
 	   MAX(LUMAmazonSettlementTransData.ErrorMessage)  AS ErrorMessage
 FROM LUMAmazonSettlementTransData 
 GROUP BY LUMAmazonSettlementTransData.CompanyID, LUMAmazonSettlementTransData.SettlementID, CAST(LUMAmazonSettlementTransData.PostedDate AS DATE), LUMAmazonSettlementTransData.OrderID, LUMAmazonSettlementTransData.TransactionType]]></CDATA>
