@@ -156,7 +156,7 @@ namespace LUMTomofunCustomization.DAC
 
         #region IsProcessed
         [PXDBBool]
-        [PXUIField(DisplayName = "IsProcessed")]
+        [PXUIField(DisplayName = "IsProcessed", Enabled = false)]
         public virtual bool? IsProcessed { get; set; }
         public abstract class isProcessed : PX.Data.BQL.BqlBool.Field<isProcessed> { }
         #endregion

@@ -34,8 +34,6 @@ namespace LumTomofunCustomization.Graph
         public LUMAmazonSettlementTransactionProcess()
         {
             this.SettlementTransaction.AllowUpdate = true;
-            PXUIFieldAttribute.SetEnabled<LUMAmazonSettlementTransData.isProcessed>(this.SettlementTransaction.Cache, null, true);
-            PXUIFieldAttribute.SetEnabled<LUMAmazonSettlementTransData.marketPlaceName>(this.SettlementTransaction.Cache, null, true);
             var filter = this.Filter.Current;
             SettlementTransaction.SetProcessDelegate(delegate (List<LUMAmazonSettlementTransData> list)
             {
@@ -71,6 +69,8 @@ namespace LumTomofunCustomization.Graph
         {
             try
             {
+                PXUIFieldAttribute.SetEnabled<LUMAmazonSettlementTransData.isProcessed>(baseGraph.SettlementTransaction.Cache, null, true);
+                PXUIFieldAttribute.SetEnabled<LUMAmazonSettlementTransData.marketPlaceName>(baseGraph.SettlementTransaction.Cache, null, true);
                 var actCompanyName = _legacyCompanyService.ExtractCompany(PX.Common.PXContext.PXIdentity.IdentityName);
                 Dictionary<string, AmazonConnection> amzConnObjs = new Dictionary<string, AmazonConnection>();
                 // TW Tenant要執行兩次
