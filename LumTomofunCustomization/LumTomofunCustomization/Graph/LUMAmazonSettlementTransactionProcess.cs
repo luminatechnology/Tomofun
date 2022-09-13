@@ -175,7 +175,7 @@ namespace LumTomofunCustomization.Graph
                     foreach (var item in amzGroupOrderData)
                     {
                         // 如果CurrentMarketplace is not null 代表該筆資料已經重新計算過Amount, 無須再重新計算
-                        if(!string.IsNullOrEmpty(item.CurrentMarketplace))
+                        if (!string.IsNullOrEmpty(item.CurrentMarketplace))
                             continue;
                         item.CurrentMarketplace = _marketplace;
                         if (item.AmountType != "CouponRedemptionFee")
@@ -399,6 +399,7 @@ namespace LumTomofunCustomization.Graph
                                     #endregion
 
                                     #region Adjustments
+                                    var AmzPaymentAmount = amzGroupOrderData.Where(x => x.AmountType == "ItemPrice" || x.AmountType == "Promotion").Sum(x => x.Amount);
                                     var mapInvoice = SelectFrom<ARInvoice>
                                                           .InnerJoin<ARTran>.On<ARInvoice.docType.IsEqual<ARTran.tranType>
                                                                 .And<ARInvoice.refNbr.IsEqual<ARTran.refNbr>>>
@@ -411,6 +412,7 @@ namespace LumTomofunCustomization.Graph
                                     var adjTrans = arGraph.Adjustments.Cache.CreateInstance() as ARAdjust;
                                     adjTrans.AdjdDocType = "INV";
                                     adjTrans.AdjdRefNbr = mapInvoice?.RefNbr;
+                                    adjTrans.CuryAdjgAmt = AmzPaymentAmount ?? 0;
                                     arGraph.Adjustments.Insert(adjTrans);
                                     #endregion
 
@@ -798,10 +800,12 @@ namespace LumTomofunCustomization.Graph
                                 // UserDefined - ORDERAMT (CM: Sum Amount * -1)
                                 soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERAMT", soDoc.OrderType == "CM" ?
                                     amzGroupOrderData.Where(x => x.AmountDescription != "Current Reserve Amount" &&
-                                                                 x.AmountDescription != "Previous Reserve Amount Balance")
+                                                                 x.AmountDescription != "Previous Reserve Amount Balance" &&
+                                                                 x.AmountDescription != "Payable to Amazon")
                                                      .Sum(x => x.Amount ?? 0) * -1 :
                                     amzGroupOrderData.Where(x => x.AmountDescription != "Current Reserve Amount" &&
-                                                                 x.AmountDescription != "Previous Reserve Amount Balance")
+                                                                 x.AmountDescription != "Previous Reserve Amount Balance" &&
+                                                                 x.AmountDescription != "Payable to Amazon")
                                                      .Sum(x => x.Amount ?? 0));
                                 #endregion
 

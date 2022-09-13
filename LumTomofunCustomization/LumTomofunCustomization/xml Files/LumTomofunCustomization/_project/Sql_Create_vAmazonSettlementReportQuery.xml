@@ -1,0 +1,20 @@
+﻿<Sql TableName="Create_vAmazonSettlementReportQuery" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'v_AmazonSettlementReportQuery' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[v_AmazonSettlementReportQuery]	
+GO
+CREATE VIEW v_AmazonSettlementReportQuery AS
+SELECT LUMAmazonSettlementTransData.CompanyID,
+	   LUMAmazonSettlementTransData.SettlementID, 
+	   CAST(CAST(LUMAmazonSettlementTransData.PostedDate AS DATE) AS datetime) AS PostedDate, 
+	   LUMAmazonSettlementTransData.OrderID, 
+	   LUMAmazonSettlementTransData.TransactionType,
+	   SUM(LUMAmazonSettlementTransData.Amount) AS Amount,
+	   MAX(LUMAmazonSettlementTransData.ErrorMessage)  AS ErrorMessage
+FROM LUMAmazonSettlementTransData 
+GROUP BY LUMAmazonSettlementTransData.CompanyID, LUMAmazonSettlementTransData.SettlementID, CAST(LUMAmazonSettlementTransData.PostedDate AS DATE), LUMAmazonSettlementTransData.OrderID, LUMAmazonSettlementTransData.TransactionType]]></CDATA>
+</Sql>
