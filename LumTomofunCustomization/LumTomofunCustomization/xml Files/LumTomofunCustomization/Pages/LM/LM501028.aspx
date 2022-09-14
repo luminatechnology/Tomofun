@@ -11,7 +11,8 @@
 <asp:Content ID="cont2" ContentPlaceHolderID="phF" runat="Server">
     <px:PXFormView ID="form" runat="server" DataSourceID="ds" DataMember="Filter" Width="100%" Height="50px" AllowAutoHide="false">
         <Template>
-            <px:PXDropDown runat="server" ID="edProcessType" DataField="ProcessType" Width="200px"></px:PXDropDown>
+             <px:PXDateTimeEdit runat="server" ID="edFromDate" DataField="StartDate" Width="180px"></px:PXDateTimeEdit>
+            <px:PXDateTimeEdit runat="server" ID="edToDate" DataField="EndDate" Width="180px"></px:PXDateTimeEdit>
         </Template>
     </px:PXFormView>
 </asp:Content>

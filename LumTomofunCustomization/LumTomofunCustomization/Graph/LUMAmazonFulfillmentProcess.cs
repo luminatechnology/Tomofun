@@ -47,14 +47,29 @@ namespace LumTomofunCustomization.Graph
                 InitialData();
         }
 
+        #region Events
+        public virtual void _(Events.RowSelected<FulfillmentFilter> e)
+        {
+            var row = (FulfillmentFilter)e.Row;
+            if (row != null)
+            {
+                if (!row.StartDate.HasValue)
+                    row.StartDate = DateTime.Now.Date.AddDays(-1);
+                if (!row.EndDate.HasValue)
+                    row.EndDate = DateTime.Now.Date;
+            }
+        }
+
+        #endregion
+
         #region Method
 
         /// <summary> 執行Process </summary>
         public static void GoProcessing(List<LUMAmazonFulfillmentTransData> list, FulfillmentFilter filter)
         {
             var baseGraph = CreateInstance<LUMAmazonFulfillmentProcess>();
-            if (String.IsNullOrEmpty(filter.ProcessType))
-                throw new Exception("Process Type can not be empty!");
+            if ((filter.EndDate - filter.StartDate).Value.TotalDays > 60)
+                throw new Exception("The time interval cannot exceed 60 days");
             baseGraph.DeleteDefaultData();
             baseGraph.PrepareFulfillmentData(baseGraph, filter);
         }
@@ -64,7 +79,6 @@ namespace LumTomofunCustomization.Graph
             try
             {
                 var oldDatas = baseGraph.FulfillmentTransactions.Select().RowCast<LUMAmazonFulfillmentTransData>();
-                var getReportCount = filter?.ProcessType == "Prepare Latest Report" ? 1 : 5;
                 var actCompanyName = _legacyCompanyService.ExtractCompany(PX.Common.PXContext.PXIdentity.IdentityName);
                 Dictionary<string, AmazonConnection> amzConnObjs = new Dictionary<string, AmazonConnection>();
                 // TW Tenant要執行兩次
@@ -90,14 +104,14 @@ namespace LumTomofunCustomization.Graph
                     parameters.reportTypes.Add(ReportTypes.GET_AMAZON_FULFILLED_SHIPMENTS_DATA_GENERAL);
                     parameters.marketplaceIds = new List<string>();
                     parameters.marketplaceIds.Add(GetAmazonMarketPlaceId(connItem.Key));
-                    parameters.createdSince = DateTime.Now.AddDays(-10);
-                    parameters.createdUntil = DateTime.Now;
+                    parameters.createdSince = filter.StartDate;
+                    parameters.createdUntil = filter.EndDate;
                     var reports = connItem.Value.Reports.GetReports(parameters);
                     var reportFilePaths = new List<string>();
                     if (reports.Count == 0)
                         PXTrace.WriteWarning($"MarketPlace: {connItem.Key} report count = 0!!! ({DateTime.Now})");
                     // Get all report file txt
-                    foreach (var reportData in reports.OrderByDescending(x => x?.DataEndTime).Take(getReportCount))
+                    foreach (var reportData in reports)
                     {
                         reportIDs.Add(reportData.ReportId);
                         if (!string.IsNullOrEmpty(reportData.ReportDocumentId))
@@ -226,11 +240,17 @@ namespace LumTomofunCustomization.Graph
     [Serializable]
     public class FulfillmentFilter : IBqlTable
     {
-        [PXDBString(50, IsUnicode = true, InputMask = "")]
-        [PXDefault("Prepare Latest Report")]
-        [PXUIField(DisplayName = "Process type")]
-        [PXStringList(new string[] { "Prepare Latest Report", "Prepare 5 report document" }, new string[] { "Prepare Latest Report", "Prepare 5 report document" })]
-        public virtual string ProcessType { get; set; }
-        public abstract class processType : PX.Data.BQL.BqlString.Field<processType> { }
+        [PXDBDate]
+        [PXDefault(PersistingCheck = PXPersistingCheck.NullOrBlank)]
+        [PXUIField(DisplayName = "Start Date")]
+        public virtual DateTime? StartDate { get; set; }
+        public abstract class startDate : PX.Data.BQL.BqlDateTime.Field<startDate> { }
+
+        [PXDBDate]
+        [PXDefault(PersistingCheck = PXPersistingCheck.NullOrBlank)]
+        [PXUIField(DisplayName = "End Date")]
+        public virtual DateTime? EndDate { get; set; }
+        public abstract class endDate : PX.Data.BQL.BqlDateTime.Field<endDate> { }
+
     }
 }
