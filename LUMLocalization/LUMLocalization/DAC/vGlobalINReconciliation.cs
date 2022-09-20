@@ -1,7 +1,7 @@
 ﻿using System;
 using PX.Data;
 
-namespace LUMLocalization
+namespace LUMLocalization.DAC
 {
     [Serializable]
     [PXCacheName("view_GlobalINReconciliation")]
