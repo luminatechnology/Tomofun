@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="API Entity\AmazonOrderEntity.cs" />
     <Compile Include="API Entity\FedExEntity.cs" />
+    <Compile Include="API Entity\GoogleSheetsEntity.cs" />
     <Compile Include="API Entity\ReturnHelperEntity.cs" />
     <Compile Include="API Entity\ShopifyOrderEntity.cs" />
     <Compile Include="API Entity\ShopifyPaymentEntity.cs" />
