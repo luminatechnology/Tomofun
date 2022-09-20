@@ -86,6 +86,7 @@ namespace LumTomofunCustomization.Graph
                 {
                     amzConnObjs.Add("EU", GetAmazonConnObject("EU"));
                     amzConnObjs.Add("AU", GetAmazonConnObject("AU"));
+                    amzConnObjs.Add("SG", GetAmazonConnObject("SG"));
                 }
                 else if (actCompanyName == "US")
                 {
