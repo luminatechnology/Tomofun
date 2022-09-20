@@ -408,8 +408,98 @@
                 </Links>
                 <ParentName>Vendor</ParentName>
             </ReportRelation>
+            <ReportRelation>
+                <ChildAlias>VendorPmtMethodBank</ChildAlias>
+                <ChildName>VendorPaymentMethodDetail</ChildName>
+                <Links>
+                    <RelationRow>
+                        <ChildField>BAccountID</ChildField>
+                        <ParentField>BAccountID</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>DetailID</ChildField>
+                        <ParentField>='2'</ParentField>
+                    </RelationRow>
+                </Links>
+                <ParentName>BAccount</ParentName>
+            </ReportRelation>
+            <ReportRelation>
+                <ChildAlias>VendorPmtMethodBranchID</ChildAlias>
+                <ChildName>VendorPaymentMethodDetail</ChildName>
+                <Links>
+                    <RelationRow>
+                        <ChildField>BAccountID</ChildField>
+                        <ParentField>BAccountID</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>DetailID</ChildField>
+                        <ParentField>='3'</ParentField>
+                    </RelationRow>
+                </Links>
+                <ParentName>BAccount</ParentName>
+            </ReportRelation>
+            <ReportRelation>
+                <ChildAlias>VendorPmtMethodAccount</ChildAlias>
+                <ChildName>VendorPaymentMethodDetail</ChildName>
+                <Links>
+                    <RelationRow>
+                        <ChildField>BAccountID</ChildField>
+                        <ParentField>BAccountID</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>DetailID</ChildField>
+                        <ParentField>='5'</ParentField>
+                    </RelationRow>
+                </Links>
+                <ParentName>BAccount</ParentName>
+            </ReportRelation>
+            <ReportRelation>
+                <ChildAlias>VendortPmtMethodAccountName</ChildAlias>
+                <ChildName>VendorPaymentMethodDetail</ChildName>
+                <Links>
+                    <RelationRow>
+                        <ChildField>BAccountID</ChildField>
+                        <ParentField>BAccountID</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>DetailID</ChildField>
+                        <ParentField>='6'</ParentField>
+                    </RelationRow>
+                </Links>
+                <ParentName>BAccount</ParentName>
+            </ReportRelation>
+            <ReportRelation>
+                <ChildAlias>VendorPmtMethodBacnkID</ChildAlias>
+                <ChildName>VendorPaymentMethodDetail</ChildName>
+                <Links>
+                    <RelationRow>
+                        <ChildField>BAccountID</ChildField>
+                        <ParentField>BAccountID</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>DetailID</ChildField>
+                        <ParentField>='1'</ParentField>
+                    </RelationRow>
+                </Links>
+                <ParentName>BAccount</ParentName>
+            </ReportRelation>
+            <ReportRelation>
+                <ChildAlias>VendorPmtMethodBankBranch</ChildAlias>
+                <ChildName>VendorPaymentMethodDetail</ChildName>
+                <Links>
+                    <RelationRow>
+                        <ChildField>BAccountID</ChildField>
+                        <ParentField>BAccountID</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>DetailID</ChildField>
+                        <ParentField>='4'</ParentField>
+                    </RelationRow>
+                </Links>
+                <ParentName>BAccount</ParentName>
+            </ReportRelation>
         </Relations>
-        <SchemaUrl>https://tomofun.acumatica.com/</SchemaUrl>
+        <SchemaUrl>http://localhost/Tomofun1/</SchemaUrl>
         <StylesTemplate>TemplateReport.rpx</StylesTemplate>
         <Tables>
             <ReportTable Name="APInvoice">
@@ -4455,6 +4545,71 @@
                 </Fields>
                 <FullName>PX.Objects.AP.Vendor</FullName>
             </ReportTable>
+            <ReportTable Name="VendorPaymentMethodDetail">
+                <Fields>
+                    <ReportField Name="BAccountID">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="CreatedByID">
+                    </ReportField>
+                    <ReportField Name="CreatedByID_Creator_displayName">
+                    </ReportField>
+                    <ReportField Name="CreatedByID_Creator_Username">
+                    </ReportField>
+                    <ReportField Name="CreatedByID_description">
+                    </ReportField>
+                    <ReportField Name="CreatedByScreenID">
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime">
+                        <DataType>DateTime</DataType>
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime_Day">
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime_Hour">
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime_Month">
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime_Quarter">
+                    </ReportField>
+                    <ReportField Name="DetailID">
+                    </ReportField>
+                    <ReportField Name="DetailValue">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByID">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByID_description">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByID_Modifier_displayName">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByID_Modifier_Username">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByScreenID">
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime">
+                        <DataType>DateTime</DataType>
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime_Day">
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime_Hour">
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime_Month">
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime_Quarter">
+                    </ReportField>
+                    <ReportField Name="LocationID">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="PaymentMethodID">
+                    </ReportField>
+                    <ReportField Name="PaymentMethodID_description">
+                    </ReportField>
+                    <ReportField Name="PaymentMethodID_PaymentMethod_descr">
+                    </ReportField>
+                    <ReportField Name="tstamp">
+                    </ReportField>
+                </Fields>
+                <FullName>PX.Objects.AP.VendorPaymentMethodDetail</FullName>
+            </ReportTable>
         </Tables>
         <Version>20201103</Version>
         <ViewerFields>
@@ -4776,8 +4931,8 @@
                         <Excel>
                             <column>5</column>
                         </Excel>
-                        <Location>220px, 0px</Location>
-                        <Size>140px, 14px</Size>
+                        <Location>280px, 0px</Location>
+                        <Size>116px, 14px</Size>
                         <StyleName>Normal</StyleName>
                         <Value>=[APTaxTran.SubID]</Value>
                     </TextBox>
@@ -4785,7 +4940,7 @@
                         <Excel>
                             <column>7</column>
                         </Excel>
-                        <Location>360px, 0px</Location>
+                        <Location>396px, 0px</Location>
                         <Size>244px, 14px</Size>
                         <StyleName>Normal</StyleName>
                         <Value>=[Tax.Descr]</Value>
@@ -4980,8 +5135,8 @@
                         <Excel>
                             <column>5</column>
                         </Excel>
-                        <Location>220px, 0px</Location>
-                        <Size>140px, 14px</Size>
+                        <Location>280px, 0px</Location>
+                        <Size>112px, 14px</Size>
                         <StyleName>Normal</StyleName>
                         <Value>=[Tax.ExpenseSubID]</Value>
                     </TextBox>
@@ -4989,7 +5144,7 @@
                         <Excel>
                             <column>7</column>
                         </Excel>
-                        <Location>360px, 0px</Location>
+                        <Location>396px, 0px</Location>
                         <Size>244px, 14px</Size>
                         <StyleName>Normal</StyleName>
                         <Value>=[Tax.Descr]</Value>
@@ -5257,7 +5412,7 @@
                 <Footers>
                     <Footer Name="groupFooterSection5">
                         <GridSize>8px, 8px</GridSize>
-                        <Height>28px</Height>
+                        <Height>0.5291cm</Height>
                         <VisibleExpr>=[FeaturesSet.VendorRelations] = 1</VisibleExpr>
                         <Items>
                             <Line Name="line2">
@@ -5314,6 +5469,38 @@
                                 <Size>144px, 14px</Size>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>Vendor Total:</Value>
+                            </TextBox>
+                        </Items>
+                    </Footer>
+                    <Footer Name="groupFooterSection6">
+                        <GridSize>8px, 8px</GridSize>
+                        <Height>4.97354cm</Height>
+                        <Items>
+                            <TextBox Name="textBox225">
+                                <Excel>
+                                    <column>2</column>
+                                </Excel>
+                                <Location>16px, 80px</Location>
+                                <Size>296px, 104px</Size>
+                                <Style>
+                                    <Font>
+                                        <Name>Microsoft JhengHei UI</Name>
+                                        <Size>14px</Size>
+                                    </Font>
+                                </Style>
+                                <StyleName>Normal</StyleName>
+                                <Value>=#010;IIF([VendorPmtMethodBacnkID.DetailValue] &lt;&gt; Null, '銀行代碼: ' +[VendorPmtMethodBacnkID.DetailValue] + '{br}','') +#010;IIF([VendorPmtMethodBank.DetailValue] &lt;&gt; Null, '銀行名稱: '+ [VendorPmtMethodBank.DetailValue]+ '{br}','') + #010;IIF([VendorPmtMethodBranchID.DetailValue] &lt;&gt; Null, '分行代號: '+ [VendorPmtMethodBranchID.DetailValue]+ '{br}','') +#010;IIF([VendorPmtMethodBankBranch.DetailValue] &lt;&gt; Null, '分行名稱: '+ [VendorPmtMethodBankBranch.DetailValue]+ '{br}','') +#010;IIF([VendorPmtMethodAccount.DetailValue] &lt;&gt; Null, '帳號       : '+ [VendorPmtMethodAccount.DetailValue] + '{br}','') + #010;IIF([VendortPmtMethodAccountName.DetailValue] &lt;&gt; Null, '分行代號: '+ [VendortPmtMethodAccountName.DetailValue]+ '{br}','') + '{br}'</Value>
+                            </TextBox>
+                            <TextBox Name="textBox83">
+                                <Location>16px, 56px</Location>
+                                <Size>212px, 16px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>14px</Size>
+                                    </Font>
+                                </Style>
+                                <StyleName>Heading 1</StyleName>
+                                <Value>Vendor Payment Instructions:</Value>
                             </TextBox>
                         </Items>
                     </Footer>
@@ -5863,6 +6050,15 @@
                         <StyleName>GroupL1Highlight</StyleName>
                         <VisibleExpr>=[APTran.RefNbr]&lt;&gt;Null or [APTaxTran.RefNbr]&lt;&gt;Null or [APPayment.RefNbr]&lt;&gt;Null</VisibleExpr>
                         <Items>
+                            <TextBox Name="textBox10">
+                                <Excel>
+                                    <column>2</column>
+                                </Excel>
+                                <Location>168px, 4px</Location>
+                                <Size>112px, 14px</Size>
+                                <StyleName>Heading 1</StyleName>
+                                <Value>Acct. Description</Value>
+                            </TextBox>
                             <TextBox Name="textBox191">
                                 <Excel>
                                     <column>9</column>
@@ -5906,8 +6102,8 @@
                                 <Excel>
                                     <column>5</column>
                                 </Excel>
-                                <Location>220px, 4px</Location>
-                                <Size>140px, 14px</Size>
+                                <Location>280px, 4px</Location>
+                                <Size>124px, 14px</Size>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>Subaccount</Value>
                             </TextBox>
@@ -5915,8 +6111,8 @@
                                 <Excel>
                                     <column>7</column>
                                 </Excel>
-                                <Location>360px, 4px</Location>
-                                <Size>328px, 14px</Size>
+                                <Location>408px, 4px</Location>
+                                <Size>280px, 14px</Size>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>Tran. Description</Value>
                             </TextBox>
@@ -5964,8 +6160,8 @@
                                 <Excel>
                                     <column>5</column>
                                 </Excel>
-                                <Location>220px, 0px</Location>
-                                <Size>140px, 14px</Size>
+                                <Location>280px, 0px</Location>
+                                <Size>128px, 14px</Size>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APRegister.APSubID]</Value>
                             </TextBox>
@@ -6097,8 +6293,8 @@
                                 <Excel>
                                     <column>5</column>
                                 </Excel>
-                                <Location>220px, 0px</Location>
-                                <Size>140px, 14px</Size>
+                                <Location>280px, 0px</Location>
+                                <Size>120px, 14px</Size>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APRegister.APSubID]</Value>
                             </TextBox>
@@ -6211,8 +6407,8 @@
                                 <Excel>
                                     <column>5</column>
                                 </Excel>
-                                <Location>220px, 0px</Location>
-                                <Size>140px, 14px</Size>
+                                <Location>280px, 0px</Location>
+                                <Size>120px, 14px</Size>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[CashAccount.SubID]</Value>
                             </TextBox>
@@ -6304,8 +6500,8 @@
                                 <Excel>
                                     <column>5</column>
                                 </Excel>
-                                <Location>220px, 0px</Location>
-                                <Size>140px, 14px</Size>
+                                <Location>280px, 0px</Location>
+                                <Size>120px, 14px</Size>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[Vendor.DiscTakenSubID]</Value>
                             </TextBox>
@@ -6593,7 +6789,7 @@
                                 <Excel>
                                     <column>7</column>
                                 </Excel>
-                                <Location>360px, 8px</Location>
+                                <Location>408px, 8px</Location>
                                 <Size>244px, 14px</Size>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[Tax.Descr]</Value>
@@ -6602,8 +6798,8 @@
                                 <Excel>
                                     <column>5</column>
                                 </Excel>
-                                <Location>220px, 8px</Location>
-                                <Size>140px, 14px</Size>
+                                <Location>280px, 8px</Location>
+                                <Size>124px, 14px</Size>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APTaxTran.SubID]</Value>
                             </TextBox>
@@ -6696,6 +6892,15 @@
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APTran.BranchID]</Value>
                             </TextBox>
+                            <TextBox Name="textBox32">
+                                <Excel>
+                                    <column>2</column>
+                                </Excel>
+                                <Location>168px, 0px</Location>
+                                <Size>112px, 14px</Size>
+                                <StyleName>Normal</StyleName>
+                                <Value>=[APTran.AccountID_Account_description]</Value>
+                            </TextBox>
                             <TextBox Name="textBox38">
                                 <Excel>
                                     <column>2</column>
@@ -6709,8 +6914,8 @@
                                 <Excel>
                                     <column>5</column>
                                 </Excel>
-                                <Location>220px, 0px</Location>
-                                <Size>140px, 14px</Size>
+                                <Location>280px, 0px</Location>
+                                <Size>120px, 14px</Size>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APTran.SubID]</Value>
                             </TextBox>
@@ -6718,8 +6923,8 @@
                                 <Excel>
                                     <column>7</column>
                                 </Excel>
-                                <Location>360px, 0px</Location>
-                                <Size>320px, 14px</Size>
+                                <Location>408px, 0px</Location>
+                                <Size>272px, 14px</Size>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APTran.TranDesc]</Value>
                             </TextBox>
@@ -6869,8 +7074,8 @@
                                 <Excel>
                                     <column>5</column>
                                 </Excel>
-                                <Location>220px, 0px</Location>
-                                <Size>140px, 14px</Size>
+                                <Location>280px, 0px</Location>
+                                <Size>120px, 14px</Size>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APAdjust.AdjdAPSub]</Value>
                             </TextBox>
@@ -7006,8 +7211,8 @@
                                 <Excel>
                                     <column>5</column>
                                 </Excel>
-                                <Location>220px, 0px</Location>
-                                <Size>140px, 14px</Size>
+                                <Location>280px, 0px</Location>
+                                <Size>120px, 14px</Size>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[Vendor.DiscTakenSubID]</Value>
                             </TextBox>
@@ -7149,8 +7354,8 @@
                                 <Excel>
                                     <column>5</column>
                                 </Excel>
-                                <Location>220px, 0px</Location>
-                                <Size>140px, 14px</Size>
+                                <Location>280px, 0px</Location>
+                                <Size>120px, 14px</Size>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APAdjust.AdjdAPSub]</Value>
                             </TextBox>
@@ -7263,8 +7468,8 @@
                                 <Excel>
                                     <column>5</column>
                                 </Excel>
-                                <Location>220px, 0px</Location>
-                                <Size>140px, 14px</Size>
+                                <Location>280px, 0px</Location>
+                                <Size>120px, 14px</Size>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APAdjust.AdjdWhTaxSubID]</Value>
                             </TextBox>
@@ -7383,8 +7588,8 @@
                                 <Excel>
                                     <column>5</column>
                                 </Excel>
-                                <Location>220px, 0px</Location>
-                                <Size>140px, 14px</Size>
+                                <Location>280px, 0px</Location>
+                                <Size>120px, 14px</Size>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APAdjust.AdjdAPSub]</Value>
                             </TextBox>
