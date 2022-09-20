@@ -69,6 +69,7 @@
     <Compile Include="DAC\LumSOForPurchaseReceiptFilter .cs" />
     <Compile Include="DAC\LumTWCustomsDutyRefresh.cs" />
     <Compile Include="DAC\RefreshTWCustomsDutyFilter.cs" />
+    <Compile Include="DAC\vGlobalINReconciliation.cs" />
     <Compile Include="DAC\vGlobalSalesAnalysis.cs" />
     <Compile Include="DAC\v_LumICFromPO.cs" />
     <Compile Include="DAC_Extensions\POOrderExtensions.cs" />
