@@ -1,6 +1,5 @@
 ﻿<Sql TableName="LUM3PLSetup" TableSchemaXml="#CDATA">
     <CDATA name="TableSchemaXml"><![CDATA[<table name="LUM3PLSetup">
-  <col name="CompanyID" type="Int" nullable="true" default="Zero" />
   <col name="TopestToken" type="NVarChar(1000)" nullable="true" />
   <col name="TopestTokenCA" type="NVarChar(1000)" nullable="true" />
   <col name="RHAuthzToken" type="NVarChar(1000)" nullable="true" />
@@ -11,6 +10,8 @@
   <col name="FedExClientID" type="NVarChar(200)" nullable="true" />
   <col name="FedExClientSecret" type="NVarChar(200)" nullable="true" />
   <col name="FedExAccessToken" type="NVarChar(1000)" nullable="true" />
+  <col name="GoogleSheetsURL" type="NVarChar(1000)" nullable="true" />
+  <col name="GoogleSheetName" type="NVarChar(50)" nullable="true" />
   <col name="CreatedByID" type="UniqueIdentifier" />
   <col name="CreatedByScreenID" type="Char(8)" />
   <col name="CreatedDateTime" type="DateTime" />
