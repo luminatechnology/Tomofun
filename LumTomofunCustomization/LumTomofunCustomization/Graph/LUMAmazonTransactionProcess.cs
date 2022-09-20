@@ -167,6 +167,9 @@ namespace LumTomofunCustomization.Graph
                             foreach (SOLine oldLine in soGraph.Transactions.Select().RowCast<SOLine>())
                                 soGraph.Transactions.Delete(oldLine);
 
+                            // Save SalesOrder
+                            soGraph.Save.Press();
+
                             // 重新建立SOLine
                             #region Create Sales Line
 
@@ -174,6 +177,22 @@ namespace LumTomofunCustomization.Graph
                                 CreateSOLine(soGraph, amzOrder, item, row);
 
                             #endregion
+
+                            #region Update Tax
+                            // Setting SO Tax
+                            if (!isTaxCalculate)
+                            {
+                                systemTax = soGraph.Taxes.Current?.CuryTaxAmt ?? 0;
+                                soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, row.Marketplace + "EC");
+                                soGraph.Taxes.Cache.SetValueExt<SOTaxTran.curyTaxAmt>(soGraph.Taxes.Current, amzTotalTax);
+
+                                soGraph.Document.Cache.SetValueExt<SOOrder.curyTaxTotal>(soGraph.Document.Current, amzTotalTax);
+                                soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + amzTotalTax - systemTax);
+                            }
+                            #endregion
+
+                            // Save SalesOrder
+                            soGraph.Save.Press();
                         }
                         // 有Fulfillment date 才Prepare invoice
                         if (amzFulfillmentDate.HasValue)
@@ -181,15 +200,7 @@ namespace LumTomofunCustomization.Graph
                             // Prepare Invoice
                             try
                             {
-                                var newAdapter = new PXAdapter(soGraph.Document)
-                                {
-                                    Searches = new Object[]
-                                    {
-                                    soGraph.Document.Current.OrderType,
-                                    soGraph.Document.Current.OrderNbr
-                                    }
-                                };
-                                soGraph.PrepareInvoice(newAdapter);
+                                soGraph.prepareInvoice.Press();
                             }
                             // Prepare Invoice Success
                             catch (PXRedirectRequiredException ex)
