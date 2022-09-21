@@ -420,6 +420,10 @@
                         <ChildField>DetailID</ChildField>
                         <ParentField>='2'</ParentField>
                     </RelationRow>
+                    <RelationRow>
+                        <ChildField>LocationID</ChildField>
+                        <ParentField>DefLocationID</ParentField>
+                    </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
             </ReportRelation>
@@ -434,6 +438,10 @@
                     <RelationRow>
                         <ChildField>DetailID</ChildField>
                         <ParentField>='3'</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>LocationID</ChildField>
+                        <ParentField>DefLocationID</ParentField>
                     </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
@@ -450,6 +458,10 @@
                         <ChildField>DetailID</ChildField>
                         <ParentField>='5'</ParentField>
                     </RelationRow>
+                    <RelationRow>
+                        <ChildField>LocationID</ChildField>
+                        <ParentField>DefLocationID</ParentField>
+                    </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
             </ReportRelation>
@@ -464,6 +476,10 @@
                     <RelationRow>
                         <ChildField>DetailID</ChildField>
                         <ParentField>='6'</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>LocationID</ChildField>
+                        <ParentField>DefLocationID</ParentField>
                     </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
@@ -480,6 +496,10 @@
                         <ChildField>DetailID</ChildField>
                         <ParentField>='1'</ParentField>
                     </RelationRow>
+                    <RelationRow>
+                        <ChildField>LocationID</ChildField>
+                        <ParentField>DefLocationID</ParentField>
+                    </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
             </ReportRelation>
@@ -494,6 +514,10 @@
                     <RelationRow>
                         <ChildField>DetailID</ChildField>
                         <ParentField>='4'</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>LocationID</ChildField>
+                        <ParentField>DefLocationID</ParentField>
                     </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
