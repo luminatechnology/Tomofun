@@ -4887,38 +4887,6 @@
             <PageFooter Name="pageFooterSection1">
                 <ExcelVisible>False</ExcelVisible>
                 <Height>0.74074cm</Height>
-                <Items>
-                    <TextBox Name="textBox209">
-                        <Excel>
-                            <column>2</column>
-                            <row>2</row>
-                        </Excel>
-                        <Location>68px, 4px</Location>
-                        <Size>428px, 14px</Size>
-                        <Style>
-                            <Font>
-                                <Size>12px</Size>
-                            </Font>
-                        </Style>
-                        <StyleName>Normal</StyleName>
-                        <Value>='Requested By: '+Report.GetDefUI('RowAccessInfo.UserName')</Value>
-                    </TextBox>
-                    <TextBox Name="textBox70">
-                        <Excel>
-                            <column>2</column>
-                            <row>2</row>
-                        </Excel>
-                        <Location>588px, 4px</Location>
-                        <Size>428px, 14px</Size>
-                        <Style>
-                            <Font>
-                                <Size>12px</Size>
-                            </Font>
-                        </Style>
-                        <StyleName>Normal</StyleName>
-                        <Value>Approved By:</Value>
-                    </TextBox>
-                </Items>
             </PageFooter>
             <Detail Name="UseTax1">
                 <Height>0.42328cm</Height>
@@ -6120,8 +6088,23 @@
                     <Footer Name="groupFooterSection1">
                         <ExcelVisible>False</ExcelVisible>
                         <GridSize>8px, 8px</GridSize>
-                        <Height>3.91534cm</Height>
+                        <Height>5.50265cm</Height>
                         <Items>
+                            <TextBox Name="textBox209">
+                                <Excel>
+                                    <column>2</column>
+                                    <row>2</row>
+                                </Excel>
+                                <Location>64px, 184px</Location>
+                                <Size>428px, 22px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>14px</Size>
+                                    </Font>
+                                </Style>
+                                <StyleName>Normal</StyleName>
+                                <Value>='Requested By: '+Report.GetDefUI('RowAccessInfo.UserName')</Value>
+                            </TextBox>
                             <TextBox Name="textBox225">
                                 <Excel>
                                     <column>2</column>
@@ -6136,6 +6119,21 @@
                                 </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=#010;IIF([VendorPmtMethodBacnkID.DetailValue] &lt;&gt; Null, '銀行代碼: ' +[VendorPmtMethodBacnkID.DetailValue] + '{br}','') +#010;IIF([VendorPmtMethodBank.DetailValue] &lt;&gt; Null, '銀行名稱: '+ [VendorPmtMethodBank.DetailValue]+ '{br}','') + #010;IIF([VendorPmtMethodBranchID.DetailValue] &lt;&gt; Null, '分行代號: '+ [VendorPmtMethodBranchID.DetailValue]+ '{br}','') +#010;IIF([VendorPmtMethodBankBranch.DetailValue] &lt;&gt; Null, '分行名稱: '+ [VendorPmtMethodBankBranch.DetailValue]+ '{br}','') +#010;IIF([VendorPmtMethodAccount.DetailValue] &lt;&gt; Null, '帳號       : '+ [VendorPmtMethodAccount.DetailValue] + '{br}','') + #010;IIF([VendortPmtMethodAccountName.DetailValue] &lt;&gt; Null, '分行代號: '+ [VendortPmtMethodAccountName.DetailValue]+ '{br}','') + '{br}'</Value>
+                            </TextBox>
+                            <TextBox Name="textBox70">
+                                <Excel>
+                                    <column>2</column>
+                                    <row>2</row>
+                                </Excel>
+                                <Location>584px, 184px</Location>
+                                <Size>428px, 22px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>14px</Size>
+                                    </Font>
+                                </Style>
+                                <StyleName>Normal</StyleName>
+                                <Value>Approved By:</Value>
                             </TextBox>
                             <TextBox Name="textBox71">
                                 <Location>16px, 16px</Location>
