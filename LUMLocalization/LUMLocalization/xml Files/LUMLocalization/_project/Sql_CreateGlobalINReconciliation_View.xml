@@ -19,7 +19,7 @@ SELECT c.CompanyCD,
 	   a.CountryID,
 	   s.SiteCD,
 	   l.LocationCD,
-	   a.FNSku
+	   a.FNSku AS Source
 FROM LUMAmzINReconcilition a
 INNER JOIN Company c ON c.CompanyID = a.CompanyID
 LEFT OUTER JOIN INSite s ON s.CompanyID = a.CompanyID AND s.SiteID = a.Warehouse
@@ -38,10 +38,13 @@ SELECT c.CompanyCD,
 	   t.CountryID,
 	   s.SiteCD,
 	   l.LocationCD,
-	   t.ThirdPLType
+	   CASE WHEN t.ThirdPLType = 'T' THEN 'Topest'
+			WHEN t.ThirdPLType = 'R' THEN 'Return Helper'
+			WHEN t.ThirdPLType = 'F' THEN 'FedEx'
+			WHEN t.ThirdPLType = 'G' THEN 'Google Sheets' END AS Sourc
 FROM LUM3PLINReconciliation t
 INNER JOIN Company c ON c.CompanyID = t.CompanyID
 LEFT OUTER JOIN INSite s ON s.CompanyID = t.CompanyID AND s.SiteID = t.Warehouse
 LEFT OUTER JOIN INLocation l ON l.CompanyID = t.CompanyID AND l.LocationID = t.Location
-WHERE t.CompanyID > 0]]></CDATA>
+WHERE t.CompanyID > 0 AND t.Sku IS NOT NULL]]></CDATA>
 </Sql>
