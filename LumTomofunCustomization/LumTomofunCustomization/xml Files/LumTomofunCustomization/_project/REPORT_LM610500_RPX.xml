@@ -420,6 +420,10 @@
                         <ChildField>DetailID</ChildField>
                         <ParentField>='2'</ParentField>
                     </RelationRow>
+                    <RelationRow>
+                        <ChildField>LocationID</ChildField>
+                        <ParentField>DefLocationID</ParentField>
+                    </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
             </ReportRelation>
@@ -434,6 +438,10 @@
                     <RelationRow>
                         <ChildField>DetailID</ChildField>
                         <ParentField>='3'</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>LocationID</ChildField>
+                        <ParentField>DefLocationID</ParentField>
                     </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
@@ -450,6 +458,10 @@
                         <ChildField>DetailID</ChildField>
                         <ParentField>='5'</ParentField>
                     </RelationRow>
+                    <RelationRow>
+                        <ChildField>LocationID</ChildField>
+                        <ParentField>DefLocationID</ParentField>
+                    </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
             </ReportRelation>
@@ -464,6 +476,10 @@
                     <RelationRow>
                         <ChildField>DetailID</ChildField>
                         <ParentField>='6'</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>LocationID</ChildField>
+                        <ParentField>DefLocationID</ParentField>
                     </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
@@ -480,6 +496,10 @@
                         <ChildField>DetailID</ChildField>
                         <ParentField>='1'</ParentField>
                     </RelationRow>
+                    <RelationRow>
+                        <ChildField>LocationID</ChildField>
+                        <ParentField>DefLocationID</ParentField>
+                    </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
             </ReportRelation>
@@ -495,11 +515,20 @@
                         <ChildField>DetailID</ChildField>
                         <ParentField>='4'</ParentField>
                     </RelationRow>
+                    <RelationRow>
+                        <ChildField>LocationID</ChildField>
+                        <ParentField>DefLocationID</ParentField>
+                    </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
             </ReportRelation>
         </Relations>
         <SchemaUrl>http://localhost/Tomofun1/</SchemaUrl>
+        <Style>
+            <Font>
+                <Size>12px</Size>
+            </Font>
+        </Style>
         <StylesTemplate>TemplateReport.rpx</StylesTemplate>
         <Tables>
             <ReportTable Name="APInvoice">
@@ -4625,7 +4654,7 @@
                 <ExcelMargin>
                     <bottom>1</bottom>
                 </ExcelMargin>
-                <Height>72px</Height>
+                <Height>2.32804cm</Height>
                 <Variables>
                     <ReportVariable>
                         <Name>DeferVisible</Name>
@@ -4638,6 +4667,11 @@
                         </Excel>
                         <Location>4px, 20px</Location>
                         <Size>100px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Params</StyleName>
                         <Value>Company/Branch:</Value>
                     </TextBox>
@@ -4648,6 +4682,11 @@
                         </Excel>
                         <Location>104px, 20px</Location>
                         <Size>168px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Params</StyleName>
                         <Value>=[@OrgBAccountID]</Value>
                     </TextBox>
@@ -4657,6 +4696,11 @@
                         </Excel>
                         <Location>576px, 4px</Location>
                         <Size>86px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Params</StyleName>
                         <Value>Created By:</Value>
                         <VisibleExpr>=[@CreatedBy]&lt;&gt;null</VisibleExpr>
@@ -4668,6 +4712,11 @@
                         </Excel>
                         <Location>664px, 20px</Location>
                         <Size>140px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Params</StyleName>
                         <Value>=[@LastModifiedBy]</Value>
                     </TextBox>
@@ -4678,6 +4727,11 @@
                         </Excel>
                         <Location>408px, 52px</Location>
                         <Size>120px, 16px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Params</StyleName>
                         <Value>=[@RefNbr]</Value>
                         <VisibleExpr>=[@RefNbr]&lt;&gt;Null</VisibleExpr>
@@ -4689,6 +4743,11 @@
                         </Excel>
                         <Location>884px, 20px</Location>
                         <Size>36px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Params</StyleName>
                         <Value>Date:</Value>
                     </TextBox>
@@ -4700,6 +4759,11 @@
                         <ExcelVisible>False</ExcelVisible>
                         <Location>928px, 52px</Location>
                         <Size>92px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Normal</StyleName>
                         <Value>=Assign('$PrePay', False)</Value>
                         <Visible>False</Visible>
@@ -4711,6 +4775,11 @@
                         <ExcelVisible>False</ExcelVisible>
                         <Location>884px, 4px</Location>
                         <Size>36px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Params</StyleName>
                         <Value>Page:</Value>
                     </TextBox>
@@ -4722,6 +4791,9 @@
                         <Location>920px, 4px</Location>
                         <Size>100px, 14px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                         </Style>
                         <StyleName>Report Params</StyleName>
@@ -4734,6 +4806,11 @@
                         </Excel>
                         <Location>304px, 52px</Location>
                         <Size>100px, 16px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Params</StyleName>
                         <Value>Reference Number:</Value>
                         <VisibleExpr>=[@RefNbr]&lt;&gt;Null</VisibleExpr>
@@ -4747,6 +4824,9 @@
                         <Location>920px, 36px</Location>
                         <Size>100px, 14px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                         </Style>
                         <StyleName>Report Params</StyleName>
@@ -4759,6 +4839,11 @@
                         </Excel>
                         <Location>884px, 36px</Location>
                         <Size>36px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Params</StyleName>
                         <Value>User:</Value>
                     </TextBox>
@@ -4771,6 +4856,9 @@
                         <Location>920px, 20px</Location>
                         <Size>100px, 14px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                         </Style>
                         <StyleName>Report Params</StyleName>
@@ -4783,6 +4871,11 @@
                         </Excel>
                         <Location>304px, 20px</Location>
                         <Size>88px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Params</StyleName>
                         <Value>=IIf( [@PeriodTo]=null, '', 'To Period:')</Value>
                     </TextBox>
@@ -4793,6 +4886,11 @@
                         </Excel>
                         <Location>408px, 20px</Location>
                         <Size>116px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Normal</StyleName>
                         <Value>=Report.ExtToUI('Batch.TranPeriodID', @PeriodTo)</Value>
                     </TextBox>
@@ -4802,6 +4900,11 @@
                         </Excel>
                         <Location>304px, 4px</Location>
                         <Size>88px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Params</StyleName>
                         <Value>=IIf( [@PeriodFrom]=null, '', 'From Period:')</Value>
                     </TextBox>
@@ -4811,6 +4914,11 @@
                         </Excel>
                         <Location>408px, 4px</Location>
                         <Size>116px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Normal</StyleName>
                         <Value>=Report.ExtToUI('Batch.TranPeriodID', @PeriodFrom)</Value>
                     </TextBox>
@@ -4821,6 +4929,11 @@
                         </Excel>
                         <Location>408px, 36px</Location>
                         <Size>116px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Normal</StyleName>
                         <Value>=Report.ExtToUI('APRegister.PrintDocType', @DocType)</Value>
                         <VisibleExpr>=([@DocType] &lt;&gt; Null)</VisibleExpr>
@@ -4832,6 +4945,11 @@
                         </Excel>
                         <Location>304px, 36px</Location>
                         <Size>88px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Params</StyleName>
                         <Value>Document Type:</Value>
                         <VisibleExpr>=([@DocType] &lt;&gt; Null)</VisibleExpr>
@@ -4843,6 +4961,11 @@
                         </Excel>
                         <Location>576px, 36px</Location>
                         <Size>204px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Params</StyleName>
                         <Value>Include Transactions on Hold</Value>
                         <VisibleExpr>=[@OnHold]</VisibleExpr>
@@ -4854,6 +4977,11 @@
                         </Excel>
                         <Location>576px, 52px</Location>
                         <Size>204px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Params</StyleName>
                         <Value>Include Pre-Released Transactions</Value>
                         <VisibleExpr>=[@Prebooked]</VisibleExpr>
@@ -4865,6 +4993,11 @@
                         </Excel>
                         <Location>576px, 20px</Location>
                         <Size>86px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Params</StyleName>
                         <Value>Last Modified By:</Value>
                         <VisibleExpr>=[@LastModifiedBy]&lt;&gt;null</VisibleExpr>
@@ -4875,12 +5008,22 @@
                         </Excel>
                         <Location>664px, 4px</Location>
                         <Size>140px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Params</StyleName>
                         <Value>=[@CreatedBy]</Value>
                     </TextBox>
                     <TextBox Name="textBox9">
                         <Location>4px, 0px</Location>
                         <Size>206px, 16px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Report Name</StyleName>
                         <Value>AP Bill Application Form</Value>
                     </TextBox>
@@ -4907,23 +5050,25 @@
                         <Location>688px, 0px</Location>
                         <Size>52px, 14px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                         </Style>
                         <StyleName>Normal</StyleName>
                         <Value>=[APRegister.CuryID]</Value>
                     </TextBox>
-                    <TextBox Name="textBox164">
-                        <Location>4px, 0px</Location>
-                        <Size>68px, 14px</Size>
-                        <StyleName>Normal</StyleName>
-                        <Value>=[APRegister.BranchID]</Value>
-                    </TextBox>
                     <TextBox Name="textBox59">
                         <Excel>
                             <column>2</column>
                         </Excel>
-                        <Location>72px, 0px</Location>
+                        <Location>56px, 0px</Location>
                         <Size>96px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Normal</StyleName>
                         <Value>=[APTaxTran.AccountID]</Value>
                     </TextBox>
@@ -4933,6 +5078,11 @@
                         </Excel>
                         <Location>280px, 0px</Location>
                         <Size>116px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Normal</StyleName>
                         <Value>=[APTaxTran.SubID]</Value>
                     </TextBox>
@@ -4942,6 +5092,11 @@
                         </Excel>
                         <Location>396px, 0px</Location>
                         <Size>244px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Normal</StyleName>
                         <Value>=[Tax.Descr]</Value>
                     </TextBox>
@@ -4953,6 +5108,9 @@
                         <Location>740px, 0px</Location>
                         <Size>140px, 14px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                         </Style>
                         <StyleName>Normal</StyleName>
@@ -4966,6 +5124,9 @@
                         <Location>880px, 0px</Location>
                         <Size>140px, 14px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                         </Style>
                         <StyleName>Normal</StyleName>
@@ -4978,6 +5139,11 @@
                         <ExcelVisible>False</ExcelVisible>
                         <Location>668px, 0px</Location>
                         <Size>20px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Normal</StyleName>
                         <Value>=Assign('$CrTot', $CrTot+ IIF([APInvoice.Released] = False And $DocGroup = False And ($SignTax='C' Or [Tax.TaxType] = 'P'), [APTaxTran.CuryTaxAmt], 0))</Value>
                         <Visible>False</Visible>
@@ -4989,6 +5155,11 @@
                         <ExcelVisible>False</ExcelVisible>
                         <Location>652px, 0px</Location>
                         <Size>16px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Normal</StyleName>
                         <Value>=Assign('$DrTot', $DrTot+ IIF([APInvoice.Released] = False And $DocGroup = False And ($SignTax='D' Or [Tax.TaxType] = 'P'), [APTaxTran.CuryTaxAmt],0))</Value>
                         <Visible>False</Visible>
@@ -5013,6 +5184,9 @@
                         <Location>880px, 0px</Location>
                         <Size>140px, 14px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                         </Style>
                         <StyleName>Normal</StyleName>
@@ -5026,6 +5200,9 @@
                         <Location>740px, 0px</Location>
                         <Size>140px, 14px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                         </Style>
                         <StyleName>Normal</StyleName>
@@ -5038,6 +5215,9 @@
                         <Location>688px, 0px</Location>
                         <Size>52px, 14px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                         </Style>
                         <StyleName>Normal</StyleName>
@@ -5050,6 +5230,11 @@
                         <ExcelVisible>False</ExcelVisible>
                         <Location>652px, 0px</Location>
                         <Size>16px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Normal</StyleName>
                         <Value>=Assign('$BaseDrTot', $BaseDrTot+ IIF([APInvoice.Released] = False And $DocGroup = False And ($SignTax='D' Or [Tax.TaxType] = 'P'), [APTaxTran.TaxAmt],0))</Value>
                         <Visible>False</Visible>
@@ -5061,6 +5246,11 @@
                         <ExcelVisible>False</ExcelVisible>
                         <Location>668px, 0px</Location>
                         <Size>20px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Normal</StyleName>
                         <Value>=Assign('$BaseCrTot', $BaseCrTot+ IIF([APInvoice.Released] = False And $DocGroup = False And ($SignTax='C' Or [Tax.TaxType] = 'P'), [APTaxTran.TaxAmt], 0))</Value>
                         <Visible>False</Visible>
@@ -5075,8 +5265,13 @@
                             <column>2</column>
                             <row>2</row>
                         </Excel>
-                        <Location>580px, 4px</Location>
+                        <Location>92px, 4px</Location>
                         <Size>428px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Normal</StyleName>
                         <Value>='Requested By: '+Report.GetDefUI('RowAccessInfo.UserName')</Value>
                     </TextBox>
@@ -5085,8 +5280,13 @@
                             <column>2</column>
                             <row>2</row>
                         </Excel>
-                        <Location>92px, 4px</Location>
+                        <Location>584px, 4px</Location>
                         <Size>428px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Normal</StyleName>
                         <Value>Approved By:</Value>
                     </TextBox>
@@ -5104,6 +5304,9 @@
                         <Location>880px, 0px</Location>
                         <Size>140px, 14px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                         </Style>
                         <StyleName>Normal</StyleName>
@@ -5117,6 +5320,9 @@
                         <Location>740px, 0px</Location>
                         <Size>140px, 14px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                         </Style>
                         <StyleName>Normal</StyleName>
@@ -5126,8 +5332,13 @@
                         <Excel>
                             <column>2</column>
                         </Excel>
-                        <Location>72px, 0px</Location>
+                        <Location>60px, 0px</Location>
                         <Size>96px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Normal</StyleName>
                         <Value>=[Tax.ExpenseAccountID]</Value>
                     </TextBox>
@@ -5137,6 +5348,11 @@
                         </Excel>
                         <Location>280px, 0px</Location>
                         <Size>112px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Normal</StyleName>
                         <Value>=[Tax.ExpenseSubID]</Value>
                     </TextBox>
@@ -5146,6 +5362,11 @@
                         </Excel>
                         <Location>396px, 0px</Location>
                         <Size>244px, 14px</Size>
+                        <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
+                        </Style>
                         <StyleName>Normal</StyleName>
                         <Value>=[Tax.Descr]</Value>
                     </TextBox>
@@ -5156,16 +5377,13 @@
                         <Location>688px, 0px</Location>
                         <Size>52px, 14px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                         </Style>
                         <StyleName>Normal</StyleName>
                         <Value>=[APRegister.CuryID]</Value>
-                    </TextBox>
-                    <TextBox Name="textBox166">
-                        <Location>4px, 0px</Location>
-                        <Size>68px, 14px</Size>
-                        <StyleName>Normal</StyleName>
-                        <Value>=[APRegister.BranchID]</Value>
                     </TextBox>
                 </Items>
             </Detail>
@@ -5181,6 +5399,9 @@
                         <Location>880px, 0px</Location>
                         <Size>140px, 14px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                         </Style>
                         <StyleName>Normal</StyleName>
@@ -5194,6 +5415,9 @@
                         <Location>740px, 0px</Location>
                         <Size>140px, 14px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                         </Style>
                         <StyleName>Normal</StyleName>
@@ -5206,6 +5430,9 @@
                         <Location>688px, 0px</Location>
                         <Size>52px, 14px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                         </Style>
                         <StyleName>Normal</StyleName>
@@ -5215,6 +5442,11 @@
             </Detail>
             <PageHeader Name="pageHeaderSection2">
                 <Height>0.95238cm</Height>
+                <Style>
+                    <Font>
+                        <Size>16px</Size>
+                    </Font>
+                </Style>
                 <StyleName>ColumnsHeaderSection</StyleName>
                 <Items>
                     <TextBox Name="textBox125">
@@ -5224,31 +5456,25 @@
                         <Location>912px, 4px</Location>
                         <Size>108px, 26px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                             <VerticalAlign>Middle</VerticalAlign>
                         </Style>
                         <StyleName>Heading 1</StyleName>
                         <Value>Document Amount</Value>
                     </TextBox>
-                    <TextBox Name="textBox126">
-                        <Excel>
-                            <column>3</column>
-                        </Excel>
-                        <Location>148px, 4px</Location>
-                        <Size>72px, 26px</Size>
-                        <Style>
-                            <VerticalAlign>Middle</VerticalAlign>
-                        </Style>
-                        <StyleName>Heading 1</StyleName>
-                        <Value>Status</Value>
-                    </TextBox>
                     <TextBox Name="textBox129">
                         <Excel>
                             <column>6</column>
                         </Excel>
-                        <Location>360px, 4px</Location>
+                        <Location>348px, 4px</Location>
                         <Size>60px, 26px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <VerticalAlign>Middle</VerticalAlign>
                         </Style>
                         <StyleName>Heading 1</StyleName>
@@ -5261,30 +5487,24 @@
                         <Location>428px, 4px</Location>
                         <Size>76px, 26px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <VerticalAlign>Middle</VerticalAlign>
                         </Style>
                         <StyleName>Heading 1</StyleName>
                         <Value>Due Date</Value>
-                    </TextBox>
-                    <TextBox Name="textBox159">
-                        <Excel>
-                            <column>5</column>
-                        </Excel>
-                        <Location>292px, 4px</Location>
-                        <Size>64px, 26px</Size>
-                        <Style>
-                            <VerticalAlign>Middle</VerticalAlign>
-                        </Style>
-                        <StyleName>Heading 1</StyleName>
-                        <Value>Period</Value>
                     </TextBox>
                     <TextBox Name="textBox162">
                         <Excel>
                             <column>4</column>
                         </Excel>
                         <Location>220px, 4px</Location>
-                        <Size>72px, 26px</Size>
+                        <Size>104px, 26px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <VerticalAlign>Middle</VerticalAlign>
                         </Style>
                         <StyleName>Heading 1</StyleName>
@@ -5297,6 +5517,9 @@
                         <Location>596px, 4px</Location>
                         <Size>232px, 26px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <VerticalAlign>Middle</VerticalAlign>
                         </Style>
                         <StyleName>Heading 1</StyleName>
@@ -5309,6 +5532,9 @@
                         <Location>504px, 4px</Location>
                         <Size>92px, 26px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <VerticalAlign>Middle</VerticalAlign>
                         </Style>
                         <StyleName>Heading 1</StyleName>
@@ -5316,8 +5542,11 @@
                     </TextBox>
                     <TextBox Name="textBox167">
                         <Location>4px, 4px</Location>
-                        <Size>68px, 26px</Size>
+                        <Size>92px, 26px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <VerticalAlign>Middle</VerticalAlign>
                         </Style>
                         <StyleName>Heading 1</StyleName>
@@ -5330,6 +5559,9 @@
                         <Location>828px, 4px</Location>
                         <Size>84px, 26px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <TextAlign>Right</TextAlign>
                             <VerticalAlign>Middle</VerticalAlign>
                         </Style>
@@ -5340,9 +5572,12 @@
                         <Excel>
                             <column>2</column>
                         </Excel>
-                        <Location>72px, 4px</Location>
-                        <Size>76px, 26px</Size>
+                        <Location>108px, 4px</Location>
+                        <Size>100px, 26px</Size>
                         <Style>
+                            <Font>
+                                <Size>12px</Size>
+                            </Font>
                             <VerticalAlign>Middle</VerticalAlign>
                         </Style>
                         <StyleName>Heading 1</StyleName>
@@ -5381,6 +5616,11 @@
                                 </Excel>
                                 <Location>128px, 8px</Location>
                                 <Size>288px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>Vendor Name</Value>
                             </TextBox>
@@ -5388,6 +5628,11 @@
                                 <Location>16px, 24px</Location>
                                 <NavigateMethod>Server</NavigateMethod>
                                 <Size>108px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[BAccount.AcctCD]</Value>
                             </TextBox>
@@ -5397,12 +5642,22 @@
                                 </Excel>
                                 <Location>128px, 24px</Location>
                                 <Size>288px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[BAccount.AcctName]</Value>
                             </TextBox>
                             <TextBox Name="textBox87">
                                 <Location>16px, 8px</Location>
                                 <Size>108px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>Vendor</Value>
                             </TextBox>
@@ -5430,6 +5685,9 @@
                                 <Location>688px, 4px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -5443,6 +5701,9 @@
                                 <Location>740px, 4px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -5456,6 +5717,9 @@
                                 <Location>880px, 4px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -5467,6 +5731,11 @@
                                 </Excel>
                                 <Location>544px, 4px</Location>
                                 <Size>144px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>Vendor Total:</Value>
                             </TextBox>
@@ -5568,15 +5837,23 @@
                         <Items>
                             <TextBox Name="textBox180">
                                 <Location>4px, 4px</Location>
-                                <Size>56px, 14px</Size>
+                                <Size>76px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>=[APRegister.PrintDocType]</Value>
                             </TextBox>
                             <TextBox Name="textBox181">
-                                <Location>60px, 4px</Location>
+                                <Location>80px, 4px</Location>
                                 <Size>12px, 14px</Size>
                                 <Style>
                                     <Color>Red</Color>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -5586,27 +5863,28 @@
                                 <Excel>
                                     <column>2</column>
                                 </Excel>
-                                <Location>72px, 4px</Location>
+                                <Location>112px, 4px</Location>
                                 <NavigateMethod>Server</NavigateMethod>
                                 <Size>76px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>=[APRegister.RefNbr]</Value>
-                            </TextBox>
-                            <TextBox Name="textBox183">
-                                <Excel>
-                                    <column>5</column>
-                                </Excel>
-                                <Location>292px, 4px</Location>
-                                <Size>64px, 14px</Size>
-                                <StyleName>Heading 1</StyleName>
-                                <Value>=[APRegister.FinPeriodID]</Value>
                             </TextBox>
                             <TextBox Name="textBox184">
                                 <Excel>
                                     <column>4</column>
                                 </Excel>
                                 <Location>220px, 4px</Location>
-                                <Size>72px, 14px</Size>
+                                <Size>100px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>=[APRegister.DocDate]</Value>
                             </TextBox>
@@ -5616,6 +5894,11 @@
                                 </Excel>
                                 <Location>596px, 4px</Location>
                                 <Size>232px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>=[SuppliedByVendor.AcctName]</Value>
                             </TextBox>
@@ -5626,6 +5909,11 @@
                                 <Location>504px, 4px</Location>
                                 <NavigateMethod>Server</NavigateMethod>
                                 <Size>92px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>=[SuppliedByVendor.AcctCD]</Value>
                             </TextBox>
@@ -5636,6 +5924,9 @@
                                 <Location>828px, 4px</Location>
                                 <Size>84px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -5650,6 +5941,9 @@
                                 <Location>912px, 4px</Location>
                                 <Size>108px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -5659,8 +5953,13 @@
                                 <Excel>
                                     <column>6</column>
                                 </Excel>
-                                <Location>360px, 4px</Location>
+                                <Location>344px, 4px</Location>
                                 <Size>60px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>=[APInvoice.TermsID]</Value>
                             </TextBox>
@@ -5670,18 +5969,13 @@
                                 </Excel>
                                 <Location>428px, 4px</Location>
                                 <Size>76px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>=[APInvoice.DueDate]</Value>
-                            </TextBox>
-                            <TextBox Name="textBox79">
-                                <Excel>
-                                    <column>3</column>
-                                </Excel>
-                                <Location>148px, 4px</Location>
-                                <Size>72px, 14px</Size>
-                                <StyleName>Heading 1</StyleName>
-                                <Value>=[APRegister.Status]</Value>
-                                <WrapText>False</WrapText>
                             </TextBox>
                         </Items>
                     </Header>
@@ -5692,22 +5986,17 @@
                         <StyleName>GroupHighlight</StyleName>
                         <VisibleExpr>=[FeaturesSet.VendorRelations] &lt;&gt; 1</VisibleExpr>
                         <Items>
-                            <TextBox Name="textBox16">
-                                <Excel>
-                                    <column>3</column>
-                                </Excel>
-                                <Location>148px, 4px</Location>
-                                <Size>72px, 14px</Size>
-                                <StyleName>Heading 1</StyleName>
-                                <Value>=[APRegister.Status]</Value>
-                                <WrapText>False</WrapText>
-                            </TextBox>
                             <TextBox Name="textBox177">
                                 <Excel>
                                     <column>6</column>
                                 </Excel>
-                                <Location>360px, 4px</Location>
+                                <Location>344px, 4px</Location>
                                 <Size>60px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>=[APInvoice.TermsID]</Value>
                             </TextBox>
@@ -5719,6 +6008,9 @@
                                 <Location>912px, 4px</Location>
                                 <Size>108px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -5731,6 +6023,9 @@
                                 <Location>828px, 4px</Location>
                                 <Size>84px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -5743,6 +6038,11 @@
                                 </Excel>
                                 <Location>428px, 4px</Location>
                                 <Size>76px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>=[APInvoice.DueDate]</Value>
                             </TextBox>
@@ -5753,6 +6053,11 @@
                                 <Location>504px, 4px</Location>
                                 <NavigateMethod>Server</NavigateMethod>
                                 <Size>92px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>=[BAccount.AcctCD]</Value>
                             </TextBox>
@@ -5762,6 +6067,11 @@
                                 </Excel>
                                 <Location>596px, 4px</Location>
                                 <Size>232px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>=[BAccount.AcctName]</Value>
                             </TextBox>
@@ -5770,32 +6080,38 @@
                                     <column>4</column>
                                 </Excel>
                                 <Location>220px, 4px</Location>
-                                <Size>72px, 14px</Size>
+                                <Size>100px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>=[APRegister.DocDate]</Value>
-                            </TextBox>
-                            <TextBox Name="textBox200">
-                                <Excel>
-                                    <column>5</column>
-                                </Excel>
-                                <Location>292px, 4px</Location>
-                                <Size>64px, 14px</Size>
-                                <StyleName>Heading 1</StyleName>
-                                <Value>=[APRegister.FinPeriodID]</Value>
                             </TextBox>
                             <TextBox Name="textBox202">
                                 <Excel>
                                     <column>2</column>
                                 </Excel>
-                                <Location>72px, 4px</Location>
+                                <Location>112px, 4px</Location>
                                 <NavigateMethod>Server</NavigateMethod>
                                 <Size>76px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>=[APRegister.RefNbr]</Value>
                             </TextBox>
                             <TextBox Name="textBox207">
                                 <Location>4px, 4px</Location>
-                                <Size>56px, 14px</Size>
+                                <Size>84px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>=[APRegister.PrintDocType]</Value>
                             </TextBox>
@@ -6005,6 +6321,11 @@
                             <TextBox Name="textBox130">
                                 <Location>4px, 0px</Location>
                                 <Size>788px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>=[APRegister.DocDesc]</Value>
                             </TextBox>
@@ -6016,6 +6337,9 @@
                                 <Location>912px, 0px</Location>
                                 <Size>108px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -6029,6 +6353,9 @@
                                 <Location>828px, 0px</Location>
                                 <Size>84px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -6056,6 +6383,11 @@
                                 </Excel>
                                 <Location>168px, 4px</Location>
                                 <Size>112px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>Acct. Description</Value>
                             </TextBox>
@@ -6066,16 +6398,13 @@
                                 <Location>688px, 4px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>Currency</Value>
-                            </TextBox>
-                            <TextBox Name="textBox192">
-                                <Location>4px, 4px</Location>
-                                <Size>68px, 14px</Size>
-                                <StyleName>Heading 1</StyleName>
-                                <Value>Branch</Value>
                             </TextBox>
                             <TextBox Name="textBox22">
                                 <Excel>
@@ -6084,6 +6413,9 @@
                                 <Location>880px, 4px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -6093,8 +6425,13 @@
                                 <Excel>
                                     <column>2</column>
                                 </Excel>
-                                <Location>72px, 4px</Location>
+                                <Location>56px, 4px</Location>
                                 <Size>96px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>Account</Value>
                             </TextBox>
@@ -6104,6 +6441,11 @@
                                 </Excel>
                                 <Location>280px, 4px</Location>
                                 <Size>124px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>Subaccount</Value>
                             </TextBox>
@@ -6113,6 +6455,11 @@
                                 </Excel>
                                 <Location>408px, 4px</Location>
                                 <Size>280px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>Tran. Description</Value>
                             </TextBox>
@@ -6123,6 +6470,9 @@
                                 <Location>740px, 4px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -6142,6 +6492,9 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6151,8 +6504,13 @@
                                 <Excel>
                                     <column>2</column>
                                 </Excel>
-                                <Location>72px, 0px</Location>
+                                <Location>56px, 0px</Location>
                                 <Size>96px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APRegister.APAccountID]</Value>
                             </TextBox>
@@ -6162,6 +6520,11 @@
                                 </Excel>
                                 <Location>280px, 0px</Location>
                                 <Size>128px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APRegister.APSubID]</Value>
                             </TextBox>
@@ -6173,16 +6536,13 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=IIF([APInvoice.DrCr]='D',0.0,[APRegister.CuryOrigDocAmt])#010;</Value>
-                            </TextBox>
-                            <TextBox Name="textBox68">
-                                <Location>4px, 0px</Location>
-                                <Size>68px, 14px</Size>
-                                <StyleName>Normal</StyleName>
-                                <Value>=[APRegister.BranchID]</Value>
                             </TextBox>
                             <TextBox Name="textBox71">
                                 <Excel>
@@ -6192,6 +6552,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6256,16 +6619,13 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APRegister.CuryID]</Value>
-                            </TextBox>
-                            <TextBox Name="textBox158">
-                                <Location>4px, 0px</Location>
-                                <Size>68px, 14px</Size>
-                                <StyleName>Normal</StyleName>
-                                <Value>=[APRegister.BranchID]</Value>
                             </TextBox>
                             <TextBox Name="textBox52">
                                 <Excel>
@@ -6275,6 +6635,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6284,8 +6647,13 @@
                                 <Excel>
                                     <column>2</column>
                                 </Excel>
-                                <Location>72px, 0px</Location>
+                                <Location>56px, 0px</Location>
                                 <Size>96px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APRegister.APAccountID]</Value>
                             </TextBox>
@@ -6295,6 +6663,11 @@
                                 </Excel>
                                 <Location>280px, 0px</Location>
                                 <Size>120px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APRegister.APSubID]</Value>
                             </TextBox>
@@ -6306,6 +6679,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6325,6 +6701,9 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6338,6 +6717,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6351,6 +6733,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6370,16 +6755,13 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APRegister.CuryID]</Value>
-                            </TextBox>
-                            <TextBox Name="textBox160">
-                                <Location>4px, 0px</Location>
-                                <Size>68px, 14px</Size>
-                                <StyleName>Normal</StyleName>
-                                <Value>=[CashAccount.BranchID]</Value>
                             </TextBox>
                             <TextBox Name="textBox21">
                                 <Excel>
@@ -6389,6 +6771,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6398,8 +6783,13 @@
                                 <Excel>
                                     <column>2</column>
                                 </Excel>
-                                <Location>72px, 0px</Location>
+                                <Location>56px, 0px</Location>
                                 <Size>96px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APPayment.CashAccountID]</Value>
                             </TextBox>
@@ -6409,6 +6799,11 @@
                                 </Excel>
                                 <Location>280px, 0px</Location>
                                 <Size>120px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[CashAccount.SubID]</Value>
                             </TextBox>
@@ -6420,6 +6815,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6477,12 +6875,6 @@
                         <Height>14px</Height>
                         <VisibleExpr>=([APPayment.Released] = 0) And ([APRegister.CuryOrigDiscAmt] &lt;&gt; 0) And $IsNotQuickCheck = False</VisibleExpr>
                         <Items>
-                            <TextBox Name="textBox201">
-                                <Location>4px, 0px</Location>
-                                <Size>68px, 14px</Size>
-                                <StyleName>Normal</StyleName>
-                                <Value>=[APRegister.BranchID]</Value>
-                            </TextBox>
                             <TextBox Name="textBox203">
                                 <Excel>
                                     <column>11</column>
@@ -6491,6 +6883,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6502,6 +6897,11 @@
                                 </Excel>
                                 <Location>280px, 0px</Location>
                                 <Size>120px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[Vendor.DiscTakenSubID]</Value>
                             </TextBox>
@@ -6509,8 +6909,13 @@
                                 <Excel>
                                     <column>2</column>
                                 </Excel>
-                                <Location>72px, 0px</Location>
+                                <Location>56px, 0px</Location>
                                 <Size>96px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[Vendor.DiscTakenAcctID]</Value>
                             </TextBox>
@@ -6522,6 +6927,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6534,6 +6942,9 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6553,6 +6964,9 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6566,6 +6980,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6579,6 +6996,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6621,6 +7041,11 @@
                                 </Excel>
                                 <Location>544px, 1px</Location>
                                 <Size>482px, 1px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                             </Line>
                             <TextBox Name="textBox13">
                                 <Excel>
@@ -6630,6 +7055,9 @@
                                 <Size>44px, 14px</Size>
                                 <Style>
                                     <Color>Red</Color>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6642,6 +7070,9 @@
                                 <Location>688px, 4px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -6653,6 +7084,11 @@
                                 </Excel>
                                 <Location>544px, 4px</Location>
                                 <Size>144px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Heading 1</StyleName>
                                 <Value>Total:</Value>
                             </TextBox>
@@ -6664,6 +7100,9 @@
                                 <Location>740px, 4px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -6677,6 +7116,9 @@
                                 <Location>880px, 4px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -6697,6 +7139,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -6710,6 +7155,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -6722,6 +7170,9 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Heading 1</StyleName>
@@ -6744,6 +7195,11 @@
                                 <ExcelVisible>False</ExcelVisible>
                                 <Location>652px, 8px</Location>
                                 <Size>16px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=Assign('$DrTot', $DrTot+ IIF([APInvoice.Released] = False And $DocGroup = False And ($SignTax='D' Or [Tax.TaxType] = 'P'), [APTaxTran.CuryTaxAmt],0))</Value>
                                 <Visible>False</Visible>
@@ -6755,6 +7211,11 @@
                                 <ExcelVisible>False</ExcelVisible>
                                 <Location>668px, 8px</Location>
                                 <Size>20px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=Assign('$CrTot', $CrTot+ IIF([APInvoice.Released] = False And $DocGroup = False And ($SignTax='C' Or [Tax.TaxType] = 'P'), [APTaxTran.CuryTaxAmt], 0))</Value>
                                 <Visible>False</Visible>
@@ -6767,6 +7228,9 @@
                                 <Location>880px, 8px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6780,6 +7244,9 @@
                                 <Location>740px, 8px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6791,6 +7258,11 @@
                                 </Excel>
                                 <Location>408px, 8px</Location>
                                 <Size>244px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[Tax.Descr]</Value>
                             </TextBox>
@@ -6800,6 +7272,11 @@
                                 </Excel>
                                 <Location>280px, 8px</Location>
                                 <Size>124px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APTaxTran.SubID]</Value>
                             </TextBox>
@@ -6809,12 +7286,22 @@
                                 </Excel>
                                 <Location>72px, 8px</Location>
                                 <Size>96px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APTaxTran.AccountID]</Value>
                             </TextBox>
                             <TextBox Name="textBox220">
                                 <Location>4px, 8px</Location>
                                 <Size>68px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APRegister.BranchID]</Value>
                             </TextBox>
@@ -6825,6 +7312,9 @@
                                 <Location>688px, 8px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6881,16 +7371,13 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APRegister.CuryID]</Value>
-                            </TextBox>
-                            <TextBox Name="textBox161">
-                                <Location>4px, 0px</Location>
-                                <Size>44px, 14px</Size>
-                                <StyleName>Normal</StyleName>
-                                <Value>=[APTran.BranchID]</Value>
                             </TextBox>
                             <TextBox Name="textBox32">
                                 <Excel>
@@ -6898,6 +7385,11 @@
                                 </Excel>
                                 <Location>168px, 0px</Location>
                                 <Size>112px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APTran.AccountID_Account_description]</Value>
                             </TextBox>
@@ -6905,8 +7397,13 @@
                                 <Excel>
                                     <column>2</column>
                                 </Excel>
-                                <Location>72px, 0px</Location>
+                                <Location>56px, 0px</Location>
                                 <Size>96px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=IsNull([APTran.AccountID],'*')</Value>
                             </TextBox>
@@ -6916,6 +7413,11 @@
                                 </Excel>
                                 <Location>280px, 0px</Location>
                                 <Size>120px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APTran.SubID]</Value>
                             </TextBox>
@@ -6925,6 +7427,11 @@
                                 </Excel>
                                 <Location>408px, 0px</Location>
                                 <Size>272px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APTran.TranDesc]</Value>
                             </TextBox>
@@ -6936,6 +7443,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -6949,24 +7459,13 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=IsNull(IIF([APTran.DrCr]='C',[APTran.CuryTranAmt] - [APTran.CuryTaxAmt],0.0),0)</Value>
-                            </TextBox>
-                            <TextBox Name="textBox81_265">
-                                <Excel>
-                                    <column>7</column>
-                                </Excel>
-                                <Location>48px, 0px</Location>
-                                <Size>20px, 14px</Size>
-                                <Style>
-                                    <Color>Red</Color>
-                                    <TextAlign>Right</TextAlign>
-                                </Style>
-                                <StyleName>Normal</StyleName>
-                                <Value>='***'</Value>
-                                <VisibleExpr>=([APTran.DeferredCode] &lt;&gt; Null)</VisibleExpr>
                             </TextBox>
                         </Items>
                     </Header>
@@ -6993,6 +7492,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7005,6 +7507,9 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7018,6 +7523,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7037,16 +7545,13 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APRegister.CuryID]</Value>
-                            </TextBox>
-                            <TextBox Name="textBox168">
-                                <Location>4px, 0px</Location>
-                                <Size>68px, 14px</Size>
-                                <StyleName>Normal</StyleName>
-                                <Value>=[APRegister.BranchID]</Value>
                             </TextBox>
                             <TextBox Name="textBox23">
                                 <Excel>
@@ -7056,6 +7561,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7065,8 +7573,13 @@
                                 <Excel>
                                     <column>2</column>
                                 </Excel>
-                                <Location>72px, 0px</Location>
+                                <Location>56px, 0px</Location>
                                 <Size>96px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APAdjust.AdjdAPAcct]</Value>
                             </TextBox>
@@ -7076,6 +7589,11 @@
                                 </Excel>
                                 <Location>280px, 0px</Location>
                                 <Size>120px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APAdjust.AdjdAPSub]</Value>
                             </TextBox>
@@ -7087,6 +7605,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7099,6 +7620,9 @@
                                 <Location>608px, 0px</Location>
                                 <Size>44px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7120,6 +7644,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7133,6 +7660,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7145,6 +7675,9 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7156,6 +7689,11 @@
                                 </Excel>
                                 <Location>608px, 0px</Location>
                                 <Size>44px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=Assign('$BaseDrTot', $BaseDrTot + IsNull(IIF([APRegister.Released]=True,[APAdjust.AdjAmt],0) + IIF($IsNotQuickCheck = True ,[APAdjust.AdjDiscAmt]+[APAdjust.AdjWhTaxAmt],0),0))</Value>
                                 <Visible>False</Visible>
@@ -7174,16 +7712,13 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APRegister.CuryID]</Value>
-                            </TextBox>
-                            <TextBox Name="textBox170">
-                                <Location>4px, 0px</Location>
-                                <Size>68px, 14px</Size>
-                                <StyleName>Normal</StyleName>
-                                <Value>=[APRegister.BranchID]</Value>
                             </TextBox>
                             <TextBox Name="textBox24">
                                 <Excel>
@@ -7193,6 +7728,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7202,8 +7740,13 @@
                                 <Excel>
                                     <column>2</column>
                                 </Excel>
-                                <Location>72px, 0px</Location>
+                                <Location>56px, 0px</Location>
                                 <Size>96px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[Vendor.DiscTakenAcctID]</Value>
                             </TextBox>
@@ -7213,6 +7756,11 @@
                                 </Excel>
                                 <Location>280px, 0px</Location>
                                 <Size>120px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[Vendor.DiscTakenSubID]</Value>
                             </TextBox>
@@ -7224,6 +7772,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7236,6 +7787,9 @@
                                 <Location>644px, 0px</Location>
                                 <Size>40px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7257,6 +7811,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7270,6 +7827,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7282,6 +7842,9 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7293,6 +7856,11 @@
                                 </Excel>
                                 <Location>644px, 0px</Location>
                                 <Size>40px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=Assign('$BaseCrTot', $BaseCrTot + IIF([APRegister.Released]=True,IsNull([APAdjust.AdjAmt],0),0) + IIF($IsNotQuickCheck = True ,IsNull([APAdjust.AdjDiscAmt], 0.0) + IsNull([APAdjust.AdjWhTaxAmt],0),0))</Value>
                                 <Visible>False</Visible>
@@ -7317,16 +7885,13 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APRegister.CuryID]</Value>
-                            </TextBox>
-                            <TextBox Name="textBox172">
-                                <Location>4px, 0px</Location>
-                                <Size>68px, 14px</Size>
-                                <StyleName>Normal</StyleName>
-                                <Value>=[APRegister.BranchID]</Value>
                             </TextBox>
                             <TextBox Name="textBox25">
                                 <Excel>
@@ -7336,6 +7901,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7345,8 +7913,13 @@
                                 <Excel>
                                     <column>2</column>
                                 </Excel>
-                                <Location>72px, 0px</Location>
+                                <Location>56px, 0px</Location>
                                 <Size>96px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APAdjust.AdjdAPAcct]</Value>
                             </TextBox>
@@ -7356,6 +7929,11 @@
                                 </Excel>
                                 <Location>280px, 0px</Location>
                                 <Size>120px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APAdjust.AdjdAPSub]</Value>
                             </TextBox>
@@ -7367,6 +7945,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7387,6 +7968,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7400,6 +7984,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7412,6 +7999,9 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7431,16 +8021,13 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APRegister.CuryID]</Value>
-                            </TextBox>
-                            <TextBox Name="textBox173">
-                                <Location>4px, 0px</Location>
-                                <Size>68px, 14px</Size>
-                                <StyleName>Normal</StyleName>
-                                <Value>=[APRegister.BranchID]</Value>
                             </TextBox>
                             <TextBox Name="textBox888855551">
                                 <Excel>
@@ -7450,6 +8037,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7459,8 +8049,13 @@
                                 <Excel>
                                     <column>2</column>
                                 </Excel>
-                                <Location>72px, 0px</Location>
+                                <Location>56px, 0px</Location>
                                 <Size>96px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APAdjust.AdjdWhTaxAcctID]</Value>
                             </TextBox>
@@ -7470,6 +8065,11 @@
                                 </Excel>
                                 <Location>280px, 0px</Location>
                                 <Size>120px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APAdjust.AdjdWhTaxSubID]</Value>
                             </TextBox>
@@ -7481,6 +8081,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7500,6 +8103,9 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7513,6 +8119,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7526,6 +8135,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7551,16 +8163,13 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APRegister.CuryID]</Value>
-                            </TextBox>
-                            <TextBox Name="textBox174">
-                                <Location>4px, 0px</Location>
-                                <Size>68px, 14px</Size>
-                                <StyleName>Normal</StyleName>
-                                <Value>=[APRegister.BranchID]</Value>
                             </TextBox>
                             <TextBox Name="textBox999966661">
                                 <Excel>
@@ -7570,6 +8179,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7579,8 +8191,13 @@
                                 <Excel>
                                     <column>2</column>
                                 </Excel>
-                                <Location>72px, 0px</Location>
+                                <Location>56px, 0px</Location>
                                 <Size>96px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APAdjust.AdjdAPAcct]</Value>
                             </TextBox>
@@ -7590,6 +8207,11 @@
                                 </Excel>
                                 <Location>280px, 0px</Location>
                                 <Size>120px, 14px</Size>
+                                <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
+                                </Style>
                                 <StyleName>Normal</StyleName>
                                 <Value>=[APAdjust.AdjdAPSub]</Value>
                             </TextBox>
@@ -7601,6 +8223,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7610,7 +8235,7 @@
                     </Header>
                     <Header Name="WithholdingTax4">
                         <GridSize>8px, 8px</GridSize>
-                        <Height>14px</Height>
+                        <Height>0.42328cm</Height>
                         <VisibleExpr>=([APAdjust.AdjdRefNbr] &lt;&gt; Null) And ([APAdjust.CuryAdjgWhTaxAmt] &lt;&gt; 0 And [APRegister.CuryID]&lt;&gt;[Company.BaseCuryID])</VisibleExpr>
                         <Items>
                             <TextBox Name="textBox999977771">
@@ -7620,6 +8245,9 @@
                                 <Location>688px, 0px</Location>
                                 <Size>52px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7633,6 +8261,9 @@
                                 <Location>880px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
@@ -7646,6 +8277,9 @@
                                 <Location>740px, 0px</Location>
                                 <Size>140px, 14px</Size>
                                 <Style>
+                                    <Font>
+                                        <Size>12px</Size>
+                                    </Font>
                                     <TextAlign>Right</TextAlign>
                                 </Style>
                                 <StyleName>Normal</StyleName>
