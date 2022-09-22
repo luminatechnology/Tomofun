@@ -180,7 +180,7 @@ namespace LumTomofunCustomization.Graph
                                 soDoc.OrderType = "RT";
                                 soDoc.CustomerOrderNbr = row.OrderID;
                                 soDoc.OrderDate = row.TransactionDate;
-                                soDoc.RequestDate = Accessinfo.BusinessDate;
+                                soDoc.RequestDate = row.TransactionDate;
                                 soDoc.CustomerID = ShopifyPublicFunction.GetMarketplaceCustomer(row.Marketplace);
                                 soDoc.OrderDesc = $"Paypal NP Payment Gateway {row.TransactionType} {row.OrderID}";
                                 #endregion
@@ -287,7 +287,7 @@ namespace LumTomofunCustomization.Graph
                                 soDoc.OrderType = "IN";
                                 soDoc.CustomerOrderNbr = row.OrderID;
                                 soDoc.OrderDate = row.TransactionDate;
-                                soDoc.RequestDate = Accessinfo.BusinessDate;
+                                soDoc.RequestDate = row.TransactionDate;
                                 soDoc.CustomerID = ShopifyPublicFunction.GetMarketplaceCustomer(row.Marketplace);
                                 soDoc.OrderDesc = $"Paypal NP Payment Gateway {row.TransactionType} {row.OrderID}";
                                 #endregion
