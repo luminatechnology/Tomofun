@@ -15,8 +15,8 @@ namespace LUMLocalization.DAC
         #endregion
 
         #region SnapshotDate
-        [PXDBDate()]
-        [PXUIField(DisplayName = "Snapshot Date")]
+        [PXDBDateAndTime(PreserveTime = true, UseTimeZone = false)]
+        [PXUIField(DisplayName = "Tran Date")]
         public virtual DateTime? SnapshotDate { get; set; }
         public abstract class snapshotDate : PX.Data.BQL.BqlDateTime.Field<snapshotDate> { }
         #endregion
@@ -93,7 +93,7 @@ namespace LUMLocalization.DAC
 
         #region Source
         [PXDBString(50, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "source")]
+        [PXUIField(DisplayName = "Source")]
         public virtual string Source { get; set; }
         public abstract class source : PX.Data.BQL.BqlString.Field<source> { }
         #endregion
