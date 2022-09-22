@@ -173,7 +173,7 @@ namespace LumTomofunCustomization.Graph
                                 soDoc.OrderType = "RT";
                                 soDoc.CustomerOrderNbr = row.OrderID;
                                 soDoc.OrderDate = row.TransactionPostedDate;
-                                soDoc.RequestDate = Accessinfo.BusinessDate;
+                                soDoc.RequestDate = row.TransactionPostedDate;
                                 soDoc.CustomerID = ShopifyPublicFunction.GetMarketplaceCustomer(row.Marketplace);
                                 soDoc.OrderDesc = $"Amazon Payment Gateway {row.TransactionType} {row.OrderID}";
                                 #endregion
@@ -276,7 +276,7 @@ namespace LumTomofunCustomization.Graph
                                 soDoc.OrderType = "IN";
                                 soDoc.CustomerOrderNbr = row.OrderID;
                                 soDoc.OrderDate = row.TransactionPostedDate;
-                                soDoc.RequestDate = Accessinfo.BusinessDate;
+                                soDoc.RequestDate = row.TransactionPostedDate;
                                 soDoc.CustomerID = ShopifyPublicFunction.GetMarketplaceCustomer(row.Marketplace);
                                 soDoc.OrderDesc = $"Amazon Payment Gateway {row.TransactionType} {row.SettlementId}";
                                 #endregion
@@ -383,6 +383,7 @@ namespace LumTomofunCustomization.Graph
                 // Save
                 invoiceGraph.Save.Press();
                 // Release Invoice
+                invoiceGraph.releaseFromHold.Press();
                 invoiceGraph.releaseFromCreditHold.Press();
                 invoiceGraph.release.Press();
                 #endregion

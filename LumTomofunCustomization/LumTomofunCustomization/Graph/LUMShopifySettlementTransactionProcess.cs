@@ -62,6 +62,9 @@ namespace LumTomofunCustomization.Graph
             foreach (var row in list)
             {
                 // clean error message
+                row.Marketplace = row.OrderID.StartsWith("#") ? row.OrderID?.Substring(1, 2) : row.OrderID?.Substring(0, 2);
+                if (string.IsNullOrEmpty(row.Marketplace))
+                    throw new Exception("Marketplace can not be empty!");
                 row.ErrorMessage = string.Empty;
                 PXLongOperation.SetCurrentItem(row);
                 try
@@ -71,8 +74,8 @@ namespace LumTomofunCustomization.Graph
                         // 以建立的Shopify Sales Order
                         var shopifySOOrder = SelectFrom<SOOrder>
                          .Where<SOOrder.orderType.IsEqual<P.AsString>
-                           .And<SOOrder.orderDesc.IsEqual<P.AsString>>>
-                         .View.SelectSingleBound(baseGraph, null, "SP", $"Shopify Order {row.OrderID}").TopFirst;
+                           .And<SOOrder.customerOrderNbr.IsEqual<P.AsString>>>
+                         .View.SelectSingleBound(baseGraph, null, "SP", row.Checkout?.Substring(1)).TopFirst;
                         // Shopify Cash account
                         var spCashAccount = SelectFrom<CashAccount>
                                             .Where<CashAccount.cashAccountCD.IsEqual<P.AsString>>
@@ -93,7 +96,7 @@ namespace LumTomofunCustomization.Graph
                                 arDoc.ExtRefNbr = row.Checkout;
                                 arDoc.CustomerID = ShopifyPublicFunction.GetMarketplaceCustomer(row.Marketplace);
                                 arDoc.CashAccountID = spCashAccount.CashAccountID;
-                                arDoc.DocDesc = $"Shopify Payment Gateway {row.OrderID}";
+                                arDoc.DocDesc = $"Shopify Payment Gateway {row.Checkout}";
                                 arDoc.DepositAfter = row.PayoutDate;
                                 #region User-Defiend
                                 // UserDefined - ECNETPAY
@@ -160,9 +163,9 @@ namespace LumTomofunCustomization.Graph
                                 soDoc.OrderType = "RT";
                                 soDoc.CustomerOrderNbr = row.Checkout;
                                 soDoc.OrderDate = row.TransactionDate;
-                                soDoc.RequestDate = Accessinfo.BusinessDate;
+                                soDoc.RequestDate = row.TransactionDate;
                                 soDoc.CustomerID = ShopifyPublicFunction.GetMarketplaceCustomer(row.Marketplace);
-                                soDoc.OrderDesc = $"Shopify Payment Gateway {row.TransactionType} {row.OrderID}";
+                                soDoc.OrderDesc = $"Shopify Payment Gateway {row.TransactionType} {row.Checkout}";
                                 #endregion
 
                                 #region User-Defined
@@ -260,9 +263,9 @@ namespace LumTomofunCustomization.Graph
                                 soDoc.OrderType = "IN";
                                 soDoc.CustomerOrderNbr = row.Checkout;
                                 soDoc.OrderDate = row.TransactionDate;
-                                soDoc.RequestDate = Accessinfo.BusinessDate;
+                                soDoc.RequestDate = row.TransactionDate;
                                 soDoc.CustomerID = ShopifyPublicFunction.GetMarketplaceCustomer(row.Marketplace);
-                                soDoc.OrderDesc = $"Shopify Payment Gateway {row.TransactionType} {row.OrderID}";
+                                soDoc.OrderDesc = $"Shopify Payment Gateway {row.TransactionType} {row.Checkout}";
                                 #endregion
 
                                 #region User-Defined
