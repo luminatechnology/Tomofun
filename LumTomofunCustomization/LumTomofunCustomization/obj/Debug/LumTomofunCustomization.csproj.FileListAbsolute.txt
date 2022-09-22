@@ -4,4 +4,3 @@ C:\Program Files\Acumatica ERP\Tomofun\App_Data\Projects\LumTomofunCustomization
 C:\Program Files\Acumatica ERP\Tomofun\App_Data\Projects\LumTomofunCustomization\LumTomofunCustomization\obj\Debug\LumTomofunCustomization.csproj.CopyComplete
 C:\Program Files\Acumatica ERP\Tomofun\App_Data\Projects\LumTomofunCustomization\LumTomofunCustomization\obj\Debug\LumTomofunCustomization.dll
 C:\Program Files\Acumatica ERP\Tomofun\App_Data\Projects\LumTomofunCustomization\LumTomofunCustomization\obj\Debug\LumTomofunCustomization.pdb
-C:\Program Files\Acumatica ERP\Tomofun\App_Data\Projects\LumTomofunCustomization\LumTomofunCustomization\obj\Debug\LumTomofunCustomization.csprojAssemblyReference.cache
