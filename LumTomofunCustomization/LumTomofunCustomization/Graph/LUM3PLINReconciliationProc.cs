@@ -51,30 +51,53 @@ namespace LUMTomofunCustomization.Graph
         #region Methods
         public virtual void Import3PLRecords()
         {
-            try
-            {
-                LUM3PLSetup setup = Setup.Select();
+            LUM3PLSetup setup = Setup.Select();
 
-                if (this.Accessinfo.CompanyName == "US")
+            if (this.Accessinfo.CompanyName == "US")
+            {
+                DeleteDataByScript(false);
+
+                try
                 {
-                    DeleteDataByScript(false);
                     CreateDataFromTopest(setup);
-                    //CreateDataFromRH(setup);
-                    CreateDataFromFedEx(setup);
                 }
-                else if (this.Accessinfo.CompanyName == "TW")
+                catch (Exception e)
+                {
+                    PXProcessing<LUM3PLINReconciliation>.SetError(e);
+                }
+                //try
+                //{
+                //    CreateDataFromRH(setup);
+                //}
+                //catch (Exception e)
+                //{
+                //    PXProcessing<LUM3PLINReconciliation>.SetError(e);
+                //}
+                try
+                {
+                    CreateDataFromFedEx(setup);
+                    
+                }
+                catch (Exception e)
+                {
+                    PXProcessing<LUM3PLINReconciliation>.SetError(e);
+                }
+            }
+            else if (this.Accessinfo.CompanyName == "TW")
+            {
+                try
                 {
                     DeleteDataByScript(true);
                     CreateDateFromGSheets(setup);
                 }
+                catch (Exception e)
+                {
+                    PXProcessing<LUM3PLINReconciliation>.SetError(e);
+                    throw;
+                }
+            }
 
-                this.Actions.PressSave();
-            }
-            catch (Exception e)
-            {
-                PXProcessing<LUM3PLINReconciliation>.SetError(e);
-                //throw;
-            }
+            this.Actions.PressSave();
         }
 
         #region Topest
