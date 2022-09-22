@@ -33,7 +33,8 @@ namespace LumTomofunCustomization.Graph
 
         public LUMAmazonSettlementTransactionProcess()
         {
-            this.SettlementTransaction.AllowUpdate = true;
+            this.SettlementTransaction.Cache.AllowDelete = true;
+            PXUIFieldAttribute.SetEnabled<LUMAmazonSettlementTransData.transSequenceNumber>(this.SettlementTransaction.Cache, null, true);
             var filter = this.Filter.Current;
             SettlementTransaction.SetProcessDelegate(delegate (List<LUMAmazonSettlementTransData> list)
             {
