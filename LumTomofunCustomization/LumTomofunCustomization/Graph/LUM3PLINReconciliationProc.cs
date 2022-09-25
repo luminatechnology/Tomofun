@@ -185,7 +185,7 @@ namespace LUMTomofunCustomization.Graph
                                                                                                                   DetailedDesc = "SELLABLE",
                                                                                                                   CountryID = countries[a],
                                                                                                                   Warehouse = LUM3PLWarehouseMapping.PK.Find(this, ThirdPLType.Topest, stocks.data[i].Name)?.ERPWH,
-                                                                                                                  FBACenterID = stocks.data[i].Name
+                                                                                                                  FBACenterID = stocks.data[i].Code
                                                                                                               }));
                         }
                     }
@@ -290,7 +290,7 @@ namespace LUMTomofunCustomization.Graph
                                               RequestUrl = @"https://connect.supplychain.fedex.com/api/v1/inventory",
                                               AuthType = "Bearer",
                                               Token = newAccessToken
-            }, 
+                                          }, 
                                           new Dictionary<string, string>());
 
             LUMAPIResults aPIResult = helper.GetResults();
@@ -310,19 +310,10 @@ namespace LUMTomofunCustomization.Graph
             var helper = new LUMAPIHelper(new LUMAPIConfig()
                                           {
                                               RequestMethod = HttpMethod.Post,
-                                              RequestUrl = @"https://connect.supplychain.fedex.com/api/fsc/oauth2/token",
-                                              OrgName = setup.FedExOrgName
-                                          },
-                                          new Dictionary<string, string>()
-                                          {
-                                              { "grant_type", "refresh_token" },
-                                              { "refresh_token", setup.FedExRefreshToken },
-                                              { "client_id", setup.FedExClientID },
-                                              { "client_secret", setup.FedExClientSecret },
-                                              { "scope", "Fulfillment_Returns" }
-                                          });
-
-            LUMAPIResults aPIResult = helper.GetResults();
+                                              RequestUrl = @"https://kxmq24ujj4.execute-api.us-east-1.amazonaws.com/prod"
+                                          }, null);
+         
+            LUMAPIResults aPIResult = helper.GetResults(LUMAPIHelper.SerialzeJSONString(new FedExEntity.AccessToken() { client_id = setup.FedExClientID, client_secret = setup.FedExClientSecret }));
 
             if (aPIResult.StatusCode != System.Net.HttpStatusCode.OK)
             {
@@ -331,7 +322,7 @@ namespace LUMTomofunCustomization.Graph
 
             var access = LUMAPIHelper.DeserializeJSONString<FedExEntity.Access>(aPIResult.ContentResult);
 
-            UpdateFedExNewToken(access.refresh_token, access.access_token);
+            UpdateFedExNewToken(access.access_token);
 
             return access.access_token;
         }
@@ -384,7 +375,7 @@ namespace LUMTomofunCustomization.Graph
                 var row = sheets.Data[i];
 
                 DateTime invetDate = Convert.ToDateTime(row[0]);
-
+                 
                 if (i == 1)
                 {
                     DeleteDataByScript(true, invetDate.Date);
@@ -415,12 +406,11 @@ namespace LUMTomofunCustomization.Graph
         /// Since the access token expires after each 3600(s) acquisition, it must be re-acquired again and the new value stored.
         /// </summary>
         /// <param name="newToken"></param>
-        private void UpdateFedExNewToken(string newRefreshToken, string newAccessToken)
+        private void UpdateFedExNewToken(string newAccessToken)
         {
-            PXUpdate<Set<LUM3PLSetup.fedExRefreshToken, Required<LUM3PLSetup.fedExRefreshToken>,
-                         Set<LUM3PLSetup.fedExAccessToken, Required<LUM3PLSetup.fedExAccessToken>>>,
+            PXUpdate<Set<LUM3PLSetup.fedExAccessToken, Required<LUM3PLSetup.fedExAccessToken>>,
                      LUM3PLSetup,
-                     Where<LUM3PLSetup.fedExRefreshToken, IsNotNull>>.Update(this, newRefreshToken, newAccessToken);
+                     Where<LUM3PLSetup.fedExClientID, IsNotNull>>.Update(this, newAccessToken);
         }
 
         private void Update3PLINReconciliation(PXCache cache, LUM3PLINReconciliation record)

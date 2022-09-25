@@ -26,8 +26,6 @@
 						</px:PXPanel>
 					<px:PXPanel ID="CstPXPanel3" runat="server" Caption="FedEx" RenderStyle="Fieldset">
 						<px:PXLayoutRule ID="PXLayoutRule3" runat="server" StartColumn="True" LabelsWidth="M" ControlSize="XM" />
-							<px:PXTextEdit runat="server" ID="CstPXTextEdit6" DataField="FedExOrgName"></px:PXTextEdit>
-							<px:PXTextEdit runat="server" ID="CstPXTextEdit7" DataField="FedExRefreshToken" TextMode="Password"></px:PXTextEdit>
 							<px:PXTextEdit runat="server" ID="CstPXTextEdit8" DataField="FedExClientID" TextMode="Password"></px:PXTextEdit>
 							<px:PXTextEdit runat="server" ID="CstPXTextEdit9" DataField="FedExClientSecret" TextMode="Password"></px:PXTextEdit>
 					</px:PXPanel>
