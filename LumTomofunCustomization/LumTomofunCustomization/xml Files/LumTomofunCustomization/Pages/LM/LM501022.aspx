@@ -55,6 +55,6 @@
         <AutoSize Container="Window" Enabled="True" MinHeight="150"></AutoSize>
         <ActionBar>
         </ActionBar>
-        <Mode AllowUpdate="True" />
+        <Mode AllowDelete="True"  />
     </px:PXGrid>
 </asp:Content>

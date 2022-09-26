@@ -82,6 +82,11 @@
                 <Condition>IsNotNull</Condition>
                 <DataField>APPayment.RefNbr</DataField>
             </FilterExp>
+            <FilterExp>
+                <Condition>LessOrEqual</Condition>
+                <DataField>APInvoice.DueDate</DataField>
+                <Value>@AgeDate</Value>
+            </FilterExp>
         </Filters>
         <GridSize>4px, 4px</GridSize>
         <PageSettings>
