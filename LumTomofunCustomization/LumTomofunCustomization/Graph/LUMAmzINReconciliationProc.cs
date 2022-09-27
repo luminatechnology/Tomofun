@@ -135,7 +135,7 @@ namespace LUMTomofunCustomization.Graph
             }
         }
 
-        public virtual AmazonConnection GetAmazonConnObject(LUMMWSPreference preference, string marketPlace, bool IsSingapore, out string mpID)
+        public virtual AmazonConnection GetAmazonConnObject(LUMMWSPreference preference, string marketPlace, bool isSingapore, bool isMexico, out string mpID)
         {
             (string marketPlaceID, string refreshToken) = GetAmzCredentialInfo(preference, marketPlace);
 
@@ -143,32 +143,21 @@ namespace LUMTomofunCustomization.Graph
 
             return new AmazonConnection(new AmazonCredential()
             {
-                AccessKey = IsSingapore == false ? preference.AccessKey : preference.SGAccessKey,
-                SecretKey = IsSingapore == false ? preference.SecretKey : preference.SGSecretKey,
-                RoleArn = IsSingapore == false ? preference.RoleArn : preference.SGRoleArn,
-                ClientId = IsSingapore == false ? preference.ClientID : preference.SGClientID,
-                ClientSecret = IsSingapore == false ? preference.ClientSecret : preference.SGClientSecret,
+                AccessKey    = isSingapore == false ? preference.AccessKey : preference.SGAccessKey,
+                SecretKey    = isSingapore == false ? preference.SecretKey : preference.SGSecretKey,
+                RoleArn      = isSingapore == false ? preference.RoleArn : preference.SGRoleArn,
+                ClientId     = isSingapore == false ? isMexico == true ? preference.MXClientID : preference.ClientID : preference.SGClientID,
+                ClientSecret = isSingapore == false ? isMexico == true ? preference.MXClientSecret : preference.ClientSecret : preference.SGClientSecret,
                 RefreshToken = refreshToken,
-                MarketPlace = MarketPlace.GetMarketPlaceByID(marketPlaceID),
+                MarketPlace  = MarketPlace.GetMarketPlaceByID(marketPlaceID),
             });
         }
 
         public virtual List<FikaAmazonAPI.AmazonSpApiSDK.Models.Reports.Report> GetFulfillmentInventoryReports(AmazonConnection amzConnection, DateTime? filterDate, string marketPlace)
         {
-            //var parameters = new ParameterCreateReportSpecification();
-
-            //parameters.reportType = ReportTypes.GET_FBA_FULFILLMENT_CURRENT_INVENTORY_DATA;
-
-            //parameters.reportOptions = new FikaAmazonAPI.AmazonSpApiSDK.Models.Reports.ReportOptions();
-            //parameters.dataStartTime = filterDate;
-            //parameters.dataEndTime   = filterDate;
-
-            //parameters.marketplaceIds = new MarketplaceIds();
-            //parameters.marketplaceIds.Add(marketPlace);
-
             var parameters = new ParameterReportList
             {
-                pageSize = 100,
+                //pageSize = 100, // Roy says it's optional, so it doesn't need to be specified.
                 reportTypes = new List<ReportTypes>()
             };
 
@@ -178,6 +167,8 @@ namespace LUMTomofunCustomization.Graph
                 marketPlace
             };
             parameters.createdSince = filterDate;
+            // Add the following parameter to make report data a little more compact.
+            parameters.createdUntil = filterDate.Value.AddDays(1);
 
             return amzConnection.Reports.GetReports(parameters);
         }
@@ -194,7 +185,7 @@ namespace LUMTomofunCustomization.Graph
                 string mpID = null;
                 foreach (LUMMarketplacePreference mfPref in SelectFrom<LUMMarketplacePreference>.View.Select(this))
                 {
-                    AmazonConnection amzConnection = GetAmazonConnObject(preference, mfPref.Marketplace, mfPref.Marketplace == "SG", out mpID);
+                    AmazonConnection amzConnection = GetAmazonConnObject(preference, mfPref.Marketplace, mfPref.Marketplace == "SG", mfPref.Marketplace == "MX", out mpID);
                     
                     if (string.IsNullOrEmpty(mpID))
                     {
