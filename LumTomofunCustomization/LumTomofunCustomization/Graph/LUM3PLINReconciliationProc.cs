@@ -184,7 +184,7 @@ namespace LUMTomofunCustomization.Graph
                                                                                                                   Qty = inventories.data[k].AvailableQty,
                                                                                                                   DetailedDesc = "SELLABLE",
                                                                                                                   CountryID = countries[a],
-                                                                                                                  Warehouse = LUM3PLWarehouseMapping.PK.Find(this, ThirdPLType.Topest, stocks.data[i].Name)?.ERPWH,
+                                                                                                                  Warehouse = LUM3PLWarehouseMapping.PK.Find(this, ThirdPLType.Topest, stocks.data[i].Code)?.ERPWH,
                                                                                                                   FBACenterID = stocks.data[i].Code
                                                                                                               }));
                         }
@@ -345,7 +345,7 @@ namespace LUMTomofunCustomization.Graph
                                                                          Qty = Convert.ToInt32(inventories.inventory[i].availableCount),
                                                                          DetailedDesc = "SELLABLE",
                                                                          CountryID = "US",
-                                                                         Warehouse = LUM3PLWarehouseMapping.PK.Find(this, ThirdPLType.Topest, "3PLUS00")?.ERPWH
+                                                                         Warehouse = INSite.UK.Find(this, "3PLUS00")?.SiteID
                                                                      }));
             }
         }
