@@ -195,7 +195,7 @@ namespace LumTomofunCustomization.Graph
                             soGraph.Save.Press();
                         }
                         // 有Fulfillment date 才Prepare invoice
-                        if (amzFulfillmentDate.HasValue)
+                        if (amzFulfillmentDate.HasValue && row.OrderStatus?.ToUpper() == "SHIPPED")
                         {
                             // Prepare Invoice
                             try
