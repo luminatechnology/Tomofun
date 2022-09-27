@@ -72,6 +72,9 @@ namespace LumTomofunCustomization.Graph
         {
             foreach (var row in list)
             {
+                // Setting marketplace
+                row.Marketplace = row.CurrencyCode?.ToUpper() == "USD" ? "US" :
+                                  row.CurrencyCode?.ToUpper() == "JPY" ? "JP" : "";
                 // clean error message
                 row.ErrorMessage = string.Empty;
                 PXLongOperation.SetCurrentItem(row);

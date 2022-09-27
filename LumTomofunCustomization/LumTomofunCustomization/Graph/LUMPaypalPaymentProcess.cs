@@ -108,6 +108,14 @@ namespace LumTomofunCustomization.Graph
                          .Where<SOOrder.orderType.IsEqual<P.AsString>
                            .And<SOOrder.customerOrderNbr.IsEqual<P.AsString>.Or<SOOrder.customerRefNbr.IsEqual<P.AsString>>>>
                          .View.SelectSingleBound(baseGraph, null, "SP", row.OrderID, row.OrderID).TopFirst;
+
+                        // Setting Marketplace
+                        if (shopifySOOrder != null)
+                        {
+                            var marketplaceAttr = PXGraph.CreateInstance<SOOrderEntry>().Document.Cache.GetValueExt(shopifySOOrder, PX.Objects.CS.Messages.Attribute + "MKTPLACE") as PXFieldState;
+                            row.Marketplace = marketplaceAttr?.Value?.ToString()?.Substring(8, 2);
+                        }
+
                         // Shopify Cash account
                         var spCashAccount = SelectFrom<CashAccount>
                                             .Where<CashAccount.cashAccountCD.IsEqual<P.AsString>>
