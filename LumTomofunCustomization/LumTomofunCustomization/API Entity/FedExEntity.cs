@@ -7,13 +7,15 @@ namespace LumTomofunCustomization.API_Entity
     {
         public class Access
         {
-            public string token_type { get; set; }
+            //public string token_type { get; set; }
+            //public string access_token { get; set; }
+            //public int expires_in { get; set; }
+            //public int consented_on { get; set; }
+            //public string scope { get; set; }
+            //public string refresh_token { get; set; }
+            //public int refresh_token_expires_in { get; set; }
             public string access_token { get; set; }
             public int expires_in { get; set; }
-            public int consented_on { get; set; }
-            public string scope { get; set; }
-            public string refresh_token { get; set; }
-            public int refresh_token_expires_in { get; set; }
         }
 
         public class Root
@@ -32,6 +34,12 @@ namespace LumTomofunCustomization.API_Entity
             public string inboundReturnCount { get; set; }
             public string allocatedCount { get; set; }
             public string backorderedCount { get; set; }
+        }
+
+        public class AccessToken
+        {
+            public string client_id { get; set; }
+            public string client_secret { get; set; }
         }
     }
 }

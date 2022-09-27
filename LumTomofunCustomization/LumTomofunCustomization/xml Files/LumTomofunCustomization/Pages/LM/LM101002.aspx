@@ -18,18 +18,21 @@
 							<px:PXTextEdit runat="server" ID="CstPXTextEdit1" DataField="TopestToken" TextMode="Password"></px:PXTextEdit>
 							<px:PXTextEdit runat="server" ID="CstPXTextEdit2" DataField="TopestTokenCA" TextMode="Password"></px:PXTextEdit>
 					</px:PXPanel>
-					<px:PXPanel ID="PXPanel1" runat="server" Caption="Return Helper" RenderStyle="Fieldset">
+					<px:PXPanel ID="CstPXPanel2" runat="server" Caption="Return Helper" RenderStyle="Fieldset">
 						<px:PXLayoutRule ID="PXLayoutRule2" runat="server" StartColumn="True" LabelsWidth="M" ControlSize="XM" />
 							<px:PXTextEdit runat="server" ID="CstPXTextEdit3" DataField="RHAuthzToken" TextMode="Password"></px:PXTextEdit>
 							<px:PXTextEdit runat="server" ID="CstPXTextEdit4" DataField="RHApiKey" TextMode="Password"></px:PXTextEdit>
 							<px:PXTextEdit runat="server" ID="CstPXTextEdit5" DataField="RHApiToken" TextMode="Password"></px:PXTextEdit>
 						</px:PXPanel>
-					<px:PXPanel ID="PXPanel2" runat="server" Caption="FedEx" RenderStyle="Fieldset">
+					<px:PXPanel ID="CstPXPanel3" runat="server" Caption="FedEx" RenderStyle="Fieldset">
 						<px:PXLayoutRule ID="PXLayoutRule3" runat="server" StartColumn="True" LabelsWidth="M" ControlSize="XM" />
-							<px:PXTextEdit runat="server" ID="CstPXTextEdit6" DataField="FedExOrgName"></px:PXTextEdit>
-							<px:PXTextEdit runat="server" ID="CstPXTextEdit7" DataField="FedExRefreshToken" TextMode="Password"></px:PXTextEdit>
 							<px:PXTextEdit runat="server" ID="CstPXTextEdit8" DataField="FedExClientID" TextMode="Password"></px:PXTextEdit>
 							<px:PXTextEdit runat="server" ID="CstPXTextEdit9" DataField="FedExClientSecret" TextMode="Password"></px:PXTextEdit>
+					</px:PXPanel>
+					<px:PXPanel ID="CstPXPanel4" runat="server" Caption="Google Sheets" RenderStyle="Fieldset">
+						<px:PXLayoutRule ID="PXLayoutRule4" runat="server" StartColumn="True" LabelsWidth="M" ControlSize="XM" />
+							<px:PXTextEdit runat="server" ID="CstPXTextEdit10" DataField="GoogleSheetsURL"></px:PXTextEdit>
+							<px:PXTextEdit runat="server" ID="CstPXTextEdit11" DataField="GoogleSheetName"></px:PXTextEdit>
 					</px:PXPanel>
 				</Template>
 			</px:PXTabItem>

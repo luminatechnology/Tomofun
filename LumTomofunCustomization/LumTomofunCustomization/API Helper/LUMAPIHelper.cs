@@ -75,19 +75,29 @@ namespace LumTomofunCustomization.API_Helper
         {
             using (HttpClient client = new HttpClient())
             {
-                foreach (var key in _formDataDic.Keys)
-                {
-                    _formDataDic.TryGetValue(key, out string value);
+                HttpResponseMessage response = null;
 
-                    // Content-Type 用於宣告遞送給對方的文件型態
-                    client.DefaultRequestHeaders.TryAddWithoutValidation(key, value);
+                if (_config.RequestMethod == HttpMethod.Get)
+                {
+                    foreach (var key in _formDataDic.Keys)
+                    {
+                        _formDataDic.TryGetValue(key, out string value);
+
+                        // Content-Type 用於宣告遞送給對方的文件型態
+                        client.DefaultRequestHeaders.TryAddWithoutValidation(key, value);
+                    }
+
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_config.AuthType, _config.Token);
+
+                    response = client.GetAsync($"{_config.RequestUrl}{request}").GetAwaiter().GetResult();
+                }
+                else
+                {
+                    var content = new StringContent(request, System.Text.Encoding.UTF8, "application/json");
+
+                    response = client.PostAsync(_config.RequestUrl, content).GetAwaiter().GetResult();
                 }
 
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(_config.AuthType, _config.Token);
-
-                HttpResponseMessage response = client.GetAsync($"{_config.RequestUrl}{request}").GetAwaiter().GetResult();
-
-                // Return Result
                 return new LUMAPIResults()
                 {
                     StatusCode    = response.StatusCode,

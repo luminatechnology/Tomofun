@@ -1,0 +1,50 @@
+﻿<Sql TableName="CreateGlobalINReconciliation_View" SqlScriptPriority="2" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[IF EXISTS
+(
+	SELECT * FROM SYS.views WHERE name = 'vGlobalINReconciliation' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[vGlobalINReconciliation]	
+GO
+
+CREATE VIEW vGlobalINReconciliation AS
+SELECT c.CompanyCD,
+	   a.SnapshotDate,
+	   a.INDate,
+	   a.Sku,
+	   a.FBACenterID,
+	   a.ERPSku,
+	   a.ProductName,
+	   a.DetailedDesc,
+	   a.Qty,
+	   a.CountryID,
+	   s.SiteCD,
+	   l.LocationCD,
+	   a.FNSku AS Source
+FROM LUMAmzINReconcilition a
+INNER JOIN Company c ON c.CompanyID = a.CompanyID
+LEFT OUTER JOIN INSite s ON s.CompanyID = a.CompanyID AND s.SiteID = a.Warehouse
+LEFT OUTER JOIN INLocation l ON l.CompanyID = a.CompanyID AND l.LocationID = a.Location
+WHERE a.CompanyID > 0
+UNION ALL
+SELECT c.CompanyCD,
+	   t.TranDate,
+	   t.INDate,
+	   t.Sku,
+	   t.FBACenterID,
+	   t.ERPSku,
+	   t.ProductName,
+	   t.DetailedDesc,
+	   t.Qty,
+	   t.CountryID,
+	   s.SiteCD,
+	   l.LocationCD,
+	   CASE WHEN t.ThirdPLType = 'T' THEN 'Topest'
+			WHEN t.ThirdPLType = 'R' THEN 'Return Helper'
+			WHEN t.ThirdPLType = 'F' THEN 'FedEx'
+			WHEN t.ThirdPLType = 'G' THEN 'Google Sheets' END AS Sourc
+FROM LUM3PLINReconciliation t
+INNER JOIN Company c ON c.CompanyID = t.CompanyID
+LEFT OUTER JOIN INSite s ON s.CompanyID = t.CompanyID AND s.SiteID = t.Warehouse
+LEFT OUTER JOIN INLocation l ON l.CompanyID = t.CompanyID AND l.LocationID = t.Location
+WHERE t.CompanyID > 0 AND t.Sku IS NOT NULL]]></CDATA>
+</Sql>

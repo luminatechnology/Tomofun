@@ -72,17 +72,16 @@ namespace LUMTomofunCustomization.DAC
         #endregion
     
         #region CountryID
-        [PXDBString(2, IsUnicode = true, InputMask = "")]
+        [PXDBString(2, IsUnicode = true)]
         [PXUIField(DisplayName = "Country")]
         public virtual string CountryID { get; set; }
         public abstract class countryID : PX.Data.BQL.BqlString.Field<countryID> { }
         #endregion
 
         #region Warehouse
-        //[Site(DisplayName = "Warehouse")]
         [PXDBInt()]
         [PXUIField(DisplayName = "Warehouse")]
-        [TopestStock.List]
+        [PXSelector(typeof(Search<INSite.siteID>), SubstituteKey = typeof(INSite.siteCD), DescriptionField = typeof(INSite.descr))]
         public virtual int? Warehouse { get; set; }
         public abstract class warehouse : PX.Data.BQL.BqlInt.Field<warehouse> { }
         #endregion
@@ -106,6 +105,13 @@ namespace LUMTomofunCustomization.DAC
         [PXDefault(false)]
         public virtual bool? IsProcessed { get; set; }
         public abstract class isProcessed : PX.Data.BQL.BqlBool.Field<isProcessed> { }
+        #endregion
+
+        #region INDate
+        [PXDBDate()]
+        [PXUIField(DisplayName = "IN Date")]
+        public virtual DateTime? INDate { get; set; }
+        public abstract class iNDate : PX.Data.BQL.BqlDateTime.Field<iNDate> { }
         #endregion
     
         #region CreatedByID
@@ -164,6 +170,7 @@ namespace LUMTomofunCustomization.DAC
         public const string Topest = "T";
         public const string ReturnHelper = "R";
         public const string FedEx = "F";
+        public const string GoogleSheets = "G";
 
         public class topest : PX.Data.BQL.BqlString.Constant<topest>
         {
@@ -177,6 +184,10 @@ namespace LUMTomofunCustomization.DAC
         {
             public fedEx() : base(FedEx) { }
         }
+        public class googleSheets : PX.Data.BQL.BqlString.Constant<googleSheets>
+        {
+            public googleSheets() : base(GoogleSheets) { }
+        }
 
         public class ListAttribute : PXStringListAttribute
         {
@@ -185,6 +196,7 @@ namespace LUMTomofunCustomization.DAC
                                               Pair(Topest, nameof(Topest)),
                                               Pair(ReturnHelper, "Return Helper"),
                                               Pair(FedEx, nameof(FedEx)),
+                                              Pair(GoogleSheets, "Google Sheets"),
                                           }) { }
         }
     }
