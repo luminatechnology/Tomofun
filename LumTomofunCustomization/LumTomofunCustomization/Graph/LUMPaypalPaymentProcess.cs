@@ -103,6 +103,8 @@ namespace LumTomofunCustomization.Graph
                 {
                     using (PXTransactionScope sc = new PXTransactionScope())
                     {
+                        // SOLine SalesAccount
+                        int? newSalesAcctID = null;
                         // 以建立的Shopify Sales Order
                         var shopifySOOrder = SelectFrom<SOOrder>
                          .Where<SOOrder.orderType.IsEqual<P.AsString>
@@ -262,12 +264,19 @@ namespace LumTomofunCustomization.Graph
                                 soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, row.TransactionType);
                                 soTrans.OrderQty = 1;
                                 soTrans.CuryUnitPrice = (row.Gross ?? 0) * -1;
+                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, row.TransactionType, soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
+                                if (newSalesAcctID.HasValue)
+                                    soTrans.SalesAcctID = newSalesAcctID;
                                 soGraph.Transactions.Insert(soTrans);
+
                                 // Fee
                                 soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                 soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
                                 soTrans.OrderQty = 1;
                                 soTrans.CuryUnitPrice = (row.Fee ?? 0) * -1;
+                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
+                                if (newSalesAcctID.HasValue)
+                                    soTrans.SalesAcctID = newSalesAcctID;
                                 soGraph.Transactions.Insert(soTrans);
                                 #endregion
 
