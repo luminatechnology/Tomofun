@@ -182,11 +182,11 @@ namespace LUMTomofunCustomization.Graph
                 Dictionary<string, string> dicRpt = new Dictionary<string, string>();
                 Dictionary<string, List<string>> dic = new Dictionary<string, List<string>>();
 
-                string mpID = null;
+                string mpID = null, mP_EU_CA = null;
                 foreach (LUMMarketplacePreference mfPref in SelectFrom<LUMMarketplacePreference>.View.Select(this))
                 {
                     AmazonConnection amzConnection = GetAmazonConnObject(preference, mfPref.Marketplace, mfPref.Marketplace == "SG", mfPref.Marketplace == "MX", out mpID);
-                    
+
                     if (string.IsNullOrEmpty(mpID))
                     {
                         string MarketplaceNull = $"No Marketplace {mfPref.Marketplace} Token Is Defined.";
@@ -194,52 +194,61 @@ namespace LUMTomofunCustomization.Graph
                         throw new PXException(MarketplaceNull);
                     }
 
-                    var reports = GetFulfillmentInventoryReports(amzConnection, Filter.Current.FromDate, mpID);
-
-                    reports.RemoveAll(r => r.ReportDocumentId == null);
-
-                    List<string> lines = new List<string>();
-
-                    for (int i = 0; i < reports.Count; i++)
+                    if (mP_EU_CA == mpID)
                     {
-                        DeleteSameOrEmptyData(reports[i].ReportId);
+                        continue;
+                    }
+                    else
+                    {
+                        mP_EU_CA = mpID;
 
-                        var reportData = amzConnection.Reports.GetReportFile(reports[i].ReportDocumentId);
+                        var reports = GetFulfillmentInventoryReports(amzConnection, Filter.Current.FromDate, mpID);
 
-                        int dataCount = 1;
-                        // Since Jananese has special font, a condition for getting the encoding is added.
-                        using (StreamReader sr = new StreamReader(reportData, System.Text.Encoding.GetEncoding(mfPref.Marketplace == "JP" ? "Shift-JIS" : nameof(System.Text.Encoding.ASCII)), true))
+                        reports.RemoveAll(r => r.ReportDocumentId == null);
+
+                        List<string> lines = new List<string>();
+
+                        for (int i = 0; i < reports.Count; i++)
                         {
-                            var data = sr.ReadToEnd().Split('\n').ToArray();
+                            DeleteSameOrEmptyData(reports[i].ReportId);
 
-                            while (data.Length > dataCount)
+                            var reportData = amzConnection.Reports.GetReportFile(reports[i].ReportDocumentId);
+
+                            int dataCount = 1;
+                            // Since Jananese has special font, a condition for getting the encoding is added.
+                            using (StreamReader sr = new StreamReader(reportData, System.Text.Encoding.GetEncoding(mfPref.Marketplace == "JP" ? "Shift-JIS" : nameof(System.Text.Encoding.ASCII)), true))
                             {
-                                lines = data[dataCount].Split('\t').ToList();
+                                var data = sr.ReadToEnd().Split('\n').ToArray();
 
-                                if (lines[0].Length <= 0) 
-                                { 
-                                    break; 
-                                }
-                                ///<remarks>Since MWS will provide content files in different formats from time to time, add the following logic to read the files.</remarks>
-                                else if (lines.Count < 8)
+                                while (data.Length > dataCount)
                                 {
-                                    lines = data[dataCount].Split(new string[] { "\",\"" }, StringSplitOptions.None).Select(s => s.Replace("\"", "")).ToList();
-                                    // Sometimes the column of Country will be empty.
-                                    if (lines.Count <= 7)
+                                    lines = data[dataCount].Split('\t').ToList();
+
+                                    if (lines[0].Length <= 0)
                                     {
-                                        lines.Add(string.Empty);
+                                        break;
                                     }
+                                    ///<remarks>Since MWS will provide content files in different formats from time to time, add the following logic to read the files.</remarks>
+                                    else if (lines.Count < 8)
+                                    {
+                                        lines = data[dataCount].Split(new string[] { "\",\"" }, StringSplitOptions.None).Select(s => s.Replace("\"", "")).ToList();
+                                        // Sometimes the column of Country will be empty.
+                                        if (lines.Count <= 7)
+                                        {
+                                            lines.Add(string.Empty);
+                                        }
+                                    }
+
+                                    string key = $"{lines[0]}-{lines[2]}-{lines[5]}-{lines[6]}";
+
+                                    if (dic.ContainsKey(key) == false)
+                                    {
+                                        dic.Add(key, lines);
+                                        dicRpt.Add(key, reports[i].ReportId);
+                                    }
+
+                                    dataCount++;
                                 }
-
-                                string key = $"{lines[0]}-{lines[2]}-{lines[5]}-{lines[6]}";
-
-                                if (dic.ContainsKey(key) == false)
-                                {
-                                    dic.Add(key, lines);
-                                    dicRpt.Add(key, reports[i].ReportId);
-                                }
-
-                                dataCount++;
                             }
                         }
                     }
