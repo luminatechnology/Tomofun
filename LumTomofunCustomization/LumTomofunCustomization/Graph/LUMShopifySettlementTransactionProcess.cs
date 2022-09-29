@@ -75,6 +75,8 @@ namespace LumTomofunCustomization.Graph
                     {
                         // SOLine SalesAccount
                         int? newSalesAcctID = null;
+                        // SOLine SalesSubAccount
+                        int? newSalesSubAcctID = null;
                         // 以建立的Shopify Sales Order
                         var shopifySOOrder = SelectFrom<SOOrder>
                          .Where<SOOrder.orderType.IsEqual<P.AsString>
@@ -224,8 +226,11 @@ namespace LumTomofunCustomization.Graph
                                 soTrans.OrderQty = 1;
                                 soTrans.CuryUnitPrice = row.Amount * -1;
                                 newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, row.TransactionType, soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
+                                newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, row.TransactionType, soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
                                 if (newSalesAcctID.HasValue)
                                     soTrans.SalesAcctID = newSalesAcctID;
+                                if (newSalesSubAcctID.HasValue)
+                                    soTrans.SalesSubID = newSalesSubAcctID;
                                 soGraph.Transactions.Insert(soTrans);
 
                                 // Fee
@@ -234,8 +239,11 @@ namespace LumTomofunCustomization.Graph
                                 soTrans.OrderQty = 1;
                                 soTrans.CuryUnitPrice = row.Fee * -1;
                                 newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
+                                newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
                                 if (newSalesAcctID.HasValue)
                                     soTrans.SalesAcctID = newSalesAcctID;
+                                if (newSalesSubAcctID.HasValue)
+                                    soTrans.SalesSubID = newSalesSubAcctID;
                                 soGraph.Transactions.Insert(soTrans);
                                 #endregion
 

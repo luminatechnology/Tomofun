@@ -267,6 +267,7 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
                                         soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
                                     else if (row.AmountDescription == "RefundCommission")
                                     {
@@ -274,6 +275,7 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
                                         soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
                                     else if (row.AmountDescription == "Principal" && row.Amount < 0)
                                     {
@@ -300,6 +302,7 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
                                         soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
                                     else if (row.AmountDescription == "RestockingFee")
                                     {
@@ -307,6 +310,7 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
                                         soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
                                     else if (row.AmountDescription == "Shipping")
                                     {
@@ -314,6 +318,7 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
                                         soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
                                     else if (row.AmountDescription == "ShippingChargeback")
                                     {
@@ -321,6 +326,7 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
                                         soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
                                     else if (row.AmountDescription == "ShippingHB")
                                     {
@@ -328,6 +334,7 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
                                         soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
                                     else if (row.AmountDescription == "PointsReturned" || row.AmountDescription == "PointsFee")
                                     {
@@ -335,6 +342,7 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
                                         soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
                                     else
                                         continue;
