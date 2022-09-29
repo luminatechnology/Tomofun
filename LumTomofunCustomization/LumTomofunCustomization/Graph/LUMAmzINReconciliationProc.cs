@@ -34,11 +34,11 @@ namespace LUMTomofunCustomization.Graph
             if (Reconcilition.Select().Count == 0) { InsertInitializedData(); }
 
             Actions.Move(nameof(Cancel), nameof(massDeletion), true);
-            Actions.Move(nameof(massDeletion), nameof(importFBAIN), true);
-            Actions.Move(nameof(importFBAIN), nameof(createAdjustment), true);
-
+            //Actions.Move(nameof(massDeletion), nameof(importFBAIN), true);
+            Actions.Move("ProcessAll", nameof(createAdjustment), true);
+            
             Reconcilition.SetProcessVisible(false);
-            Reconcilition.SetProcessAllCaption("Import & Create");
+            Reconcilition.SetProcessAllCaption("Import FBA IN");//& Create");
             Reconcilition.SetProcessDelegate(delegate (List<LUMAmzINReconcilition> lists)
             {
                 ImportRecords(lists);
@@ -64,17 +64,17 @@ namespace LUMTomofunCustomization.Graph
             return adapter.Get();
         }
 
-        public PXAction<SettlementFilter> importFBAIN;
-        [PXButton(CommitChanges = true), PXUIField(DisplayName = "Import FBA IN")]
-        protected virtual IEnumerable ImportFBAIN(PXAdapter adapter)
-        {
-            PXLongOperation.StartOperation(this, delegate ()
-            {
-                ImportAmzRecords();
-            });
+        //public PXAction<SettlementFilter> importFBAIN;
+        //[PXButton(CommitChanges = true), PXUIField(DisplayName = "Import FBA IN", Visible = false)]
+        //protected virtual IEnumerable ImportFBAIN(PXAdapter adapter)
+        //{
+        //    PXLongOperation.StartOperation(this, delegate ()
+        //    {
+        //        ImportAmzRecords();
+        //    });
 
-            return adapter.Get();
-        }
+        //    return adapter.Get();
+        //}
 
         public PXAction<SettlementFilter> createAdjustment;
         [PXButton(CommitChanges = true), PXUIField(DisplayName = "Create In Adjustment")]
@@ -110,7 +110,7 @@ namespace LUMTomofunCustomization.Graph
             LUMAmzINReconciliationProc graph = CreateInstance<LUMAmzINReconciliationProc>();
 
             graph.ImportAmzRecords();
-            graph.CreateInvAdjustment(lists);
+            //graph.CreateInvAdjustment(lists);
         }
         #endregion
 
