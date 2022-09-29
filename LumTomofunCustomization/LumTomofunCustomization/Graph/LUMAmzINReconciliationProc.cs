@@ -34,11 +34,11 @@ namespace LUMTomofunCustomization.Graph
             if (Reconcilition.Select().Count == 0) { InsertInitializedData(); }
 
             Actions.Move(nameof(Cancel), nameof(massDeletion), true);
-            Actions.Move(nameof(massDeletion), nameof(importFBAIN), true);
-            Actions.Move(nameof(importFBAIN), nameof(createAdjustment), true);
+            //Actions.Move(nameof(massDeletion), nameof(importFBAIN), true);
+            Actions.Move("ProcessAll", nameof(createAdjustment), true);
 
             Reconcilition.SetProcessVisible(false);
-            Reconcilition.SetProcessAllCaption("Import & Create");
+            Reconcilition.SetProcessAllCaption("Import FBA IN");//& Create");
             Reconcilition.SetProcessDelegate(delegate (List<LUMAmzINReconcilition> lists)
             {
                 ImportRecords(lists);
@@ -64,17 +64,17 @@ namespace LUMTomofunCustomization.Graph
             return adapter.Get();
         }
 
-        public PXAction<SettlementFilter> importFBAIN;
-        [PXButton(CommitChanges = true), PXUIField(DisplayName = "Import FBA IN")]
-        protected virtual IEnumerable ImportFBAIN(PXAdapter adapter)
-        {
-            PXLongOperation.StartOperation(this, delegate ()
-            {
-                ImportAmzRecords();
-            });
+        //public PXAction<SettlementFilter> importFBAIN;
+        //[PXButton(CommitChanges = true), PXUIField(DisplayName = "Import FBA IN", Visible = false)]
+        //protected virtual IEnumerable ImportFBAIN(PXAdapter adapter)
+        //{
+        //    PXLongOperation.StartOperation(this, delegate ()
+        //    {
+        //        ImportAmzRecords();
+        //    });
 
-            return adapter.Get();
-        }
+        //    return adapter.Get();
+        //}
 
         public PXAction<SettlementFilter> createAdjustment;
         [PXButton(CommitChanges = true), PXUIField(DisplayName = "Create In Adjustment")]
@@ -110,7 +110,7 @@ namespace LUMTomofunCustomization.Graph
             LUMAmzINReconciliationProc graph = CreateInstance<LUMAmzINReconciliationProc>();
 
             graph.ImportAmzRecords();
-            graph.CreateInvAdjustment(lists);
+            //graph.CreateInvAdjustment(lists);
         }
         #endregion
 
@@ -143,13 +143,13 @@ namespace LUMTomofunCustomization.Graph
 
             return new AmazonConnection(new AmazonCredential()
             {
-                AccessKey    = isSingapore == false ? preference.AccessKey : preference.SGAccessKey,
-                SecretKey    = isSingapore == false ? preference.SecretKey : preference.SGSecretKey,
-                RoleArn      = isSingapore == false ? preference.RoleArn : preference.SGRoleArn,
-                ClientId     = isSingapore == false ? isMexico == true ? preference.MXClientID : preference.ClientID : preference.SGClientID,
+                AccessKey = isSingapore == false ? preference.AccessKey : preference.SGAccessKey,
+                SecretKey = isSingapore == false ? preference.SecretKey : preference.SGSecretKey,
+                RoleArn = isSingapore == false ? preference.RoleArn : preference.SGRoleArn,
+                ClientId = isSingapore == false ? isMexico == true ? preference.MXClientID : preference.ClientID : preference.SGClientID,
                 ClientSecret = isSingapore == false ? isMexico == true ? preference.MXClientSecret : preference.ClientSecret : preference.SGClientSecret,
                 RefreshToken = refreshToken,
-                MarketPlace  = MarketPlace.GetMarketPlaceByID(marketPlaceID),
+                MarketPlace = MarketPlace.GetMarketPlaceByID(marketPlaceID),
             });
         }
 
@@ -295,10 +295,10 @@ namespace LUMTomofunCustomization.Graph
                 ReportID = reportID
             };
 
-            reconcilition.ERPSku   = GetStockItemOrCrossRef(reconcilition.Sku);
+            reconcilition.ERPSku = GetStockItemOrCrossRef(reconcilition.Sku);
             reconcilition.Location = GetLocationIDByWarehouse(reconcilition.Warehouse, list[6].ToUpper());
             // FBA publish IN report after 12:00 am, so the snapshot date actually is one day before .
-            reconcilition.INDate   = reconcilition.SnapshotDate.Value.AddDays(-1);
+            reconcilition.INDate = reconcilition.SnapshotDate.Value.AddDays(-1);
 
             Reconcilition.Insert(reconcilition);
         }
@@ -323,17 +323,17 @@ namespace LUMTomofunCustomization.Graph
 
             adjustEntry.CurrentDocument.Insert(new INRegister()
             {
-                DocType  = INDocType.Adjustment,
+                DocType = INDocType.Adjustment,
                 TranDate = lists[0].SnapshotDate,
                 TranDesc = "FBA IN Reconciliation"
             });
 
             var aggrList = lists.GroupBy(g => new { g.ERPSku, g.Warehouse, g.Location }).Select(v => new
             {
-                ERPSku    = v.Key.ERPSku,
+                ERPSku = v.Key.ERPSku,
                 Warehouse = v.Key.Warehouse,
-                Location  = v.Key.Location,
-                Qty       = v.Sum(s => s.Qty)
+                Location = v.Key.Location,
+                Qty = v.Sum(s => s.Qty)
             }).ToList();
 
             for (int i = 0; i < aggrList.Count; i++)
@@ -361,7 +361,7 @@ namespace LUMTomofunCustomization.Graph
         {
             return InventoryItem.UK.Find(this, sku)?.InventoryCD ??
                    InventoryItem.PK.Find(this, SelectFrom<INItemXRef>.Where<INItemXRef.alternateID.IsEqual<@P.AsString>
-                                                                           .And<INItemXRef.alternateType.IsEqual<INAlternateType.global>>>.View.Select(this, sku).TopFirst?.InventoryID)?.InventoryCD ?? 
+                                                                           .And<INItemXRef.alternateType.IsEqual<INAlternateType.global>>>.View.Select(this, sku).TopFirst?.InventoryID)?.InventoryCD ??
                    "*****";
         }
 
