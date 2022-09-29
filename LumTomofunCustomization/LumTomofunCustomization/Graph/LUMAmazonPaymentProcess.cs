@@ -82,6 +82,8 @@ namespace LumTomofunCustomization.Graph
                 {
                     using (PXTransactionScope sc = new PXTransactionScope())
                     {
+                        // SOLine SalesAccount
+                        int? newSalesAcctID = null;
                         // 以建立的Shopify Sales Order
                         var shopifySOOrder = SelectFrom<SOOrder>
                          .Where<SOOrder.orderType.IsEqual<P.AsString>
@@ -229,18 +231,29 @@ namespace LumTomofunCustomization.Graph
                                 #region SOLine
                                 // Amount
                                 var soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
-                                if(row.TransactionType.Length>6 && row.TransactionType.ToUpper().Substring(0,6) == "A TO Z")
+                                if (row.TransactionType.Length > 6 && row.TransactionType.ToUpper().Substring(0, 6) == "A TO Z")
+                                {
                                     soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "GuaranteeClaim");
+                                    newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, "GuaranteeClaim", soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
+                                }
                                 else
+                                {
                                     soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, row.TransactionType);
+                                    newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, row.TransactionType, soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
+                                }
                                 soTrans.OrderQty = 1;
                                 soTrans.CuryUnitPrice = (row.TransactionAmount ?? 0) * -1;
+                                if (newSalesAcctID.HasValue)
+                                    soTrans.SalesAcctID = newSalesAcctID;
                                 soGraph.Transactions.Insert(soTrans);
+
                                 // Fee
                                 soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                 soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
                                 soTrans.OrderQty = 1;
                                 soTrans.CuryUnitPrice = (row.TotalTransactionFee ?? 0) * -1;
+                                if (newSalesAcctID.HasValue)
+                                    soTrans.SalesAcctID = newSalesAcctID;
                                 soGraph.Transactions.Insert(soTrans);
                                 #endregion
 

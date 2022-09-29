@@ -13,6 +13,7 @@ using PX.Data.BQL;
 using LumTomofunCustomization.LUMLibrary;
 using PX.Objects.CA;
 using PX.Objects.CM;
+using PX.Objects.IN;
 using PX.Objects.SO.GraphExtensions.SOOrderEntryExt;
 
 namespace LumTomofunCustomization.Graph
@@ -41,6 +42,7 @@ namespace LumTomofunCustomization.Graph
             PXUIFieldAttribute.SetEnabled<LUMShopifySettlementTransData.checkout>(SettlementTransaction.Cache, null, true);
             PXUIFieldAttribute.SetEnabled<LUMShopifySettlementTransData.paymentMethodName>(SettlementTransaction.Cache, null, true);
             PXUIFieldAttribute.SetEnabled<LUMShopifySettlementTransData.currency>(SettlementTransaction.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMShopifySettlementTransData.presentmentAmount>(SettlementTransaction.Cache, null, true);
             #endregion
             this.SettlementTransaction.SetProcessDelegate(delegate (List<LUMShopifySettlementTransData> list)
             {
@@ -71,6 +73,8 @@ namespace LumTomofunCustomization.Graph
                 {
                     using (PXTransactionScope sc = new PXTransactionScope())
                     {
+                        // SOLine SalesAccount
+                        int? newSalesAcctID = null;
                         // 以建立的Shopify Sales Order
                         var shopifySOOrder = SelectFrom<SOOrder>
                          .Where<SOOrder.orderType.IsEqual<P.AsString>
@@ -219,12 +223,19 @@ namespace LumTomofunCustomization.Graph
                                 soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, row.TransactionType);
                                 soTrans.OrderQty = 1;
                                 soTrans.CuryUnitPrice = row.Amount * -1;
+                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, row.TransactionType, soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
+                                if (newSalesAcctID.HasValue)
+                                    soTrans.SalesAcctID = newSalesAcctID;
                                 soGraph.Transactions.Insert(soTrans);
+
                                 // Fee
                                 soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                 soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
                                 soTrans.OrderQty = 1;
                                 soTrans.CuryUnitPrice = row.Fee * -1;
+                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
+                                if (newSalesAcctID.HasValue)
+                                    soTrans.SalesAcctID = newSalesAcctID;
                                 soGraph.Transactions.Insert(soTrans);
                                 #endregion
 
@@ -410,6 +421,24 @@ namespace LumTomofunCustomization.Graph
 
         public bool PrepareImportRow(string viewName, IDictionary keys, IDictionary values)
         {
+            try
+            {
+                decimal _amount;
+                decimal _presentmentAmount;
+                if (decimal.TryParse(values["Amount"].ToString(), out _amount) && decimal.TryParse(values["PresentmentAmount"].ToString(), out _presentmentAmount))
+                {
+                    var calculateResult = Math.Abs(_presentmentAmount / _amount);
+                    values["Amount"] = _amount * calculateResult;
+                    values["Fee"] = decimal.Parse(values["Fee"]?.ToString() ?? "0") * calculateResult;
+                    values["Net"] = decimal.Parse(values["Net"].ToString() ?? "0") * calculateResult;
+                }
+                else
+                    throw new Exception("Calculate Amount/Fee/Net Failed");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Calculate Amount / Fee / Net Failed");
+            }
             return true;
         }
 

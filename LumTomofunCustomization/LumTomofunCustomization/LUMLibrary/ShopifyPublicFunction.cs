@@ -43,5 +43,24 @@ namespace LumTomofunCustomization.LUMLibrary
                SelectFrom<INItemXRef>
                .Where<INItemXRef.alternateID.IsEqual<P.AsString>>
                .View.SelectSingleBound(graph, null, sku).TopFirst?.InventoryID;
+
+        public static int? GetSalesAcctID(PXGraph graph, string inventoryName, int? inventoryID, PX.Objects.SO.SOOrder mapShopifyOrder, int? customerID)
+        {
+            if (inventoryName?.ToUpper() != "REFUND")
+                return InventoryItem.PK.Find(graph, inventoryID)?.SalesAcctID;
+            else
+            {
+                var prepaymentInfo = SelectFrom<PX.Objects.SO.SOAdjust>
+                    .Where<PX.Objects.SO.SOAdjust.adjdOrderType.IsEqual<P.AsString>
+                      .And<PX.Objects.SO.SOAdjust.adjdOrderNbr.IsEqual<P.AsString>>
+                      .And<PX.Objects.SO.SOAdjust.adjgDocType.IsEqual<P.AsString>>>
+                    .View.Select(graph, mapShopifyOrder?.OrderType, mapShopifyOrder?.OrderNbr,"PPM").TopFirst;
+                if (mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open && prepaymentInfo != null)
+                {
+                    return PX.Objects.AR.Customer.PK.Find(graph,customerID)?.PrepaymentAcctID;
+                }
+            }
+            return null;
+        }
     }
 }
