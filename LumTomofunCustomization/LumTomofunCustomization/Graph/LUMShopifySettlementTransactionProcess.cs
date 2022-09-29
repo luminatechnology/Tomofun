@@ -223,8 +223,8 @@ namespace LumTomofunCustomization.Graph
                                 soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, row.TransactionType);
                                 soTrans.OrderQty = 1;
                                 soTrans.CuryUnitPrice = row.Amount * -1;
-                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, row.TransactionType, soTrans.InventoryID,shopifySOOrder, soDoc.CustomerID);
-                                if(newSalesAcctID.HasValue)
+                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, row.TransactionType, soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
+                                if (newSalesAcctID.HasValue)
                                     soTrans.SalesAcctID = newSalesAcctID;
                                 soGraph.Transactions.Insert(soTrans);
 
@@ -433,13 +433,13 @@ namespace LumTomofunCustomization.Graph
                     values["Net"] = decimal.Parse(values["Net"].ToString() ?? "0") * calculateResult;
                 }
                 else
-                    throw new Exception("");
-                return true;
+                    throw new Exception("Calculate Amount/Fee/Net Failed");
             }
             catch (Exception ex)
             {
-                return false;
+                throw new Exception("Calculate Amount / Fee / Net Failed");
             }
+            return true;
         }
 
         public void PrepareItems(string viewName, IEnumerable items)

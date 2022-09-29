@@ -266,12 +266,14 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
                                     }
                                     else if (row.AmountDescription == "RefundCommission")
                                     {
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
                                     }
                                     else if (row.AmountDescription == "Principal" && row.Amount < 0)
                                     {
@@ -297,36 +299,42 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
                                     }
                                     else if (row.AmountDescription == "RestockingFee")
                                     {
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
                                     }
                                     else if (row.AmountDescription == "Shipping")
                                     {
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
                                     }
                                     else if (row.AmountDescription == "ShippingChargeback")
                                     {
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
                                     }
                                     else if (row.AmountDescription == "ShippingHB")
                                     {
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
                                     }
                                     else if (row.AmountDescription == "PointsReturned" || row.AmountDescription == "PointsFee")
                                     {
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
                                     }
                                     else
                                         continue;
