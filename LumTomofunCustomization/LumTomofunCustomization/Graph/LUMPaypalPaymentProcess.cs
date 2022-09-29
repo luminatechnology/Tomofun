@@ -66,7 +66,7 @@ namespace LumTomofunCustomization.Graph
                 row.TransactionType = row.Description == "Express Checkout Payment" ? "Order" :
                                       row.Description == "Payment Refund" ? "Refund" :
                                       row.Description == "Cancellation of Hold for Dispute Resolution" ? "DisputePay" :
-                                      row.Description == "Dispute Fee" ? "DisputeFee’" :
+                                      row.Description == "Dispute Fee" ? "DisputeFee" :
                                       row.Description == "Chargeback" ? "Chargeback" :
                                       row.Description == "Hold on Balance for Dispute Investigation" ? "DisputeCharge" :
                                       row.Description == "Payment Reversal" ? "Reversal" : string.Empty;
@@ -203,7 +203,7 @@ namespace LumTomofunCustomization.Graph
                             case "DISPUTECHARGE":
                             case "REVERSAL":
                             case "DISPUTEFEE":
-                                #region TransactionType: REFUND/CHARGEBACK/DISPUTECHARGE/REVERSAL
+                                #region TransactionType: REFUND/CHARGEBACK/DISPUTECHARGE/REVERSAL/DISPUTEFEE
                                 var soGraph = PXGraph.CreateInstance<SOOrderEntry>();
 
                                 #region Header
