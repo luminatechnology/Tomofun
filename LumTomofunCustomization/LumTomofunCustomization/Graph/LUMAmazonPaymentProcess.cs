@@ -238,18 +238,23 @@ namespace LumTomofunCustomization.Graph
                                     soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "GuaranteeClaim");
                                     newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, "GuaranteeClaim", soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
                                     newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, "GuaranteeClaim", soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
+                                    // If Inventory ID != ‘Refund’ 
+                                    soTrans.TaxCategoryID = "NONTAXABLE";
                                 }
                                 else
                                 {
                                     soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, row.TransactionType);
                                     newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, row.TransactionType, soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
                                     newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, row.TransactionType, soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
+                                    // If Inventory ID != ‘Refund’ 
+                                    if (row.TransactionType?.ToUpper() != "REFUND")
+                                        soTrans.TaxCategoryID = "NONTAXABLE";
                                 }
                                 soTrans.OrderQty = 1;
                                 soTrans.CuryUnitPrice = (row.TransactionAmount ?? 0) * -1;
                                 if (newSalesAcctID.HasValue)
                                     soTrans.SalesAcctID = newSalesAcctID;
-                                if(newSalesSubAcctID.HasValue)
+                                if (newSalesSubAcctID.HasValue)
                                     soTrans.SalesSubID = newSalesSubAcctID;
                                 soGraph.Transactions.Insert(soTrans);
 
@@ -264,6 +269,8 @@ namespace LumTomofunCustomization.Graph
                                     soTrans.SalesAcctID = newSalesAcctID;
                                 if (newSalesSubAcctID.HasValue)
                                     soTrans.SalesSubID = newSalesSubAcctID;
+                                // If Inventory ID != ‘Refund’ 
+                                soTrans.TaxCategoryID = "NONTAXABLE";
                                 soGraph.Transactions.Insert(soTrans);
                                 #endregion
 

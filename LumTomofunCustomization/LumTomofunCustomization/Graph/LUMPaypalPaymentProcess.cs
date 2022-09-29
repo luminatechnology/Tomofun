@@ -273,6 +273,9 @@ namespace LumTomofunCustomization.Graph
                                     soTrans.SalesAcctID = newSalesAcctID;
                                 if (newSalesSubAcctID.HasValue)
                                     soTrans.SalesSubID = newSalesSubAcctID;
+                                // If Inventory ID != ‘Refund’ 
+                                if (row.TransactionType?.ToUpper() != "REFUND")
+                                    soTrans.TaxCategoryID = "NONTAXABLE";
                                 soGraph.Transactions.Insert(soTrans);
 
                                 // Fee
@@ -286,6 +289,8 @@ namespace LumTomofunCustomization.Graph
                                     soTrans.SalesAcctID = newSalesAcctID;
                                 if (newSalesSubAcctID.HasValue)
                                     soTrans.SalesSubID = newSalesSubAcctID;
+                                // If Inventory ID != ‘Refund’ 
+                                soTrans.TaxCategoryID = "NONTAXABLE";
                                 soGraph.Transactions.Insert(soTrans);
                                 #endregion
 
