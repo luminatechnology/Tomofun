@@ -664,7 +664,7 @@ namespace LumTomofunCustomization.Graph
                                             soTrans.InventoryID = AmazonPublicFunction.GetInvetoryitemID(baseGraph, "EC-SHIPPING");
                                             soTrans.OrderQty = 1;
                                             soTrans.TranDesc = row.AmountDescription;
-                                            soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                            soTrans.CuryUnitPrice = (row.Amount ?? 0);
                                         }
                                         if (soTrans.InventoryID == null)
                                             throw new PXException($"Can not find SOLine InventoryID (OrderType: {amzGroupOrderData.Key.TransactionType}, Amount Descr:EC-SHIPPING)");
