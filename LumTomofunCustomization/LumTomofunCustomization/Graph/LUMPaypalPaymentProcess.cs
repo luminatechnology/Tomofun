@@ -66,10 +66,10 @@ namespace LumTomofunCustomization.Graph
                 row.TransactionType = row.Description == "Express Checkout Payment" ? "Order" :
                                       row.Description == "Payment Refund" ? "Refund" :
                                       row.Description == "Cancellation of Hold for Dispute Resolution" ? "DisputePay" :
-                                      row.Description == "Dispute Fee" ? "DisputeCharge" :
+                                      row.Description == "Dispute Fee" ? "DisputeFee" :
                                       row.Description == "Chargeback" ? "Chargeback" :
                                       row.Description == "Hold on Balance for Dispute Investigation" ? "DisputeCharge" :
-                                      row.Description == "Payment Reversal" ? "Reversal" : string.Empty;
+                                      row.Description == "Payment Reversal" ? "Refund" : string.Empty;
             }
             // Marketplace2
             if (!string.IsNullOrEmpty(row.Marketplace))
@@ -105,6 +105,8 @@ namespace LumTomofunCustomization.Graph
                     {
                         // SOLine SalesAccount
                         int? newSalesAcctID = null;
+                        // SOLine SalesSubAccount
+                        int? newSalesSubAcctID = null;
                         // 以建立的Shopify Sales Order
                         var shopifySOOrder = SelectFrom<SOOrder>
                          .Where<SOOrder.orderType.IsEqual<P.AsString>
@@ -200,7 +202,8 @@ namespace LumTomofunCustomization.Graph
                             case "CHARGEBACK":
                             case "DISPUTECHARGE":
                             case "REVERSAL":
-                                #region TransactionType: REFUND/CHARGEBACK/DISPUTECHARGE/REVERSAL
+                            case "DISPUTEFEE":
+                                #region TransactionType: REFUND/CHARGEBACK/DISPUTECHARGE/REVERSAL/DISPUTEFEE
                                 var soGraph = PXGraph.CreateInstance<SOOrderEntry>();
 
                                 #region Header
@@ -265,8 +268,14 @@ namespace LumTomofunCustomization.Graph
                                 soTrans.OrderQty = 1;
                                 soTrans.CuryUnitPrice = (row.Gross ?? 0) * -1;
                                 newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, row.TransactionType, soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
+                                newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, row.TransactionType, soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
                                 if (newSalesAcctID.HasValue)
                                     soTrans.SalesAcctID = newSalesAcctID;
+                                if (newSalesSubAcctID.HasValue)
+                                    soTrans.SalesSubID = newSalesSubAcctID;
+                                // If Inventory ID != ‘Refund’ 
+                                if (row.TransactionType?.ToUpper() != "REFUND")
+                                    soTrans.TaxCategoryID = "NONTAXABLE";
                                 soGraph.Transactions.Insert(soTrans);
 
                                 // Fee
@@ -275,8 +284,13 @@ namespace LumTomofunCustomization.Graph
                                 soTrans.OrderQty = 1;
                                 soTrans.CuryUnitPrice = (row.Fee ?? 0) * -1;
                                 newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
+                                newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
                                 if (newSalesAcctID.HasValue)
                                     soTrans.SalesAcctID = newSalesAcctID;
+                                if (newSalesSubAcctID.HasValue)
+                                    soTrans.SalesSubID = newSalesSubAcctID;
+                                // If Inventory ID != ‘Refund’ 
+                                soTrans.TaxCategoryID = "NONTAXABLE";
                                 soGraph.Transactions.Insert(soTrans);
                                 #endregion
 
@@ -297,6 +311,7 @@ namespace LumTomofunCustomization.Graph
                                 paymentExt.QuickPayment.Current.CashAccountID = spCashAccount.CashAccountID;
                                 paymentExt.QuickPayment.Current.ExtRefNbr = row.OrderID;
                                 ARPaymentEntry paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Refund);
+                                paymentEntry.Document.Cache.SetValueExt<ARPayment.adjDate>(paymentEntry.Document.Current, row.TransactionDate);
                                 paymentEntry.Save.Press();
                                 paymentEntry.releaseFromHold.Press();
                                 paymentEntry.release.Press();
@@ -397,6 +412,7 @@ namespace LumTomofunCustomization.Graph
                                 paymentExt.QuickPayment.Current.CashAccountID = spCashAccount.CashAccountID;
                                 paymentExt.QuickPayment.Current.ExtRefNbr = row.OrderID;
                                 paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Payment);
+                                paymentEntry.Document.Cache.SetValueExt<ARPayment.adjDate>(paymentEntry.Document.Current, row.TransactionDate);
                                 paymentEntry.Save.Press();
                                 paymentEntry.releaseFromHold.Press();
                                 paymentEntry.release.Press();
