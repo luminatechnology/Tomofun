@@ -298,7 +298,7 @@ namespace LUMTomofunCustomization.Graph
             reconcilition.ERPSku   = GetStockItemOrCrossRef(reconcilition.Sku);
             reconcilition.Location = GetLocationIDByWarehouse(reconcilition.Warehouse, list[6].ToUpper());
             // FBA publish IN report after 12:00 am, so the snapshot date actually is one day before .
-            reconcilition.INDate   = reconcilition.SnapshotDate.Value.AddDays(-1);
+            reconcilition.INDate   = reconcilition.SnapshotDate.Value.AddDays(-1).Date;
 
             Reconcilition.Insert(reconcilition);
         }
