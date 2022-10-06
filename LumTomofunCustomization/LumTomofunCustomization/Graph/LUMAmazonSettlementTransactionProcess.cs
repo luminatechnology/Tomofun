@@ -344,6 +344,14 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
                                         soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
+                                    else if(row.AmountDescription == "Tax" || row.AmountDescription == "ShippingTax" || row.AmountDescription == "TaxDiscount")
+                                    {
+                                        soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem($"EC-WHTAX-{_marketplace}");
+                                        soTrans.OrderQty = 1;
+                                        soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
+                                    }
                                     else
                                         continue;
                                     if (soTrans.InventoryID == null)
@@ -358,15 +366,15 @@ namespace LumTomofunCustomization.Graph
 
                                 #region Update Tax
                                 // Setting SO Tax
-                                if (!isTaxCalculate)
-                                {
-                                    soGraph.Taxes.Current = soGraph.Taxes.Current ?? soGraph.Taxes.Insert(soGraph.Taxes.Cache.CreateInstance() as SOTaxTran);
-                                    soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, _marketplace + "EC");
-                                    soGraph.Taxes.Cache.SetValueExt<SOTaxTran.curyTaxAmt>(soGraph.Taxes.Current, amzTotalTax);
+                                //if (!isTaxCalculate)
+                                //{
+                                //    soGraph.Taxes.Current = soGraph.Taxes.Current ?? soGraph.Taxes.Insert(soGraph.Taxes.Cache.CreateInstance() as SOTaxTran);
+                                //    soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, _marketplace + "EC");
+                                //    soGraph.Taxes.Cache.SetValueExt<SOTaxTran.curyTaxAmt>(soGraph.Taxes.Current, amzTotalTax);
 
-                                    soGraph.Document.Cache.SetValueExt<SOOrder.curyTaxTotal>(soGraph.Document.Current, amzTotalTax);
-                                    soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + amzTotalTax);
-                                }
+                                //    soGraph.Document.Cache.SetValueExt<SOOrder.curyTaxTotal>(soGraph.Document.Current, amzTotalTax);
+                                //    soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + amzTotalTax);
+                                //}
                                 #endregion
 
                                 // Sales Order Save
