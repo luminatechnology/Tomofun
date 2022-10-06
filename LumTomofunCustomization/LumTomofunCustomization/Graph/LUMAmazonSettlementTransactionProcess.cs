@@ -344,7 +344,7 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
                                         soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
-                                    else if (row.AmountDescription == "Tax" || row.AmountDescription == "ShippingTax" || row.AmountDescription == "TaxDiscount")
+                                    else if ((row.AmountDescription == "Tax" || row.AmountDescription == "ShippingTax" || row.AmountDescription == "TaxDiscount") || row.AmountType == "ItemWithheldTax")
                                     {
                                         soTrans.InventoryID = AmazonPublicFunction.GetInvetoryitemID(baseGraph, $"EC-WHTAX-{ _marketplace}");
                                         soTrans.OrderQty = 1;
