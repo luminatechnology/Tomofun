@@ -344,10 +344,11 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
                                         soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
-                                    else if(row.AmountDescription == "Tax" || row.AmountDescription == "ShippingTax" || row.AmountDescription == "TaxDiscount")
+                                    else if (row.AmountDescription == "Tax" || row.AmountDescription == "ShippingTax" || row.AmountDescription == "TaxDiscount")
                                     {
-                                        soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem($"EC-WHTAX-{_marketplace}");
+                                        soTrans.InventoryID = AmazonPublicFunction.GetInvetoryitemID(baseGraph, $"EC-WHTAX-{ _marketplace}");
                                         soTrans.OrderQty = 1;
+                                        soTrans.TranDesc = row.AmountDescription;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
                                         soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
                                         soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
