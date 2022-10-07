@@ -108,6 +108,7 @@
     <Compile Include="Graph\LUMAmazonSettlementTransactionProcess.cs" />
     <Compile Include="Graph\LUMAmazonTransactionProcess.cs" />
     <Compile Include="Graph\LUMAmzINReconciliationProc.cs" />
+    <Compile Include="Graph\LUMDailyInventoryQuery.cs" />
     <Compile Include="Graph\LUMJPaypalJP_NPPaymentProcess.cs" />
     <Compile Include="Graph\LUMMarketplaceFeePreferenceMaint.cs" />
     <Compile Include="Graph\LUMMarketplacePreferenceMaint.cs" />

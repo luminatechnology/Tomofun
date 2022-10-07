@@ -1,0 +1,39 @@
+﻿<%@ Page Language="C#" MasterPageFile="~/MasterPages/FormDetail.master" AutoEventWireup="true" ValidateRequest="false" CodeFile="LM401000.aspx.cs" Inherits="Pages_LM401000" Title="Untitled Page" %>
+
+<%@ MasterType VirtualPath="~/MasterPages/FormDetail.master" %>
+
+<asp:Content ID="cont1" ContentPlaceHolderID="phDS" runat="Server">
+    <px:PXDataSource ID="ds" runat="server" Visible="True" Width="100%" TypeName="LumTomofunCustomization.Graph.LUMDailyInventoryQuery" PrimaryView="Filter">
+        <CallbackCommands>
+        </CallbackCommands>
+    </px:PXDataSource>
+</asp:Content>
+<asp:Content ID="cont2" ContentPlaceHolderID="phF" runat="Server">
+    <px:PXFormView ID="form" runat="server" DataSourceID="ds" DataMember="Filter" Width="100%" Height="100px" AllowAutoHide="false">
+        <Template>
+            <px:PXDateTimeEdit runat="server" ID="edsDate" DataField="sDate" Width="180px" CommitChanges="True"></px:PXDateTimeEdit>
+            <px:PXSelector runat="server" ID="edInventoryID" DataField="InventoryID" Width="180px" CommitChanges="True"></px:PXSelector>
+        </Template>
+    </px:PXFormView>
+</asp:Content>
+<asp:Content ID="cont3" ContentPlaceHolderID="phG" runat="Server">
+    <px:PXGrid AllowPaging="True" SyncPosition="True" ID="grid" runat="server" DataSourceID="ds" Width="100%" Height="150px" SkinID="Primary" AllowAutoHide="false">
+        <Levels>
+            <px:PXGridLevel DataMember="Transaction">
+                <Columns>
+                    <px:PXGridColumn DataField="InventoryID" Width="120"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="InventoryID_Description" Width="200px"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="EndQty" Width="120"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="SiteID" Width="120"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="SiteID_Description" Width="200px"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="LocationID" Width="120"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="LocationID_Description" Width="200px"></px:PXGridColumn>
+                </Columns>
+            </px:PXGridLevel>
+        </Levels>
+        <AutoSize Container="Window" Enabled="True" MinHeight="150"></AutoSize>
+        <ActionBar>
+        </ActionBar>
+        <Mode AllowDelete="False" AllowAddNew="False" AllowUpdate="False" />
+    </px:PXGrid>
+</asp:Content>
