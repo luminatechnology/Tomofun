@@ -1,7 +1,9 @@
+using PX.Common;
 using PX.Data;
 using PX.Data.BQL.Fluent;
 using PX.Objects.IN;
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Collections.Generic;
 using LUMTomofunCustomization.DAC;
@@ -15,13 +17,13 @@ namespace LUMTomofunCustomization.Graph
         #region Features & Selects
         public PXCancel<LUM3PLINReconciliation> Cancel;
 
-        public PXProcessing<LUM3PLINReconciliation, Where<LUM3PLINReconciliation.thirdPLType, Equal<ThirdPLType.topest>>> TopestReconciliation;
+        public PXProcessing<LUM3PLINReconciliation, Where<LUM3PLINReconciliation.thirdPLType, Equal<ThirdPLType.topest>>, OrderBy<Desc<LUM3PLINReconciliation.tranDate>>> TopestReconciliation;
 
-        public SelectFrom<LUM3PLINReconciliation>.Where<LUM3PLINReconciliation.thirdPLType.IsEqual<ThirdPLType.returnHelper>>.View RHReconciliation;
+        public SelectFrom<LUM3PLINReconciliation>.Where<LUM3PLINReconciliation.thirdPLType.IsEqual<ThirdPLType.returnHelper>>.OrderBy<LUM3PLINReconciliation.tranDate.Desc>.View RHReconciliation;
 
-        public SelectFrom<LUM3PLINReconciliation>.Where<LUM3PLINReconciliation.thirdPLType.IsEqual<ThirdPLType.fedEx>>.View FedExReconciliation;
+        public SelectFrom<LUM3PLINReconciliation>.Where<LUM3PLINReconciliation.thirdPLType.IsEqual<ThirdPLType.fedEx>>.OrderBy<LUM3PLINReconciliation.tranDate.Desc>.View FedExReconciliation;
 
-        public SelectFrom<LUM3PLINReconciliation>.Where<LUM3PLINReconciliation.thirdPLType.IsEqual<ThirdPLType.googleSheets>>.View GSheetsReconciliation;
+        public SelectFrom<LUM3PLINReconciliation>.Where<LUM3PLINReconciliation.thirdPLType.IsEqual<ThirdPLType.googleSheets>>.OrderBy<LUM3PLINReconciliation.tranDate.Desc>.View GSheetsReconciliation;
 
         public PXSetup<LUM3PLSetup> Setup;
         #endregion
@@ -65,14 +67,14 @@ namespace LUMTomofunCustomization.Graph
                 {
                     PXProcessing<LUM3PLINReconciliation>.SetError(e);
                 }
-                //try
-                //{
-                //    CreateDataFromRH(setup);
-                //}
-                //catch (Exception e)
-                //{
-                //    PXProcessing<LUM3PLINReconciliation>.SetError(e);
-                //}
+                try
+                {
+                    CreateDataFromRH(setup);
+                }
+                catch (Exception e)
+                {
+                    PXProcessing<LUM3PLINReconciliation>.SetError(e);
+                }
                 try
                 {
                     CreateDataFromFedEx(setup);
@@ -230,8 +232,7 @@ namespace LUMTomofunCustomization.Graph
                                               { "Content-Type", "application/json" }
                                           });
 
-            return helper.GetResults(pageCounts > 0 ? $"?pageSize=100&warehouseId={warehouse}&handlingCode=tbc&offset={pageCounts}" : 
-                                                      $"?pageSize=1&warehouseId={warehouse}&handlingCode=tbc");
+            return helper.GetResults(pageCounts > 0 ? $"?pageSize=100&warehouseId={warehouse}&handlingCode=tbc&offset={pageCounts}" : $"?pageSize=1&warehouseId={warehouse}&handlingCode=tbc");
         }
 
         private void CreateDataFromRH(LUM3PLSetup setup)
@@ -239,7 +240,7 @@ namespace LUMTomofunCustomization.Graph
             string[] fixedCountries = new string[] { "jpn", "gbr", "deu", "aus", "can" };
 
             Dictionary<int, int> dic = new Dictionary<int, int>();
-
+            // #1, get all the defined warehouses and calculate how many pages of transaction records each warehouse has.
             for (int i = 0; i < fixedCountries.Length; i++)
             {
                 var warehouses = LUMAPIHelper.DeserializeJSONString<ReturnHelperEntity.WarehouseRoot>(GetRHWarehouseByCountry(setup.RHAuthzToken, setup.RHApiKey, setup.RHApiToken, fixedCountries[i]).ContentResult);
@@ -254,26 +255,67 @@ namespace LUMTomofunCustomization.Graph
                 }
             }
 
+            List<LUM3PLINReconciliation> lists = new List<LUM3PLINReconciliation>();
+
             foreach(var key in dic.Keys)
             {
                 dic.TryGetValue(key, out int value);
 
-                var inventories = LUMAPIHelper.DeserializeJSONString<ReturnHelperEntity.ReturnInvtRoot>(GetRHReturnInventory(setup.RHAuthzToken, setup.RHApiKey, setup.RHApiToken, key, value * 100).ContentResult);
-
-                for (int k = 0; k < inventories?.returnInventoryList?.Count; k++)
+                // #2, get whole transaction records of each page.
+                for (int j = value; j > 0; j--)
                 {
-                    Update3PLINReconciliation(RHReconciliation.Cache, RHReconciliation.Insert(new LUM3PLINReconciliation()
-                                                                                              {
-                                                                                                  ThirdPLType = ThirdPLType.ReturnHelper,
-                                                                                                  TranDate = null,//inventories.transactionDate,
-                                                                                                  Sku = inventories.returnInventoryList[k].sku,
-                                                                                                  ProductName = null,
-                                                                                                  Qty = k,
-                                                                                                  DetailedDesc = "SELLABLE",
-                                                                                                  CountryID = "US",
-                                                                                                  Warehouse = null//PX.Objects.IN.INSite.UK.Find(this, "3PLUS00").SiteID
-                                                                                              }));
+                    var inventories = LUMAPIHelper.DeserializeJSONString<ReturnHelperEntity.ReturnInvtRoot>(GetRHReturnInventory(setup.RHAuthzToken, setup.RHApiKey, setup.RHApiToken, key, j * 100).ContentResult);
+                    // #3, get the inventory data from API.
+                    for (int k = 0; k < inventories?.returnInventoryList?.Count; k++)
+                    {
+                        // Only these two states need to be included in the cost quantity.
+                        if (!inventories.returnInventoryList[k].handlingStatusCode.IsIn("pending", "onhold")) { continue; }
+
+                        LUM3PLWarehouseMapping wHMapping = LUM3PLWarehouseMapping.PK.Find(this, ThirdPLType.ReturnHelper, Convert.ToString(inventories.returnInventoryList[k].warehouseId));
+
+                        string whRemarks = inventories.returnInventoryList[k].warehouseRemarks, rMACode = inventories.returnInventoryList[k].itemRma;
+                        // if 'Warehouse remark' is not Empty then ='Warehouse Remark',
+                        // if 'SKU' is not Empty and 'Warehouse remark' is Empty then = 'SKU',
+                        // if 'RMA Code' 有 NEW 抓 'NEW -' 之後的 SKU
+                        string sku = !string.IsNullOrEmpty(whRemarks) ? whRemarks :
+                                                                        !string.IsNullOrEmpty(inventories.returnInventoryList[k].sku) &&
+                                                                        string.IsNullOrEmpty(whRemarks) ? inventories.returnInventoryList[k].sku :
+                                                                                                          rMACode.Contains("NEW") ? rMACode.Split('-')[2] : null;
+
+                        LUM3PLINReconciliation newData = new LUM3PLINReconciliation()
+                        {
+                            ThirdPLType = ThirdPLType.ReturnHelper,
+                            TranDate = Accessinfo.BusinessDate.Value.ToUniversalTime(),
+                            INDate = Accessinfo.BusinessDate,
+                            Sku = sku,
+                            ProductName = null,
+                            Qty = k,
+                            // If (Upper('SKU') contains 'GRADE-C' or 'GRADE C' ) or ('SKU' is not Empty and 'Warehouse Remark' is Empty) then Location = '602' else Location = 601'
+                            DetailedDesc = (!string.IsNullOrEmpty(sku) && (sku.ToUpper().Contains("GRADE-C") || sku.ToUpper().Contains("GRADE C"))) ||
+                                           (!string.IsNullOrEmpty(sku) && string.IsNullOrEmpty(whRemarks)) ? "SELLABLE" : "NON-SELLABLE",
+                            CountryID = wHMapping?.CountryID,
+                            Warehouse = wHMapping?.ERPWH
+                        };
+
+                        // #3, Since this 3PL only has inventory transaction records, if these fields are the same, they can only be accumulated to calculate the quantity.
+                        LUM3PLINReconciliation existed = lists.Find(e => e.TranDate == newData.TranDate && e.Sku == newData.Sku && e.DetailedDesc == newData.DetailedDesc &&
+                                                                         e.CountryID == newData.CountryID && e.Warehouse == newData.Warehouse);
+
+                        if (existed == null)
+                        {
+                            lists.Add(newData);
+                        }
+                        else
+                        {
+                            existed.Qty += 1;
+                        }
+                    }
                 }
+            }
+
+            for (int x = 0; x < lists.Count; x++)
+            {
+                Update3PLINReconciliation(RHReconciliation.Cache, RHReconciliation.Insert(lists[x]));
             }
         }
         #endregion

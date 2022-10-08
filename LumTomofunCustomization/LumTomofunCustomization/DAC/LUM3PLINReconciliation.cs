@@ -66,7 +66,7 @@ namespace LUMTomofunCustomization.DAC
     
         #region DetailedDesc
         [PXDBString(100, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Detailed Description")]
+        [PXUIField(DisplayName = "Detailed Description", Visible = false)]
         public virtual string DetailedDesc { get; set; }
         public abstract class detailedDesc : PX.Data.BQL.BqlString.Field<detailedDesc> { }
         #endregion

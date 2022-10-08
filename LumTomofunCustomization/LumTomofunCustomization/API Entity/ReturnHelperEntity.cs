@@ -89,7 +89,7 @@ namespace LumTomofunCustomization.API_Entity
             public object returnRequestLineItemVasList { get; set; }
             public object returnRequestLineItemSupplement { get; set; }
             public object requestLineItemPayload { get; set; }
-            public object warehouseRemarks { get; set; }
+            public string warehouseRemarks { get; set; }
             public string handlingUpdatedOnStr { get; set; }
             public string sku { get; set; }
             public string itemRma { get; set; }
