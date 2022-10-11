@@ -1,4 +1,5 @@
-﻿using PX.Data;
+﻿using LUMTomofunCustomization.DAC;
+using PX.Data;
 using PX.Data.BQL.Fluent;
 using PX.Objects.IN;
 using System;
@@ -13,9 +14,9 @@ namespace LumTomofunCustomization.Graph
     public class LUMDailyInventoryQuery : PXGraph<LUMDailyInventoryQuery>
     {
         public PXFilter<DailyInventoryFilter> Filter;
-        public SelectFrom<INItemSiteHistDay>
-               .Where<INItemSiteHistDay.sDate.IsLessEqual<DailyInventoryFilter.sDate.FromCurrent>
-                    .And<INItemSiteHistDay.inventoryID.IsEqual<DailyInventoryFilter.inventoryID.FromCurrent>.Or<DailyInventoryFilter.inventoryID.FromCurrent.IsNull>>>
+        public SelectFrom<v_GlobalINItemSiteHistDay>
+               .Where<v_GlobalINItemSiteHistDay.sDate.IsLessEqual<DailyInventoryFilter.sDate.FromCurrent>
+                    .And<v_GlobalINItemSiteHistDay.inventoryID.IsEqual<DailyInventoryFilter.inventoryID.FromCurrent>.Or<DailyInventoryFilter.inventoryID.FromCurrent.IsNull>>>
                .View Transaction;
 
         public IEnumerable transaction()
@@ -28,8 +29,8 @@ namespace LumTomofunCustomization.Graph
                    PXView.Searches, PXView.SortColumns, PXView.Descendings,
                    PXView.Filters, ref startrow, 1000000, ref totalrow);
             PXView.StartRow = 0;
-            foreach (var inventoryGroup in result.GroupBy(x => new { ((INItemSiteHistDay)x).InventoryID, ((INItemSiteHistDay)x).SiteID, ((INItemSiteHistDay)x).LocationID }))
-                yield return inventoryGroup.OrderByDescending(x => ((INItemSiteHistDay)x).SDate).FirstOrDefault();
+            foreach (var inventoryGroup in result.GroupBy(x => new { ((v_GlobalINItemSiteHistDay)x).InventoryID, ((v_GlobalINItemSiteHistDay)x).Siteid, ((v_GlobalINItemSiteHistDay)x).LocationID }))
+                yield return inventoryGroup.OrderByDescending(x => ((v_GlobalINItemSiteHistDay)x).SDate).FirstOrDefault();
         }
 
         public class DailyInventoryFilter : IBqlTable
