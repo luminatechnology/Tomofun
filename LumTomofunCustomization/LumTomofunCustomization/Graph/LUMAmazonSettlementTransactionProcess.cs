@@ -855,6 +855,7 @@ namespace LumTomofunCustomization.Graph
                                     #region Header
                                     soDoc = soGraph.Document.Cache.CreateInstance() as SOOrder;
                                     soDoc.OrderType = "CM";
+                                    soDoc = soGraph.Document.Cache.Insert(soDoc) as SOOrder;
                                     soDoc.CustomerOrderNbr = amzGroupOrderData.Key.OrderID;
                                     soDoc.CustomerRefNbr = amzGroupOrderData.Key.MerchantOrderID;
                                     soDoc.OrderDate = amzGroupOrderData.Key.PostedDate;
@@ -874,8 +875,7 @@ namespace LumTomofunCustomization.Graph
                                     #endregion
 
                                     // Insert SOOrder
-                                    soGraph.Document.Insert(soDoc);
-
+                                    soGraph.Document.Cache.Update(soDoc);
                                     #region Set Currency
                                     info = CurrencyInfoAttribute.SetDefaults<SOOrder.curyInfoID>(soGraph.Document.Cache, soGraph.Document.Current);
                                     if (info != null)
@@ -889,6 +889,7 @@ namespace LumTomofunCustomization.Graph
                                         var soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                         if ((row.Amount ?? 0) == 0)
                                             continue;
+                                        soTrans = soGraph.Transactions.Cache.Insert(soTrans) as SOLine;
                                         soTrans.InventoryID = AmazonPublicFunction.GetInvetoryitemID(baseGraph, "CODREFUND");
                                         soTrans.OrderQty = 1;
                                         soTrans.TranDesc = row.AmountDescription;
@@ -898,7 +899,7 @@ namespace LumTomofunCustomization.Graph
                                         // isTaxCalculate = true then NONTAXABLE
                                         if (isTaxCalculate)
                                             soTrans.TaxCategoryID = "NONTAXABLE";
-                                        soGraph.Transactions.Insert(soTrans);
+                                        soGraph.Transactions.Cache.Update(soTrans);
                                         break;
                                     }
 
@@ -919,7 +920,7 @@ namespace LumTomofunCustomization.Graph
                                     #endregion
 
                                     // Prepare Invoice
-                                    PrepareInvoiceAndOverrideTax(soGraph, soDoc);
+                                    PrepareInvoiceAndOverrideTax(soGraph, soDoc, false);
                                     #endregion
                                 }
                                 #endregion
@@ -1393,7 +1394,7 @@ namespace LumTomofunCustomization.Graph
         }
 
         /// <summary> Sales Order Prepare Invoice and Override Tax </summary>
-        public virtual void PrepareInvoiceAndOverrideTax(SOOrderEntry soGraph, SOOrder soDoc)
+        public virtual void PrepareInvoiceAndOverrideTax(SOOrderEntry soGraph, SOOrder soDoc, bool IsOverrideTax = true)
         {
             // Prepare Invoice
             try
@@ -1414,7 +1415,7 @@ namespace LumTomofunCustomization.Graph
                             .TopFirst;
                 // update docDate
                 invoiceGraph.Document.SetValueExt<ARInvoice.docDate>(invoiceGraph.Document.Current, soDoc.RequestDate);
-                if (soTax != null)
+                if (soTax != null && IsOverrideTax)
                 {
                     // setting Tax
                     invoiceGraph.Taxes.Current = invoiceGraph.Taxes.Select();
