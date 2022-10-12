@@ -72,7 +72,7 @@ namespace LumTomofunCustomization.Graph
                             // 逐筆解析Json + 新增資料
                             foreach (var item in JsonConvert.DeserializeObject<API_Entity.AmazonOrder.AmazonOrderEntity>(data.JsonSource).Orders)
                             {
-                                if(!item.SalesChannel.ToUpper().StartsWith("AMAZON"))
+                                if (!item.SalesChannel.ToUpper().StartsWith("AMAZON"))
                                     continue;
                                 isAllSkipped = false;
                                 var trans = graph.AmazonTransaction.Insert((LUMAmazonTransData)graph.AmazonTransaction.Cache.CreateInstance());
@@ -84,6 +84,7 @@ namespace LumTomofunCustomization.Graph
                                 trans.SalesChannel = item.SalesChannel;
                                 trans.OrderStatus = item.OrderStatus;
                                 trans.OrderID = item.OrderId.ToString();
+                                trans.Amount = (decimal?)item.Amount;
                                 trans.TransJson = JsonConvert.SerializeObject(item);
                             }
                             break;
