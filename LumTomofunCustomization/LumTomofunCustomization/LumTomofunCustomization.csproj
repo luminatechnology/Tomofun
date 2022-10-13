@@ -101,7 +101,8 @@
     <Compile Include="DAC\LUMShopifyMarketplacePreference.cs" />
     <Compile Include="DAC\LUMShopifySourceData.cs" />
     <Compile Include="DAC\LUMForecastUpload.cs" />
-    <Compile Include="Graph\LUM3PLINReconciliationProc.cs" />
+    <Compile Include="Graph\LUM3PLINReconciliationGSProc.cs" />
+    <Compile Include="Graph\LUM3PLINReconciliationAPIProc.cs" />
     <Compile Include="Graph\LUMAmazonFulfillmentProcess.cs" />
     <Compile Include="Graph\LUMAmazonInterfaceMaint.cs" />
     <Compile Include="Graph\LUMAmazonPaymentProcess.cs" />
