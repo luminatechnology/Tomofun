@@ -1,0 +1,3 @@
+﻿<Table TableName="LUMAmazonTransData">
+    <Column TableName="LUMAmazonTransData" ColumnName="Amount" ColumnType="decimal" AllowNull="True" DecimalPrecision="6" DecimalLength="18" IsNewColumn="True" IsUnicode="True" />
+</Table>

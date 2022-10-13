@@ -21,13 +21,17 @@
         <Levels>
             <px:PXGridLevel DataMember="Transaction">
                 <Columns>
+                    <px:PXGridColumn DataField="CompanyCD" Width="120"></px:PXGridColumn>
                     <px:PXGridColumn DataField="InventoryID" Width="120"></px:PXGridColumn>
-                    <px:PXGridColumn DataField="InventoryID_Description" Width="200px"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="InventoryCD" Width="120px"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="InventoryITemDescr" Width="200px"></px:PXGridColumn>
                     <px:PXGridColumn DataField="EndQty" Width="120"></px:PXGridColumn>
-                    <px:PXGridColumn DataField="SiteID" Width="120"></px:PXGridColumn>
-                    <px:PXGridColumn DataField="SiteID_Description" Width="200px"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="Siteid" Width="120"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="SiteCD" Width="120"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="SiteDescr" Width="200px"></px:PXGridColumn>
                     <px:PXGridColumn DataField="LocationID" Width="120"></px:PXGridColumn>
-                    <px:PXGridColumn DataField="LocationID_Description" Width="200px"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="LocationCD" Width="120"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="LocationDescr" Width="200px"></px:PXGridColumn>
                 </Columns>
             </px:PXGridLevel>
         </Levels>

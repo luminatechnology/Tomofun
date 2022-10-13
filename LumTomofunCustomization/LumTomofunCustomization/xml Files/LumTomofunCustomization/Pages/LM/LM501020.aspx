@@ -29,7 +29,8 @@
                     <px:PXGridColumn DataField="OrderID" Width="150"></px:PXGridColumn>
                     <px:PXGridColumn DataField="SalesChannel" Width="150"></px:PXGridColumn>
                     <px:PXGridColumn DataField="OrderStatus" Width="150"></px:PXGridColumn>
-                    <px:PXGridColumn DataField="IsProcessed" Width="150" Type="CheckBox"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="Amount" Width="150"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="OrderStatus" Width="150"></px:PXGridColumn><px:PXGridColumn DataField="IsProcessed" Width="150" Type="CheckBox"></px:PXGridColumn>
                     <px:PXGridColumn DataField="ErrorMessage" Width="150"></px:PXGridColumn>
                     <px:PXGridColumn DataField="TransJson" Width="400"></px:PXGridColumn>
                     <px:PXGridColumn DataField="CreatedDateTime" Width="130" DisplayFormat="g"></px:PXGridColumn>
