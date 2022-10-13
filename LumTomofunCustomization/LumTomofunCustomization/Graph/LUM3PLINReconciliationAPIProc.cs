@@ -3,7 +3,6 @@ using PX.Data;
 using PX.Data.BQL.Fluent;
 using PX.Objects.IN;
 using System;
-using System.Linq;
 using System.Net.Http;
 using System.Collections.Generic;
 using LUMTomofunCustomization.DAC;
@@ -12,7 +11,7 @@ using LumTomofunCustomization.API_Entity;
 
 namespace LUMTomofunCustomization.Graph
 {
-    public class LUM3PLINReconciliationProc : PXGraph<LUM3PLINReconciliationProc>
+    public class LUM3PLINReconciliationAPIProc : PXGraph<LUM3PLINReconciliationAPIProc>
     {
         #region Features & Selects
         public PXCancel<LUM3PLINReconciliation> Cancel;
@@ -29,10 +28,11 @@ namespace LUMTomofunCustomization.Graph
         #endregion
 
         #region Ctor
-        public LUM3PLINReconciliationProc()
+        public LUM3PLINReconciliationAPIProc()
         {
-            if (TopestReconciliation.Select().Count == 0) { InsertInitializedData(); }
+            if (TopestReconciliation.Select().Count == 0) { InsertInitializedData(this, ThirdPLType.Topest); }
 
+            TopestReconciliation.SetProcessAllCaption("Import 3PL IN");
             TopestReconciliation.SetProcessVisible(false);
             TopestReconciliation.SetProcessDelegate(delegate(List<LUM3PLINReconciliation> lists)
             {
@@ -44,9 +44,56 @@ namespace LUMTomofunCustomization.Graph
         #region Static Methods
         public static void ImportRecords(List<LUM3PLINReconciliation> lists)
         {
-            LUM3PLINReconciliationProc graph = CreateInstance<LUM3PLINReconciliationProc>();
+            LUM3PLINReconciliationAPIProc graph = CreateInstance<LUM3PLINReconciliationAPIProc>();
 
             graph.Import3PLRecords();
+        }
+
+        public static void Update3PLINReconciliation(PXCache cache, LUM3PLINReconciliation record)
+        {
+            if (record == null) { return; }
+
+            LUMAmzINReconciliationProc graph = new LUMAmzINReconciliationProc();
+
+            record.ERPSku = graph.GetStockItemOrCrossRef(record.Sku);
+            record.Location = record.Location ?? graph.GetLocationIDByWarehouse(record.Warehouse, record.DetailedDesc);
+
+            if (record.ProductName == null)
+            {
+                record.ProductName = InventoryItem.UK.Find(graph, record.ERPSku)?.Descr;
+            }
+
+            cache.Update(record);
+        }
+
+        public static void InsertInitializedData(PXGraph graph, string tPLType)
+        {
+            string screenIDWODot = graph.Accessinfo.ScreenID.ToString().Replace(".", "");
+
+            PXDatabase.Insert<LUM3PLINReconciliation>(new PXDataFieldAssign<LUM3PLINReconciliation.createdByID>(graph.Accessinfo.UserID),
+                                                     new PXDataFieldAssign<LUM3PLINReconciliation.createdByScreenID>(screenIDWODot),
+                                                     new PXDataFieldAssign<LUM3PLINReconciliation.createdDateTime>(graph.Accessinfo.BusinessDate),
+                                                     new PXDataFieldAssign<LUM3PLINReconciliation.lastModifiedByID>(graph.Accessinfo.UserID),
+                                                     new PXDataFieldAssign<LUM3PLINReconciliation.lastModifiedByScreenID>(screenIDWODot),
+                                                     new PXDataFieldAssign<LUM3PLINReconciliation.lastModifiedDateTime>(graph.Accessinfo.BusinessDate),
+                                                     new PXDataFieldAssign<LUM3PLINReconciliation.noteID>(Guid.NewGuid()),
+                                                     new PXDataFieldAssign<LUM3PLINReconciliation.thirdPLType>(tPLType),
+                                                     new PXDataFieldAssign<LUM3PLINReconciliation.isProcessed>(false));
+        }
+
+        public static void DeleteDataByScript(bool isTW, DateTime? iNDate = null)
+        {
+            if (iNDate != null)
+            {
+                PXDatabase.Delete<LUM3PLINReconciliation>(new PXDataFieldRestrict<LUM3PLINReconciliation.isProcessed>(false),
+                                                          new PXDataFieldRestrict<LUM3PLINReconciliation.iNDate>(PXDbType.DateTime, 8, iNDate, PXComp.EQ),
+                                                          new PXDataFieldRestrict<LUM3PLINReconciliation.thirdPLType>(PXDbType.Char, 1, ThirdPLType.GoogleSheets, isTW == true ? PXComp.EQ : PXComp.NE));
+            }
+            else
+            {
+                PXDatabase.Delete<LUM3PLINReconciliation>(new PXDataFieldRestrict<LUM3PLINReconciliation.isProcessed>(false),
+                                                          new PXDataFieldRestrict<LUM3PLINReconciliation.iNDate>(PXDbType.DateTime, 8, iNDate, PXComp.ISNULL));
+            }
         }
         #endregion
 
@@ -55,47 +102,31 @@ namespace LUMTomofunCustomization.Graph
         {
             LUM3PLSetup setup = Setup.Select();
 
-            if (this.Accessinfo.CompanyName == "US")
-            {
-                DeleteDataByScript(false);
+            DeleteDataByScript(false);
 
-                try
-                {
-                    CreateDataFromTopest(setup);
-                }
-                catch (Exception e)
-                {
-                    PXProcessing<LUM3PLINReconciliation>.SetError(e);
-                }
-                try
-                {
-                    CreateDataFromRH(setup);
-                }
-                catch (Exception e)
-                {
-                    PXProcessing<LUM3PLINReconciliation>.SetError(e);
-                }
-                try
-                {
-                    CreateDataFromFedEx(setup);
-                }
-                catch (Exception e)
-                {
-                    PXProcessing<LUM3PLINReconciliation>.SetError(e);
-                }
-            }
-            else if (this.Accessinfo.CompanyName == "TW")
+            try
             {
-                try
-                {
-                    DeleteDataByScript(true);
-                    CreateDateFromGSheets(setup);
-                }
-                catch (Exception e)
-                {
-                    PXProcessing<LUM3PLINReconciliation>.SetError(e);
-                    throw;
-                }
+                CreateDataFromTopest(setup);
+            }
+            catch (Exception e)
+            {
+                PXProcessing<LUM3PLINReconciliation>.SetError(e);
+            }
+            try
+            {
+                CreateDataFromRH(setup);
+            }
+            catch (Exception e)
+            {
+                PXProcessing<LUM3PLINReconciliation>.SetError(e);
+            }
+            try
+            {
+                CreateDataFromFedEx(setup);
+            }
+            catch (Exception e)
+            {
+                PXProcessing<LUM3PLINReconciliation>.SetError(e);
             }
 
             this.Actions.PressSave();
@@ -237,7 +268,7 @@ namespace LUMTomofunCustomization.Graph
 
         private void CreateDataFromRH(LUM3PLSetup setup)
         {
-            string[] fixedCountries = new string[] { "jpn", "gbr", "deu", "aus", "can" };
+            string[] fixedCountries = new string[] { /*"jpn", "gbr", "deu", "aus",*/ "can" };
 
             Dictionary<int, int> dic = new Dictionary<int, int>();
             // #1, get all the defined warehouses and calculate how many pages of transaction records each warehouse has.
@@ -292,7 +323,7 @@ namespace LUMTomofunCustomization.Graph
                             Qty = k,
                             // If (Upper('SKU') contains 'GRADE-C' or 'GRADE C' ) or ('SKU' is not Empty and 'Warehouse Remark' is Empty) then Location = '602' else Location = 601'
                             DetailedDesc = (!string.IsNullOrEmpty(sku) && (sku.ToUpper().Contains("GRADE-C") || sku.ToUpper().Contains("GRADE C"))) ||
-                                           (!string.IsNullOrEmpty(sku) && string.IsNullOrEmpty(whRemarks)) ? "SELLABLE" : "NON-SELLABLE",
+                                           (!string.IsNullOrEmpty(sku) && string.IsNullOrEmpty(whRemarks)) ? "NON-SELLABLE" : "SELLABLE",
                             CountryID = wHMapping?.CountryID,
                             Warehouse = wHMapping?.ERPWH
                         };
@@ -393,57 +424,6 @@ namespace LUMTomofunCustomization.Graph
         }
         #endregion
 
-        #region GoogleSheets
-        public virtual LUMAPIResults GetSpecifiedSheet(LUM3PLSetup setup)
-        {
-            var helper = new LUMAPIHelper(new LUMAPIConfig()
-                                          {
-                                              RequestMethod = HttpMethod.Post,
-                                              RequestUrl = setup.GoogleSheetsURL
-                                          },
-                                          null);
-
-            return helper.GetResults(LUMAPIHelper.SerialzeJSONString(new GoogleSheetsEntity.RequestRoot() { SheetName = setup.GoogleSheetName }));
-        }
-
-        public virtual void CreateDateFromGSheets(LUM3PLSetup setup)
-        {
-            var sheets = LUMAPIHelper.DeserializeJSONString<GoogleSheetsEntity.DataRoot>(GetSpecifiedSheet(setup).ContentResult);
-
-            // Since first array is label row.
-            for (int i = 1; i < sheets.Data.Count; i++)
-            {
-                // ["Inventory Date", "Warehouse", "Location", "Sku", "Qty", "Country"]
-                var row = sheets.Data[i];
-
-                DateTime invetDate = Convert.ToDateTime(row[0]);
-                 
-                if (i == 1)
-                {
-                    DeleteDataByScript(true, invetDate.Date);
-                }
-
-                INSite site = INSite.UK.Find(this, Convert.ToString(row[1]));
-
-                Update3PLINReconciliation(GSheetsReconciliation.Cache, 
-                                          GSheetsReconciliation.Insert(new LUM3PLINReconciliation()
-                                                                       {
-                                                                           ThirdPLType = ThirdPLType.GoogleSheets,
-                                                                           TranDate = invetDate,
-                                                                           INDate = invetDate.Date,
-                                                                           Sku = Convert.ToString(row[3]),
-                                                                           ProductName = null,
-                                                                           Qty = row[4].Equals("") ? 0m : Convert.ToInt32(row[4]),
-                                                                           DetailedDesc = "SELLABLE",
-                                                                           CountryID = Convert.ToString(row[5]),
-                                                                           Warehouse = site?.SiteID,
-                                                                           Location = PX.Objects.CR.Location.UK.Find(this, site.BAccountID, Convert.ToString(row[2]))?.LocationID
-                                                                        }) );
-            }          
-        }
-    
-        #endregion
-
         /// <summary>
         /// Since the access token expires after each 3600(s) acquisition, it must be re-acquired again and the new value stored.
         /// </summary>
@@ -453,53 +433,6 @@ namespace LUMTomofunCustomization.Graph
             PXUpdate<Set<LUM3PLSetup.fedExAccessToken, Required<LUM3PLSetup.fedExAccessToken>>,
                      LUM3PLSetup,
                      Where<LUM3PLSetup.fedExClientID, IsNotNull>>.Update(this, newAccessToken);
-        }
-
-        private void Update3PLINReconciliation(PXCache cache, LUM3PLINReconciliation record)
-        {
-            if (record == null) { return; }
-
-            LUMAmzINReconciliationProc graph = new LUMAmzINReconciliationProc();
-
-            record.ERPSku   = graph.GetStockItemOrCrossRef(record.Sku);
-            record.Location = record.Location ?? graph.GetLocationIDByWarehouse(record.Warehouse, record.DetailedDesc);
-
-            if (record.ProductName == null)
-            {
-                record.ProductName = InventoryItem.UK.Find(graph, record.ERPSku)?.Descr;
-            }
-
-            cache.Update(record);
-        }
-
-        private void InsertInitializedData()
-        {
-            string screenIDWODot = this.Accessinfo.ScreenID.ToString().Replace(".", "");
-
-            PXDatabase.Insert<LUM3PLINReconciliation>(new PXDataFieldAssign<LUM3PLINReconciliation.createdByID>(this.Accessinfo.UserID),
-                                                     new PXDataFieldAssign<LUM3PLINReconciliation.createdByScreenID>(screenIDWODot),
-                                                     new PXDataFieldAssign<LUM3PLINReconciliation.createdDateTime>(this.Accessinfo.BusinessDate),
-                                                     new PXDataFieldAssign<LUM3PLINReconciliation.lastModifiedByID>(this.Accessinfo.UserID),
-                                                     new PXDataFieldAssign<LUM3PLINReconciliation.lastModifiedByScreenID>(screenIDWODot),
-                                                     new PXDataFieldAssign<LUM3PLINReconciliation.lastModifiedDateTime>(this.Accessinfo.BusinessDate),
-                                                     new PXDataFieldAssign<LUM3PLINReconciliation.noteID>(Guid.NewGuid()),
-                                                     new PXDataFieldAssign<LUM3PLINReconciliation.thirdPLType>(ThirdPLType.Topest),
-                                                     new PXDataFieldAssign<LUM3PLINReconciliation.isProcessed>(false));
-        }
-
-        private void DeleteDataByScript(bool isTW, DateTime? iNDate = null)
-        {
-            if (iNDate != null)
-            {
-                PXDatabase.Delete<LUM3PLINReconciliation>(new PXDataFieldRestrict<LUM3PLINReconciliation.isProcessed>(false),
-                                                          new PXDataFieldRestrict<LUM3PLINReconciliation.iNDate>(PXDbType.DateTime, 8, iNDate, PXComp.EQ),
-                                                          new PXDataFieldRestrict<LUM3PLINReconciliation.thirdPLType>(PXDbType.Char, 1, ThirdPLType.GoogleSheets, isTW == true ? PXComp.EQ : PXComp.NE));
-            }
-            else
-            {
-                PXDatabase.Delete<LUM3PLINReconciliation>(new PXDataFieldRestrict<LUM3PLINReconciliation.isProcessed>(false),
-                                                          new PXDataFieldRestrict<LUM3PLINReconciliation.iNDate>(PXDbType.DateTime, 8, iNDate, PXComp.ISNULL));
-            }
         }
         #endregion
     }

@@ -2,7 +2,7 @@
 <%@ MasterType VirtualPath="~/MasterPages/FormTab.master" %>
 
 <asp:Content ID="cont1" ContentPlaceHolderID="phDS" Runat="Server">
-	<px:PXDataSource ID="ds" runat="server" Visible="True" Width="100%" TypeName="LUMTomofunCustomization.Graph.LUM3PLINReconciliationProc" PrimaryView="TopestReconciliation">
+	<px:PXDataSource ID="ds" runat="server" Visible="True" Width="100%" TypeName="LUMTomofunCustomization.Graph.LUM3PLINReconciliationAPIProc" PrimaryView="TopestReconciliation">
 		<CallbackCommands>
 		</CallbackCommands>
 	</px:PXDataSource>
@@ -105,7 +105,7 @@
 					</px:PXGrid>
 				</Template>
 			</px:PXTabItem>
-			<px:PXTabItem Text="Google Sheets">
+			<%--<px:PXTabItem Text="Google Sheets">
 				<Template>
 					<px:PXGrid ID="grid4" runat="server" DataSourceID="ds" Width="100%" Height="150px" SkinID="Inquire" AllowAutoHide="false" NoteIndicator="false" FilesIndicator="false">
 						<Levels>
@@ -133,7 +133,7 @@
 						</ActionBar>
 					</px:PXGrid>
 				</Template>
-			</px:PXTabItem>
+			</px:PXTabItem>--%>
 		</Items>
 		<AutoSize Container="Window" Enabled="True" MinHeight="150" />
 	</px:PXTab>
