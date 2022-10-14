@@ -325,7 +325,8 @@ namespace LUMTomofunCustomization.Graph
                             DetailedDesc = (!string.IsNullOrEmpty(sku) && (sku.ToUpper().Contains("GRADE-C") || sku.ToUpper().Contains("GRADE C"))) ||
                                            (!string.IsNullOrEmpty(sku) && string.IsNullOrEmpty(whRemarks)) ? "NON-SELLABLE" : "SELLABLE",
                             CountryID = wHMapping?.CountryID,
-                            Warehouse = wHMapping?.ERPWH
+                            Warehouse = wHMapping?.ERPWH,
+                            FBACenterID = key.ToString()
                         };
 
                         // #3, Since this 3PL only has inventory transaction records, if these fields are the same, they can only be accumulated to calculate the quantity.
