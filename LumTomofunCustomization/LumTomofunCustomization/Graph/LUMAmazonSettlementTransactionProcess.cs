@@ -432,6 +432,7 @@ namespace LumTomofunCustomization.Graph
                                                           .InnerJoin<SOOrder>.On<ARTran.sOOrderNbr.IsEqual<SOOrder.orderNbr>>
                                                           .Where<ARInvoice.invoiceNbr.IsEqual<P.AsString>
                                                             .And<SOOrder.orderType.IsEqual<P.AsString>>>
+                                                          .OrderBy<Desc<ARInvoice.createdDateTime>>
                                                           .View.SelectSingleBound(baseGraph, null, amzGroupOrderData.Key.OrderID, "FA").TopFirst;
                                     if (mapInvoice == null)
                                         throw new Exception($"Can not Find Invoice (OrderID: {amzGroupOrderData.Key.OrderID})");

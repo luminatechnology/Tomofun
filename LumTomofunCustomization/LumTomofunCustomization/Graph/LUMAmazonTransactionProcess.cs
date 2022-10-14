@@ -96,7 +96,7 @@ namespace LumTomofunCustomization.Graph
                                             .And<SOOrder.customerOrderNbr.IsEqual<P.AsString>>>
                                          .View.Select(baseGraph, "FA", amzOrder.OrderId).TopFirst;
                         // 如果之前沒有Create 過SOOrder 則Create
-                        if (oldsoOrder == null)
+                        if (oldsoOrder == null || row.TransactionType == "RE-Amazon Orders")
                         {
                             #region Create Sales Order Header(Header/Contact/Address/Tax)
                             SOOrder order = soGraph.Document.Cache.CreateInstance() as SOOrder;
