@@ -37,7 +37,7 @@ namespace LUMTomofunCustomization.DAC
 
         #region InventoryITemDescr
         [PXDBString(256, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Inventory ITem Descr")]
+        [PXUIField(DisplayName = "Inventory Item Descr")]
         public virtual string InventoryITemDescr { get; set; }
         public abstract class inventoryITemDescr : PX.Data.BQL.BqlString.Field<inventoryITemDescr> { }
         #endregion
@@ -89,6 +89,20 @@ namespace LUMTomofunCustomization.DAC
         [PXUIField(DisplayName = "Location Descr")]
         public virtual string LocationDescr { get; set; }
         public abstract class locationDescr : PX.Data.BQL.BqlString.Field<locationDescr> { }
+        #endregion
+
+        #region WarehouseQty
+        [PXDecimal()]
+        [PXUIField(DisplayName = "WH Qty")]
+        public virtual Decimal? WarehouseQty { get; set; }
+        public abstract class warehouseQty : PX.Data.BQL.BqlDecimal.Field<warehouseQty> { }
+        #endregion
+
+        #region VarQty
+        [PXDecimal()]
+        [PXUIField(DisplayName = "Var Qty")]
+        public virtual Decimal? VarQty { get; set; }
+        public abstract class varQty : PX.Data.BQL.BqlDecimal.Field<varQty> { }
         #endregion
     }
 }

@@ -52,6 +52,20 @@
         "runtime": {
           "lib/net461/System.Threading.Tasks.Extensions.dll": {}
         }
+      },
+      "LUMLocalization/1.0.0": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.8",
+        "dependencies": {
+          "Microsoft.Bcl.AsyncInterfaces": "5.0.0",
+          "System.Runtime.CompilerServices.Unsafe": "5.0.0"
+        },
+        "compile": {
+          "bin/placeholder/LUMLocalization.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/LUMLocalization.dll": {}
+        }
       }
     },
     ".NETFramework,Version=v4.8/win": {
@@ -104,6 +118,20 @@
         },
         "runtime": {
           "lib/net461/System.Threading.Tasks.Extensions.dll": {}
+        }
+      },
+      "LUMLocalization/1.0.0": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.8",
+        "dependencies": {
+          "Microsoft.Bcl.AsyncInterfaces": "5.0.0",
+          "System.Runtime.CompilerServices.Unsafe": "5.0.0"
+        },
+        "compile": {
+          "bin/placeholder/LUMLocalization.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/LUMLocalization.dll": {}
         }
       }
     },
@@ -158,6 +186,20 @@
         "runtime": {
           "lib/net461/System.Threading.Tasks.Extensions.dll": {}
         }
+      },
+      "LUMLocalization/1.0.0": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.8",
+        "dependencies": {
+          "Microsoft.Bcl.AsyncInterfaces": "5.0.0",
+          "System.Runtime.CompilerServices.Unsafe": "5.0.0"
+        },
+        "compile": {
+          "bin/placeholder/LUMLocalization.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/LUMLocalization.dll": {}
+        }
       }
     },
     ".NETFramework,Version=v4.8/win-x86": {
@@ -210,6 +252,20 @@
         },
         "runtime": {
           "lib/net461/System.Threading.Tasks.Extensions.dll": {}
+        }
+      },
+      "LUMLocalization/1.0.0": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.8",
+        "dependencies": {
+          "Microsoft.Bcl.AsyncInterfaces": "5.0.0",
+          "System.Runtime.CompilerServices.Unsafe": "5.0.0"
+        },
+        "compile": {
+          "bin/placeholder/LUMLocalization.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/LUMLocalization.dll": {}
         }
       }
     }
@@ -332,10 +388,16 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+    },
+    "LUMLocalization/1.0.0": {
+      "type": "project",
+      "path": "../../LUMLocalization/LUMLocalization/LUMLocalization.csproj",
+      "msbuildProject": "../../LUMLocalization/LUMLocalization/LUMLocalization.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.8": [
+      "LUMLocalization >= 1.0.0",
       "Microsoft.Bcl.AsyncInterfaces >= 5.0.0",
       "Newtonsoft.Json >= 13.0.1",
       "System.Runtime.CompilerServices.Unsafe >= 5.0.0"
@@ -368,7 +430,11 @@
       },
       "frameworks": {
         "net48": {
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Program Files\\Acumatica ERP\\Tomofun\\App_Data\\Projects\\LUMLocalization\\LUMLocalization\\LUMLocalization.csproj": {
+              "projectPath": "C:\\Program Files\\Acumatica ERP\\Tomofun\\App_Data\\Projects\\LUMLocalization\\LUMLocalization\\LUMLocalization.csproj"
+            }
+          }
         }
       }
     },
