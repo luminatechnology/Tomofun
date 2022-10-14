@@ -268,7 +268,7 @@ namespace LUMTomofunCustomization.Graph
 
         private void CreateDataFromRH(LUM3PLSetup setup)
         {
-            string[] fixedCountries = new string[] { /*"jpn", "gbr", "deu", "aus",*/ "can" };
+            string[] fixedCountries = new string[] { "jpn", "gbr", "deu", "aus", "can" };
 
             Dictionary<int, int> dic = new Dictionary<int, int>();
             // #1, get all the defined warehouses and calculate how many pages of transaction records each warehouse has.
