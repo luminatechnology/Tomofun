@@ -1,5 +1,7 @@
-﻿using LUMTomofunCustomization.DAC;
+﻿using LUMLocalization.DAC;
+using LUMTomofunCustomization.DAC;
 using PX.Data;
+using PX.Data.BQL;
 using PX.Data.BQL.Fluent;
 using PX.Objects.IN;
 using System;
@@ -29,8 +31,23 @@ namespace LumTomofunCustomization.Graph
                    PXView.Searches, PXView.SortColumns, PXView.Descendings,
                    PXView.Filters, ref startrow, 1000000, ref totalrow);
             PXView.StartRow = 0;
+            var vINReconciliationData = SelectFrom<vGlobalINReconciliation>
+                                       .View.Select(this).RowCast<vGlobalINReconciliation>();
             foreach (var inventoryGroup in result.GroupBy(x => new { ((v_GlobalINItemSiteHistDay)x).InventoryID, ((v_GlobalINItemSiteHistDay)x).Siteid, ((v_GlobalINItemSiteHistDay)x).LocationID }))
-                yield return inventoryGroup.OrderByDescending(x => ((v_GlobalINItemSiteHistDay)x).SDate).FirstOrDefault();
+            {
+                // Calculate VarQty
+                v_GlobalINItemSiteHistDay currentRow = inventoryGroup.OrderByDescending(x => ((v_GlobalINItemSiteHistDay)x).SDate).FirstOrDefault() as v_GlobalINItemSiteHistDay;
+                if (currentRow != null)
+                {
+                    var mappingRow = vINReconciliationData.Where(x => x.SiteCD?.Trim() == currentRow?.SiteCD?.Trim() && 
+                                                                      x.LocationCD?.Trim() == currentRow?.LocationCD?.Trim() && 
+                                                                      x.ERPSku?.Trim() == currentRow?.InventoryCD?.Trim() && 
+                                                                      x.INDate?.Date == filter?.SDate?.Date);
+                    currentRow.WarehouseQty = mappingRow.Sum(x => x.Qty ?? 0);
+                    currentRow.VarQty = currentRow.WarehouseQty - (currentRow?.EndQty ?? 0);
+                }
+                yield return currentRow;
+            }
         }
 
         public class DailyInventoryFilter : IBqlTable

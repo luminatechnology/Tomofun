@@ -4,6 +4,60 @@
     "C:\\Program Files\\Acumatica ERP\\Tomofun\\App_Data\\Projects\\LumTomofunCustomization\\LumTomofunCustomization\\LumTomofunCustomization.csproj": {}
   },
   "projects": {
+    "C:\\Program Files\\Acumatica ERP\\Tomofun\\App_Data\\Projects\\LUMLocalization\\LUMLocalization\\LUMLocalization.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Program Files\\Acumatica ERP\\Tomofun\\App_Data\\Projects\\LUMLocalization\\LUMLocalization\\LUMLocalization.csproj",
+        "projectName": "LUMLocalization",
+        "projectPath": "C:\\Program Files\\Acumatica ERP\\Tomofun\\App_Data\\Projects\\LUMLocalization\\LUMLocalization\\LUMLocalization.csproj",
+        "packagesPath": "C:\\Users\\JO3JO\\.nuget\\packages\\",
+        "outputPath": "C:\\Program Files\\Acumatica ERP\\Tomofun\\App_Data\\Projects\\LUMLocalization\\LUMLocalization\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "configFilePaths": [
+          "C:\\Users\\JO3JO\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net48"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Users\\JO3JO\\Downloads": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net48": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net48": {
+          "dependencies": {
+            "Microsoft.Bcl.AsyncInterfaces": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "System.Runtime.CompilerServices.Unsafe": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          }
+        }
+      },
+      "runtimes": {
+        "win": {
+          "#import": []
+        },
+        "win-x64": {
+          "#import": []
+        },
+        "win-x86": {
+          "#import": []
+        }
+      }
+    },
     "C:\\Program Files\\Acumatica ERP\\Tomofun\\App_Data\\Projects\\LumTomofunCustomization\\LumTomofunCustomization\\LumTomofunCustomization.csproj": {
       "version": "1.0.0",
       "restore": {
@@ -28,7 +82,11 @@
         },
         "frameworks": {
           "net48": {
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Program Files\\Acumatica ERP\\Tomofun\\App_Data\\Projects\\LUMLocalization\\LUMLocalization\\LUMLocalization.csproj": {
+                "projectPath": "C:\\Program Files\\Acumatica ERP\\Tomofun\\App_Data\\Projects\\LUMLocalization\\LUMLocalization\\LUMLocalization.csproj"
+              }
+            }
           }
         }
       },

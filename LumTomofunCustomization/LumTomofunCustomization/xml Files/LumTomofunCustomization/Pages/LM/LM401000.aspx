@@ -32,6 +32,8 @@
                     <px:PXGridColumn DataField="LocationID" Width="120"></px:PXGridColumn>
                     <px:PXGridColumn DataField="LocationCD" Width="120"></px:PXGridColumn>
                     <px:PXGridColumn DataField="LocationDescr" Width="200px"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="WarehouseQty" Width="120"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="VarQty" Width="120"></px:PXGridColumn>
                 </Columns>
             </px:PXGridLevel>
         </Levels>
