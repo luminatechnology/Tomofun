@@ -39,7 +39,7 @@ namespace LumTomofunCustomization.Graph
                 v_GlobalINItemSiteHistDay currentRow = inventoryGroup.OrderByDescending(x => ((v_GlobalINItemSiteHistDay)x).SDate).FirstOrDefault() as v_GlobalINItemSiteHistDay;
                 if (currentRow != null)
                 {
-                    var mappingRow = vINReconciliationData.FirstOrDefault(x => x.CompanyCD == currentRow?.CompanyCD && x.SiteCD?.Trim() == currentRow?.SiteCD?.Trim() && x.LocationCD?.Trim() == currentRow?.LocationCD?.Trim() && x.ERPSku?.Trim() == currentRow?.InventoryCD?.Trim() && x.SnapshotDate?.Date == filter?.SDate?.Date);
+                    var mappingRow = vINReconciliationData.FirstOrDefault(x => x.CompanyCD == currentRow?.CompanyCD && x.SiteCD?.Trim() == currentRow?.SiteCD?.Trim() && x.LocationCD?.Trim() == currentRow?.LocationCD?.Trim() && x.ERPSku?.Trim() == currentRow?.InventoryCD?.Trim() && x.INDate?.Date == filter?.SDate?.Date);
                     currentRow.WarehouseQty = mappingRow?.Qty ?? 0;
                     currentRow.VarQty = (mappingRow?.Qty ?? 0) - (currentRow?.EndQty ?? 0);
                 }
