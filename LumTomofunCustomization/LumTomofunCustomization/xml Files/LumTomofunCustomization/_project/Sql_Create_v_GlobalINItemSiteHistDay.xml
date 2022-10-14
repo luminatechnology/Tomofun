@@ -24,5 +24,6 @@
 	INNER JOIN Company comp ON Hist.CompanyID = comp.CompanyID
 	INNER JOIN InventoryItem item ON Hist.CompanyID = item.CompanyID AND hist.InventoryID = item.InventoryID
 	INNER JOIN INSite site ON Hist.CompanyID = site.CompanyID AND Hist.SiteID = site.SiteID
-	INNER JOIN INLocation location ON Hist.CompanyID = location.CompanyID AND Hist.LocationID = location.LocationID]]></CDATA>
+	INNER JOIN INLocation location ON Hist.CompanyID = location.CompanyID AND Hist.LocationID = location.LocationID
+	WHERE Hist.CompanyID > 0]]></CDATA>
 </Sql>
