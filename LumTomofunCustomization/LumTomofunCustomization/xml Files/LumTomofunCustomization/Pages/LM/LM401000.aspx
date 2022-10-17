@@ -12,7 +12,6 @@
     <px:PXFormView ID="form" runat="server" DataSourceID="ds" DataMember="Filter" Width="100%" Height="100px" AllowAutoHide="false">
         <Template>
             <px:PXDateTimeEdit runat="server" ID="edsDate" DataField="sDate" Width="180px" CommitChanges="True"></px:PXDateTimeEdit>
-            <px:PXSelector runat="server" ID="edInventoryID" DataField="InventoryID" Width="180px" CommitChanges="True"></px:PXSelector>
         </Template>
     </px:PXFormView>
 </asp:Content>

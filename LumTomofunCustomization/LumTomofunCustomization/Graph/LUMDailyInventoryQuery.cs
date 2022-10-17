@@ -17,8 +17,7 @@ namespace LumTomofunCustomization.Graph
     {
         public PXFilter<DailyInventoryFilter> Filter;
         public SelectFrom<v_GlobalINItemSiteHistDay>
-               .Where<v_GlobalINItemSiteHistDay.sDate.IsLessEqual<DailyInventoryFilter.sDate.FromCurrent>
-                    .And<v_GlobalINItemSiteHistDay.inventoryID.IsEqual<DailyInventoryFilter.inventoryID.FromCurrent>.Or<DailyInventoryFilter.inventoryID.FromCurrent.IsNull>>>
+               .Where<v_GlobalINItemSiteHistDay.sDate.IsLessEqual<DailyInventoryFilter.sDate.FromCurrent>>
                .View Transaction;
 
         public IEnumerable transaction()
@@ -52,12 +51,6 @@ namespace LumTomofunCustomization.Graph
 
         public class DailyInventoryFilter : IBqlTable
         {
-            [StockItem()]
-            [PXDefault()]
-            [PXUIField(DisplayName = "InventoryID")]
-            public virtual int? InventoryID { get; set; }
-            public abstract class inventoryID : PX.Data.BQL.BqlInt.Field<inventoryID> { }
-
             [PXDBDate]
             [PXDefault(typeof(AccessInfo.businessDate))]
             [PXUIField(DisplayName = "Date")]

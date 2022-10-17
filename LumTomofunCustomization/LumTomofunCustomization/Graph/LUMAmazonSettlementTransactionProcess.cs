@@ -45,6 +45,23 @@ namespace LumTomofunCustomization.Graph
                 InitialData();
         }
 
+        #region Event
+        public virtual void _(Events.FieldDefaulting<SettlementFilter.fromDate> e)
+        {
+            var row = e.Row as SettlementFilter;
+            if (row != null && !row.FromDate.HasValue)
+                e.NewValue = DateTime.Now;
+        }
+
+        public virtual void _(Events.FieldDefaulting<SettlementFilter.toDate> e)
+        {
+            var row = e.Row as SettlementFilter;
+            if (row != null && !row.ToDate.HasValue)
+                e.NewValue = DateTime.Now.AddDays(1);
+        }
+
+        #endregion
+
         #region Method
 
         /// <summary> 執行Process </summary>
@@ -1514,11 +1531,13 @@ namespace LumTomofunCustomization.Graph
     public class SettlementFilter : IBqlTable
     {
         [PXDBDate]
+        [PXDefault]
         [PXUIField(DisplayName = "From Date")]
         public virtual DateTime? FromDate { get; set; }
         public abstract class fromDate : PX.Data.BQL.BqlDateTime.Field<fromDate> { }
 
         [PXDBDate]
+        [PXDefault]
         [PXUIField(DisplayName = "To Date")]
         public virtual DateTime? ToDate { get; set; }
         public abstract class toDate : PX.Data.BQL.BqlDateTime.Field<toDate> { }
