@@ -34,13 +34,12 @@ namespace LUMTomofunCustomization.Graph
             Actions.Move(nameof(Cancel), nameof(massDeletion), true);
             //Actions.Move(nameof(massDeletion), nameof(importFBAIN), true);
             Actions.Move("ProcessAll", nameof(createAdjustment), true);
-            
+
+            SettlementFilter filter = Filter.Current;
+
             Reconcilition.SetProcessVisible(false);
-            Reconcilition.SetProcessAllCaption("Import FBA IN");//& Create");
-            Reconcilition.SetProcessDelegate(delegate (List<LUMAmzINReconcilition> lists)
-            {
-                ImportRecords(lists);
-            });
+            Reconcilition.SetProcessAllCaption("Import FBA IN");
+            Reconcilition.SetProcessDelegate(reconciliations => ImportRecords(reconciliations, filter));
         }
         #endregion
 
@@ -103,11 +102,11 @@ namespace LUMTomofunCustomization.Graph
         #endregion
 
         #region Static Methods
-        public static void ImportRecords(List<LUMAmzINReconcilition> lists)
+        public static void ImportRecords(List<LUMAmzINReconcilition> lists, SettlementFilter filter)
         {
             LUMAmzINReconciliationProc graph = CreateInstance<LUMAmzINReconciliationProc>();
 
-            graph.ImportAmzRecords();
+            graph.ImportAmzRecords(filter.FromDate);
             //graph.CreateInvAdjustment(lists);
         }
         #endregion
@@ -141,13 +140,13 @@ namespace LUMTomofunCustomization.Graph
 
             return new AmazonConnection(new AmazonCredential()
             {
-                AccessKey    = isSingapore == false ? preference.AccessKey : preference.SGAccessKey,
-                SecretKey    = isSingapore == false ? preference.SecretKey : preference.SGSecretKey,
-                RoleArn      = isSingapore == false ? preference.RoleArn : preference.SGRoleArn,
-                ClientId     = isSingapore == false ? isMexico == true ? preference.MXClientID : preference.ClientID : preference.SGClientID,
+                AccessKey = isSingapore == false ? preference.AccessKey : preference.SGAccessKey,
+                SecretKey = isSingapore == false ? preference.SecretKey : preference.SGSecretKey,
+                RoleArn = isSingapore == false ? preference.RoleArn : preference.SGRoleArn,
+                ClientId = isSingapore == false ? isMexico == true ? preference.MXClientID : preference.ClientID : preference.SGClientID,
                 ClientSecret = isSingapore == false ? isMexico == true ? preference.MXClientSecret : preference.ClientSecret : preference.SGClientSecret,
                 RefreshToken = refreshToken,
-                MarketPlace  = MarketPlace.GetMarketPlaceByID(marketPlaceID),
+                MarketPlace = MarketPlace.GetMarketPlaceByID(marketPlaceID),
             });
         }
 
@@ -171,7 +170,7 @@ namespace LUMTomofunCustomization.Graph
             return amzConnection.Reports.GetReports(parameters);
         }
 
-        public virtual void ImportAmzRecords()
+        public virtual void ImportAmzRecords(DateTime? fromDate)
         {
             try
             {
@@ -200,7 +199,7 @@ namespace LUMTomofunCustomization.Graph
                     {
                         mP_EU_CA = mpID;
 
-                        var reports = GetFulfillmentInventoryReports(amzConnection, Filter.Current.FromDate, mpID);
+                        var reports = GetFulfillmentInventoryReports(amzConnection, fromDate, mpID);
 
                         reports.RemoveAll(r => r.ReportDocumentId == null);
 
@@ -291,10 +290,10 @@ namespace LUMTomofunCustomization.Graph
                 ReportID = reportID
             };
 
-            reconcilition.ERPSku   = GetStockItemOrCrossRef(reconcilition.Sku);
+            reconcilition.ERPSku = GetStockItemOrCrossRef(reconcilition.Sku);
             reconcilition.Location = GetLocationIDByWarehouse(reconcilition.Warehouse, list[6].ToUpper());
             // FBA publish IN report after 12:00 am, so the snapshot date actually is one day before .
-            reconcilition.INDate   = reconcilition.SnapshotDate.Value.AddDays(-1).Date;
+            reconcilition.INDate = reconcilition.SnapshotDate.Value.AddDays(-1).Date;
 
             if (Reconcilition.Cache.Inserted.RowCast<LUMAmzINReconcilition>().Where(w => w.INDate == reconcilition.INDate && w.Sku == reconcilition.Sku && w.FBACenterID == reconcilition.FBACenterID &&
                                                                                          w.Warehouse == reconcilition.Warehouse && w.Location == reconcilition.Location).Count() <= 0)
@@ -325,17 +324,17 @@ namespace LUMTomofunCustomization.Graph
 
             adjustEntry.CurrentDocument.Insert(new INRegister()
             {
-                DocType  = INDocType.Adjustment,
+                DocType = INDocType.Adjustment,
                 TranDate = lists[0].SnapshotDate,
                 TranDesc = "FBA IN Reconciliation"
             });
 
             var aggrList = lists.GroupBy(g => new { g.ERPSku, g.Warehouse, g.Location }).Select(v => new
             {
-                ERPSku    = v.Key.ERPSku,
+                ERPSku = v.Key.ERPSku,
                 Warehouse = v.Key.Warehouse,
-                Location  = v.Key.Location,
-                Qty       = v.Sum(s => s.Qty)
+                Location = v.Key.Location,
+                Qty = v.Sum(s => s.Qty)
             }).ToList();
 
             for (int i = 0; i < aggrList.Count; i++)
@@ -363,7 +362,7 @@ namespace LUMTomofunCustomization.Graph
         {
             return InventoryItem.UK.Find(this, sku)?.InventoryCD ??
                    InventoryItem.PK.Find(this, SelectFrom<INItemXRef>.Where<INItemXRef.alternateID.IsEqual<@P.AsString>
-                                                                           .And<INItemXRef.alternateType.IsEqual<INAlternateType.global>>>.View.Select(this, sku).TopFirst?.InventoryID)?.InventoryCD ?? 
+                                                                           .And<INItemXRef.alternateType.IsEqual<INAlternateType.global>>>.View.Select(this, sku).TopFirst?.InventoryID)?.InventoryCD ??
                    "*****";
         }
 
