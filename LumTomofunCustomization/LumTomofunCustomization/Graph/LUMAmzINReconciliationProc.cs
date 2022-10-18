@@ -35,12 +35,11 @@ namespace LUMTomofunCustomization.Graph
             //Actions.Move(nameof(massDeletion), nameof(importFBAIN), true);
             Actions.Move("ProcessAll", nameof(createAdjustment), true);
 
+            SettlementFilter filter = Filter.Current;
+
             Reconcilition.SetProcessVisible(false);
-            Reconcilition.SetProcessAllCaption("Import FBA IN");//& Create");
-            Reconcilition.SetProcessDelegate(delegate (List<LUMAmzINReconcilition> lists)
-            {
-                ImportRecords(lists);
-            });
+            Reconcilition.SetProcessAllCaption("Import FBA IN");
+            Reconcilition.SetProcessDelegate(reconciliations => ImportRecords(reconciliations, filter));
         }
         #endregion
 
@@ -103,11 +102,11 @@ namespace LUMTomofunCustomization.Graph
         #endregion
 
         #region Static Methods
-        public static void ImportRecords(List<LUMAmzINReconcilition> lists)
+        public static void ImportRecords(List<LUMAmzINReconcilition> lists, SettlementFilter filter)
         {
             LUMAmzINReconciliationProc graph = CreateInstance<LUMAmzINReconciliationProc>();
 
-            graph.ImportAmzRecords();
+            graph.ImportAmzRecords(filter.FromDate);
             //graph.CreateInvAdjustment(lists);
         }
         #endregion
@@ -171,7 +170,7 @@ namespace LUMTomofunCustomization.Graph
             return amzConnection.Reports.GetReports(parameters);
         }
 
-        public virtual void ImportAmzRecords()
+        public virtual void ImportAmzRecords(DateTime? fromDate)
         {
             try
             {
@@ -200,7 +199,7 @@ namespace LUMTomofunCustomization.Graph
                     {
                         mP_EU_CA = mpID;
 
-                        var reports = GetFulfillmentInventoryReports(amzConnection, Filter.Current.FromDate, mpID);
+                        var reports = GetFulfillmentInventoryReports(amzConnection, fromDate, mpID);
 
                         reports.RemoveAll(r => r.ReportDocumentId == null);
 
