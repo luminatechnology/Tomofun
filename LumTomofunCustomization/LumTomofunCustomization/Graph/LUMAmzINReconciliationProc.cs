@@ -264,8 +264,6 @@ namespace LUMTomofunCustomization.Graph
                 }
 
                 this.Actions.PressSave();
-
-                DeleteSameOrEmptyData(string.Empty);
             }
             catch (Exception e)
             {
@@ -301,6 +299,8 @@ namespace LUMTomofunCustomization.Graph
             reconcilition.INDate   = reconcilition.SnapshotDate.Value.AddDays(-1).Date;
 
             Reconcilition.Insert(reconcilition);
+
+            DeleteSameOrEmptyData(null, reconcilition.INDate, reconcilition.Sku, reconcilition.Warehouse.Value, reconcilition.Location.Value);
         }
 
         /// <summary>
@@ -400,14 +400,19 @@ namespace LUMTomofunCustomization.Graph
                                                      new PXDataFieldAssign<LUMAmzINReconcilition.reportID>(string.Empty));
         }
 
-        private void DeleteSameOrEmptyData(string reportID)
+        private void DeleteSameOrEmptyData(string reportID, DateTime? iNDate = null, string sku = null, int warehouse = 0, int location = 0)
         {
-            if (reportID == string.Empty)
+            if (!string.IsNullOrEmpty(sku))
             {
-                PXDatabase.Delete<LUMAmzINReconcilition>(new PXDataFieldRestrict<LUMAmzINReconcilition.reportID>(string.Empty),
+                // Delete same records.
+                PXDatabase.Delete<LUMAmzINReconcilition>(new PXDataFieldRestrict<LUMAmzINReconcilition.iNDate>(PXDbType.DateTime, 8, iNDate, PXComp.EQ),
+                                                         new PXDataFieldRestrict<LUMAmzINReconcilition.sku>(sku),
+                                                         new PXDataFieldRestrict<LUMAmzINReconcilition.warehouse>(warehouse),
+                                                         new PXDataFieldRestrict<LUMAmzINReconcilition.location>(location),
                                                          new PXDataFieldRestrict<LUMAmzINReconcilition.isProcesses>(false));
             }
 
+            // Delete initial temporary record.
             PXDatabase.Delete<LUMAmzINReconcilition>(new PXDataFieldRestrict<LUMAmzINReconcilition.reportID>(reportID),
                                                      new PXDataFieldRestrict<LUMAmzINReconcilition.isProcesses>(false));
         }
