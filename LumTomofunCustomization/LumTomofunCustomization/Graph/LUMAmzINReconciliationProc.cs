@@ -20,11 +20,9 @@ namespace LUMTomofunCustomization.Graph
     {
         #region Features
         public PXCancel<SettlementFilter> Cancel;
-
         public PXFilter<SettlementFilter> Filter;
-        public PXFilteredProcessing<LUMAmzINReconcilition, SettlementFilter/*, Where<LUMAmzINReconcilition.isProcesses, Equal<False>>*/> Reconcilition;
-        //public PXSelectReadonly<LUMAmzINReconcilition, Where<LUMAmzINReconcilition.isProcesses, Equal<True>>> PrcoessedReconcil;
-
+        public PXFilteredProcessing<LUMAmzINReconcilition, SettlementFilter, Where<LUMAmzINReconcilition.snapshotDate, IsNotNull>,
+                                                                             OrderBy<Desc<LUMAmzINReconcilition.iNDate>>> Reconcilition;
         public PXSetup<LUMMWSPreference> Setup;
         #endregion
 
@@ -264,8 +262,6 @@ namespace LUMTomofunCustomization.Graph
                 }
 
                 this.Actions.PressSave();
-
-                DeleteSameOrEmptyData(string.Empty);
             }
             catch (Exception e)
             {
@@ -300,7 +296,13 @@ namespace LUMTomofunCustomization.Graph
             // FBA publish IN report after 12:00 am, so the snapshot date actually is one day before .
             reconcilition.INDate = reconcilition.SnapshotDate.Value.AddDays(-1).Date;
 
-            Reconcilition.Insert(reconcilition);
+            if (Reconcilition.Cache.Inserted.RowCast<LUMAmzINReconcilition>().Where(w => w.INDate == reconcilition.INDate && w.Sku == reconcilition.Sku && w.FBACenterID == reconcilition.FBACenterID &&
+                                                                                         w.Warehouse == reconcilition.Warehouse && w.Location == reconcilition.Location).Count() <= 0)
+            {
+                Reconcilition.Insert(reconcilition);
+            }
+
+            DeleteSameOrEmptyData(null, reconcilition.INDate, reconcilition.Sku, reconcilition.Warehouse.Value, reconcilition.Location.Value, reconcilition.FBACenterID);
         }
 
         /// <summary>
@@ -400,14 +402,20 @@ namespace LUMTomofunCustomization.Graph
                                                      new PXDataFieldAssign<LUMAmzINReconcilition.reportID>(string.Empty));
         }
 
-        private void DeleteSameOrEmptyData(string reportID)
+        private void DeleteSameOrEmptyData(string reportID, DateTime? iNDate = null, string sku = null, int warehouse = 0, int location = 0, string fBACenterID = null)
         {
-            if (reportID == string.Empty)
+            if (!string.IsNullOrEmpty(sku))
             {
-                PXDatabase.Delete<LUMAmzINReconcilition>(new PXDataFieldRestrict<LUMAmzINReconcilition.reportID>(string.Empty),
+                // Delete same records.
+                PXDatabase.Delete<LUMAmzINReconcilition>(new PXDataFieldRestrict<LUMAmzINReconcilition.iNDate>(PXDbType.DateTime, 8, iNDate, PXComp.EQ),
+                                                         new PXDataFieldRestrict<LUMAmzINReconcilition.sku>(sku),
+                                                         new PXDataFieldRestrict<LUMAmzINReconcilition.warehouse>(warehouse),
+                                                         new PXDataFieldRestrict<LUMAmzINReconcilition.location>(location),
+                                                         new PXDataFieldRestrict<LUMAmzINReconcilition.fBACenterID>(fBACenterID),
                                                          new PXDataFieldRestrict<LUMAmzINReconcilition.isProcesses>(false));
             }
 
+            // Delete initial temporary record.
             PXDatabase.Delete<LUMAmzINReconcilition>(new PXDataFieldRestrict<LUMAmzINReconcilition.reportID>(reportID),
                                                      new PXDataFieldRestrict<LUMAmzINReconcilition.isProcesses>(false));
         }
