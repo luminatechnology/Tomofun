@@ -9,14 +9,14 @@ namespace LUMTomofunCustomization.DAC
     {
         #region CompanyCD
         [PXDBString(128, IsUnicode = true, InputMask = "", IsKey = true)]
-        [PXUIField(DisplayName = "Company CD")]
+        [PXUIField(DisplayName = "Company CD",Visible = false)]
         public virtual string CompanyCD { get; set; }
         public abstract class companyCD : PX.Data.BQL.BqlString.Field<companyCD> { }
         #endregion
 
         #region SDate
         [PXDBDate(IsKey = true)]
-        [PXUIField(DisplayName = "SDate")]
+        [PXUIField(DisplayName = "SDate", Visible = false)]
         public virtual DateTime? SDate { get; set; }
         public abstract class sDate : PX.Data.BQL.BqlDateTime.Field<sDate> { }
         #endregion
@@ -65,7 +65,7 @@ namespace LUMTomofunCustomization.DAC
 
         #region SiteDescr
         [PXDBString(60, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Site Descr")]
+        [PXUIField(DisplayName = "Site Descr", Visible = false)]
         public virtual string SiteDescr { get; set; }
         public abstract class siteDescr : PX.Data.BQL.BqlString.Field<siteDescr> { }
         #endregion
@@ -86,7 +86,7 @@ namespace LUMTomofunCustomization.DAC
 
         #region LocationDescr
         [PXDBString(60, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Location Descr")]
+        [PXUIField(DisplayName = "Location Descr", Visible = false)]
         public virtual string LocationDescr { get; set; }
         public abstract class locationDescr : PX.Data.BQL.BqlString.Field<locationDescr> { }
         #endregion

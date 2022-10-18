@@ -57,7 +57,7 @@ namespace LUMLocalization.DAC
         #endregion
 
         #region DetailedDesc
-        [PXDBString(100, IsUnicode = true, InputMask = "")]
+        [PXDBString(100, IsUnicode = true, InputMask = "",IsKey = true)]
         [PXUIField(DisplayName = "Detailed Desc")]
         public virtual string DetailedDesc { get; set; }
         public abstract class detailedDesc : PX.Data.BQL.BqlString.Field<detailedDesc> { }

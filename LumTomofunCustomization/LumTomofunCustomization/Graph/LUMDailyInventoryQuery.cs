@@ -31,22 +31,56 @@ namespace LumTomofunCustomization.Graph
                    PXView.Filters, ref startrow, 1000000, ref totalrow);
             PXView.StartRow = 0;
             var vINReconciliationData = SelectFrom<vGlobalINReconciliation>
-                                       .View.Select(this).RowCast<vGlobalINReconciliation>();
+                                       .Where<vGlobalINReconciliation.iNDate.IsNotNull>
+                                       .View.Select(this).RowCast<vGlobalINReconciliation>()
+                                       .Where(x => x.INDate?.Date == filter.SDate?.Date)
+                                       .GroupBy(x => new { x.SiteCD, x.LocationCD, x.ERPSku, INDate = x.INDate?.Date })
+                                       .Select(x => new v_GlobalINItemSiteHistDay()
+                                       {
+                                           InventoryCD = x.Key.ERPSku,
+                                           SiteCD = x.Key.SiteCD,
+                                           LocationCD = x.Key.LocationCD,
+                                           EndQty = 0,
+                                           WarehouseQty = x.Sum(y => y.Qty ?? 0),
+                                           SDate = x.Key.INDate
+                                       });
+            var histData = new List<v_GlobalINItemSiteHistDay>();
             foreach (var inventoryGroup in result.GroupBy(x => new { ((v_GlobalINItemSiteHistDay)x).InventoryID, ((v_GlobalINItemSiteHistDay)x).Siteid, ((v_GlobalINItemSiteHistDay)x).LocationID }))
             {
                 // Calculate VarQty
                 v_GlobalINItemSiteHistDay currentRow = inventoryGroup.OrderByDescending(x => ((v_GlobalINItemSiteHistDay)x).SDate).FirstOrDefault() as v_GlobalINItemSiteHistDay;
-                if (currentRow != null)
-                {
-                    var mappingRow = vINReconciliationData.Where(x => x.SiteCD?.Trim() == currentRow?.SiteCD?.Trim() && 
-                                                                      x.LocationCD?.Trim() == currentRow?.LocationCD?.Trim() && 
-                                                                      x.ERPSku?.Trim() == currentRow?.InventoryCD?.Trim() && 
-                                                                      x.INDate?.Date == filter?.SDate?.Date);
-                    currentRow.WarehouseQty = mappingRow.Sum(x => x.Qty ?? 0);
-                    currentRow.VarQty = currentRow.WarehouseQty - (currentRow?.EndQty ?? 0);
-                }
-                yield return currentRow;
+                histData.Add(currentRow);
             }
+
+            var leftResult = from hist in histData
+                             join rec in vINReconciliationData on new { A = hist.SiteCD?.Trim(), B = hist?.LocationCD?.Trim(), C = hist?.InventoryCD?.Trim(), D = hist?.SDate?.Date } equals
+                                                                  new { A = rec.SiteCD?.Trim(), B = rec?.LocationCD?.Trim(), C = rec?.InventoryCD?.Trim(), D = rec?.SDate?.Date } into temp
+                             from rec in temp.DefaultIfEmpty()
+                             select new v_GlobalINItemSiteHistDay()
+                             {
+                                 InventoryCD = hist?.InventoryCD?.Trim(),
+                                 EndQty = hist?.EndQty,
+                                 SiteCD = hist?.SiteCD?.Trim(),
+                                 LocationCD = hist?.LocationCD?.Trim(),
+                                 WarehouseQty = rec?.WarehouseQty ?? 0,
+                                 InventoryITemDescr = hist?.InventoryITemDescr,
+                                 VarQty = (rec?.WarehouseQty ?? 0) - (hist?.EndQty ?? 0)
+                             };
+            var rightResult = from rec in vINReconciliationData
+                              join hist in histData on new { A = rec.SiteCD?.Trim(), B = rec?.LocationCD?.Trim(), C = rec?.InventoryCD?.Trim(), D = rec?.SDate?.Date } equals
+                                                       new { A = hist.SiteCD?.Trim(), B = hist?.LocationCD?.Trim(), C = hist?.InventoryCD?.Trim(), D = hist?.SDate?.Date } into temp
+                              from hist in temp.DefaultIfEmpty()
+                              select new v_GlobalINItemSiteHistDay()
+                              {
+                                  InventoryCD = rec?.InventoryCD?.Trim(),
+                                  EndQty = hist?.EndQty ?? 0,
+                                  SiteCD = rec?.SiteCD?.Trim(),
+                                  LocationCD = rec?.LocationCD?.Trim(),
+                                  WarehouseQty = rec?.WarehouseQty ?? 0,
+                                  VarQty = (rec?.WarehouseQty ?? 0) - (hist?.EndQty ?? 0)
+                              };
+            return leftResult.Union(rightResult.Where(x => x.EndQty == 0));
+            //return leftResult.Union(rightResult).Distinct().GroupBy(x => new { x.InventoryCD ,x.EndQty ,x.SiteCD ,x.LocationCD ,x.WarehouseQty ,x.VarQty }).Select(g => g.FirstOrDefault());
         }
 
         public class DailyInventoryFilter : IBqlTable
@@ -57,5 +91,6 @@ namespace LumTomofunCustomization.Graph
             public virtual DateTime? SDate { get; set; }
             public abstract class sDate : PX.Data.BQL.BqlDateTime.Field<sDate> { }
         }
+
     }
 }
