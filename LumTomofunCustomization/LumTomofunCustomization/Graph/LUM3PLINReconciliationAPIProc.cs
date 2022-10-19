@@ -228,12 +228,15 @@ namespace LUMTomofunCustomization.Graph
         #endregion
 
         #region Return Helper
-        public virtual LUMAPIResults GetRHWarehouseByCountry(string authzToken, string aPIKey, string aPIToken, string countryCode)
-        {          
+        public virtual LUMAPIResults GetRHAllCountriesWarehouse(string authzToken, string aPIKey, string aPIToken, string countryCode)
+        {
+            bool noCtryCode = string.IsNullOrEmpty(countryCode);
+
             var helper = new LUMAPIHelper(new LUMAPIConfig()
                                           {
                                               RequestMethod = HttpMethod.Get,
-                                              RequestUrl = $"https://api.returnhelpercentre.com/v1/user/api/warehouse/getWarehouseByFromCountry",
+                                              RequestUrl = noCtryCode == false ? $"https://api.returnhelpercentre.com/v1/user/api/warehouse/getWarehouseByFromCountry" : 
+                                                                                 $"https://api.returnhelpercentre.com/v1/public/api/country/getAllCountries",
                                               AuthType = "Bearer",
                                               Token = authzToken
                                           },
@@ -244,7 +247,7 @@ namespace LUMTomofunCustomization.Graph
                                               { "Content-Type", "application/json" }
                                           });
 
-            return helper.GetResults($"?countryCode={countryCode}");
+            return helper.GetResults(noCtryCode == false ? $"?countryCode={countryCode}" : string.Empty);
         }
 
         public virtual LUMAPIResults GetRHReturnInventory(string authzToken, string aPIKey, string aPIToken, int warehouse, int pageCounts = 0)
@@ -268,13 +271,13 @@ namespace LUMTomofunCustomization.Graph
 
         private void CreateDataFromRH(LUM3PLSetup setup)
         {
-            string[] fixedCountries = new string[] { "jpn", "gbr", "deu", "aus", "can" };
+            var countries = LUMAPIHelper.DeserializeJSONString<ReturnHelperEntity.CountryRoot>(GetRHAllCountriesWarehouse(setup.RHAuthzToken, setup.RHApiKey, setup.RHApiToken, null).ContentResult);
 
             Dictionary<int, int> dic = new Dictionary<int, int>();
             // #1, get all the defined warehouses and calculate how many pages of transaction records each warehouse has.
-            for (int i = 0; i < fixedCountries.Length; i++)
+            for (int i = 0; i < countries?.countries?.Count; i++)
             {
-                var warehouses = LUMAPIHelper.DeserializeJSONString<ReturnHelperEntity.WarehouseRoot>(GetRHWarehouseByCountry(setup.RHAuthzToken, setup.RHApiKey, setup.RHApiToken, fixedCountries[i]).ContentResult);
+                var warehouses = LUMAPIHelper.DeserializeJSONString<ReturnHelperEntity.WarehouseRoot>(GetRHAllCountriesWarehouse(setup.RHAuthzToken, setup.RHApiKey, setup.RHApiToken, countries?.countries[i].countryCode).ContentResult);
 
                 for (int j = 0; j < warehouses?.warehouses?.Count; j++)
                 {

@@ -5,6 +5,13 @@ namespace LumTomofunCustomization.API_Entity
 {
     public class ReturnHelperEntity
     {
+        public class CountryRoot
+        {
+            public string correlationId { get; set; }
+            public Meta meta { get; set; }
+            public List<Country> countries { get; set; }
+        }
+
         public class WarehouseRoot
         {
             public string correlationId { get; set; }
