@@ -814,7 +814,7 @@ namespace LumTomofunCustomization.Graph
                                             if (row?.Amount >= 0)
                                             {
                                                 var codFee = (row?.Amount >= 0 && row?.Amount < 30433) ? 432 :
-                                                                        (row?.Amount >= 30433 && row?.Amount < 100649) ? 648 : 1080;
+                                                             (row?.Amount >= 30433 && row?.Amount < 100649) ? 648 : 1080;
                                                 // 寫死CodFee
                                                 var specialOrderId = new string[] { "S03-5330878-3961409", "S03-9007355-0712609", "S03-9214071-1707817", "S03-1776840-6198246", "S03-8819813-8942245" };
                                                 if (specialOrderId.Any(x => x == amzGroupOrderData.Key.OrderID))
@@ -901,17 +901,41 @@ namespace LumTomofunCustomization.Graph
                                     #endregion
 
                                     #region SOLine
+                                    // 理論上只會有一筆
                                     foreach (var row in amzGroupOrderData)
                                     {
                                         PXLongOperation.SetCurrentItem(row);
+
+                                        var codFee = (Math.Abs(row?.Amount ?? 0) >= 0 && Math.Abs(row?.Amount ?? 0) < 30433) ? 432 :
+                                                     (Math.Abs(row?.Amount ?? 0) >= 30433 && Math.Abs(row?.Amount ?? 0) < 100649) ? 648 : 1080;
+                                        // 寫死CodFee
+                                        var specialOrderId = new string[] { "S03-5330878-3961409", "S03-9007355-0712609", "S03-9214071-1707817", "S03-1776840-6198246", "S03-8819813-8942245" };
+                                        if (specialOrderId.Any(x => x == amzGroupOrderData.Key.OrderID))
+                                            codFee = 1080;
+
                                         var soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+                                        // Insert EC-SHIPPING
+                                        if ((row.Amount ?? 0) == 0)
+                                            continue;
+                                        soTrans = soGraph.Transactions.Cache.Insert(soTrans) as SOLine;
+                                        soTrans.InventoryID = AmazonPublicFunction.GetInvetoryitemID(baseGraph, "EC-SHIPPING");
+                                        soTrans.OrderQty = 1;
+                                        soTrans.TranDesc = row.AmountDescription;
+                                        soTrans.CuryUnitPrice = codFee;
+                                        if (soTrans.InventoryID == null)
+                                            throw new PXException($"Can not find SOLine InventoryID (OrderType: {amzGroupOrderData.Key.TransactionType}, Amount Descr:EC-SHIPPING)");
+                                        soTrans.TaxCategoryID = "NONTAXABLE";
+                                        soGraph.Transactions.Cache.Update(soTrans);
+
+                                        // Insert CODREFUND
+                                        soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                         if ((row.Amount ?? 0) == 0)
                                             continue;
                                         soTrans = soGraph.Transactions.Cache.Insert(soTrans) as SOLine;
                                         soTrans.InventoryID = AmazonPublicFunction.GetInvetoryitemID(baseGraph, "CODREFUND");
                                         soTrans.OrderQty = 1;
                                         soTrans.TranDesc = row.AmountDescription;
-                                        soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.CuryUnitPrice = ((row.Amount ?? 0) * -1) - codFee;
                                         if (soTrans.InventoryID == null)
                                             throw new PXException($"Can not find SOLine InventoryID (OrderType: {amzGroupOrderData.Key.TransactionType}, Amount Descr:CODREFUND)");
                                         // isTaxCalculate = true then NONTAXABLE
