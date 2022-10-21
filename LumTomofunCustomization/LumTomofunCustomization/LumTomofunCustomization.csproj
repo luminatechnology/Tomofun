@@ -134,6 +134,7 @@
     <Compile Include="DAC\LUMMWSPreference.cs" />
     <Compile Include="DAC\LUMForecastUploadPreference.cs" />
     <Compile Include="Graph_Extension\APInvoiceEntryExt.cs" />
+    <Compile Include="Graph_Extension\CATranEnqExt.cs" />
     <Compile Include="LUMLibrary\AmazonPublicFunction.cs" />
     <Compile Include="DAC\LUMShopifySettlementTransData.cs" />
     <Compile Include="LUMLibrary\ShopifyPublicFunction.cs" />
