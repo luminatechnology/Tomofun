@@ -269,17 +269,20 @@ namespace LumTomofunCustomization.Graph
                                 soGraph.Transactions.Insert(soTrans);
 
                                 // Fee
-                                soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
-                                soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
-                                soTrans.OrderQty = 1;
-                                soTrans.CuryUnitPrice = (row.Fee ?? 0) * -1;
-                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
-                                newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
-                                if (newSalesAcctID.HasValue)
-                                    soTrans.SalesAcctID = newSalesAcctID;
-                                if (newSalesSubAcctID.HasValue)
-                                    soTrans.SalesSubID = newSalesSubAcctID;
-                                soGraph.Transactions.Insert(soTrans);
+                                if ((row?.Fee ?? 0) != 0)
+                                {
+                                    soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+                                    soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
+                                    soTrans.OrderQty = 1;
+                                    soTrans.CuryUnitPrice = (row.Fee ?? 0) * -1;
+                                    newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                    newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                    if (newSalesAcctID.HasValue)
+                                        soTrans.SalesAcctID = newSalesAcctID;
+                                    if (newSalesSubAcctID.HasValue)
+                                        soTrans.SalesSubID = newSalesSubAcctID;
+                                    soGraph.Transactions.Insert(soTrans);
+                                }
 
                                 // Tax
                                 soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
@@ -367,11 +370,14 @@ namespace LumTomofunCustomization.Graph
                                 soTrans.CuryUnitPrice = (row.Gross ?? 0);
                                 soGraph.Transactions.Insert(soTrans);
                                 // Fee
-                                soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
-                                soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
-                                soTrans.OrderQty = 1;
-                                soTrans.CuryUnitPrice = (row.Fee ?? 0);
-                                soGraph.Transactions.Insert(soTrans);
+                                if ((row?.Fee ?? 0) != 0)
+                                {
+                                    soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+                                    soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
+                                    soTrans.OrderQty = 1;
+                                    soTrans.CuryUnitPrice = (row.Fee ?? 0);
+                                    soGraph.Transactions.Insert(soTrans);
+                                }
                                 // Tax
                                 if (row.Tax.HasValue && row.Tax != 0)
                                 {

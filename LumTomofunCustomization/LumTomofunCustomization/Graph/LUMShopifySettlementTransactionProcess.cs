@@ -256,22 +256,23 @@ namespace LumTomofunCustomization.Graph
                                     soTrans.TaxCategoryID = "NONTAXABLE";
                                 soGraph.Transactions.Insert(soTrans);
 
-                               
-
                                 // Fee
-                                soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
-                                soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
-                                soTrans.OrderQty = 1;
-                                soTrans.CuryUnitPrice = row.Fee * -1;
-                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
-                                newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
-                                if (newSalesAcctID.HasValue)
-                                    soTrans.SalesAcctID = newSalesAcctID;
-                                if (newSalesSubAcctID.HasValue)
-                                    soTrans.SalesSubID = newSalesSubAcctID;
-                                // If Inventory ID != ‘Refund’ 
-                                soTrans.TaxCategoryID = "NONTAXABLE";
-                                soGraph.Transactions.Insert(soTrans);
+                                if ((row?.Fee ?? 0) != 0)
+                                {
+                                    soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+                                    soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
+                                    soTrans.OrderQty = 1;
+                                    soTrans.CuryUnitPrice = row.Fee * -1;
+                                    newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                    newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                    if (newSalesAcctID.HasValue)
+                                        soTrans.SalesAcctID = newSalesAcctID;
+                                    if (newSalesSubAcctID.HasValue)
+                                        soTrans.SalesSubID = newSalesSubAcctID;
+                                    // If Inventory ID != ‘Refund’ 
+                                    soTrans.TaxCategoryID = "NONTAXABLE";
+                                    soGraph.Transactions.Insert(soTrans);
+                                }
                                 #endregion
 
                                 #region Update Tax
@@ -368,11 +369,14 @@ namespace LumTomofunCustomization.Graph
                                 soTrans.CuryUnitPrice = row.Amount;
                                 soGraph.Transactions.Insert(soTrans);
                                 // Fee
-                                soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
-                                soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
-                                soTrans.OrderQty = 1;
-                                soTrans.CuryUnitPrice = row.Fee;
-                                soGraph.Transactions.Insert(soTrans);
+                                if ((row?.Fee ?? 0) != 0)
+                                {
+                                    soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+                                    soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
+                                    soTrans.OrderQty = 1;
+                                    soTrans.CuryUnitPrice = row.Fee;
+                                    soGraph.Transactions.Insert(soTrans);
+                                }
                                 #endregion
 
                                 #region Update Tax

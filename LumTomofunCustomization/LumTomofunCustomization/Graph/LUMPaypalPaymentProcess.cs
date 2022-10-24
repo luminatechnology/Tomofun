@@ -69,7 +69,8 @@ namespace LumTomofunCustomization.Graph
                                       row.Description == "Dispute Fee" ? "DisputeFee" :
                                       row.Description == "Chargeback" ? "Chargeback" :
                                       row.Description == "Hold on Balance for Dispute Investigation" ? "DisputeCharge" :
-                                      row.Description == "Payment Reversal" ? "Refund" : string.Empty;
+                                      row.Description == "Payment Reversal" ? "Refund" :
+                                      row.Description == "General Hold Release" ? "Order" : string.Empty;
             }
             // Marketplace2
             if (!string.IsNullOrEmpty(row.Marketplace))
@@ -299,19 +300,22 @@ namespace LumTomofunCustomization.Graph
                                 soGraph.Transactions.Insert(soTrans);
 
                                 // Fee
-                                soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
-                                soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
-                                soTrans.OrderQty = 1;
-                                soTrans.CuryUnitPrice = (row.Fee ?? 0) * -1;
-                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
-                                newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
-                                if (newSalesAcctID.HasValue)
-                                    soTrans.SalesAcctID = newSalesAcctID;
-                                if (newSalesSubAcctID.HasValue)
-                                    soTrans.SalesSubID = newSalesSubAcctID;
-                                // If Inventory ID != ‘Refund’ 
-                                soTrans.TaxCategoryID = "NONTAXABLE";
-                                soGraph.Transactions.Insert(soTrans);
+                                if ((row?.Fee ?? 0) != 0)
+                                {
+                                    soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+                                    soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
+                                    soTrans.OrderQty = 1;
+                                    soTrans.CuryUnitPrice = (row.Fee ?? 0) * -1;
+                                    newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                    newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                    if (newSalesAcctID.HasValue)
+                                        soTrans.SalesAcctID = newSalesAcctID;
+                                    if (newSalesSubAcctID.HasValue)
+                                        soTrans.SalesSubID = newSalesSubAcctID;
+                                    // If Inventory ID != ‘Refund’ 
+                                    soTrans.TaxCategoryID = "NONTAXABLE";
+                                    soGraph.Transactions.Insert(soTrans);
+                                }
                                 #endregion
 
                                 #region Update Tax
@@ -408,11 +412,14 @@ namespace LumTomofunCustomization.Graph
                                 soTrans.CuryUnitPrice = (row.Gross ?? 0);
                                 soGraph.Transactions.Insert(soTrans);
                                 // Fee
-                                soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
-                                soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
-                                soTrans.OrderQty = 1;
-                                soTrans.CuryUnitPrice = (row.Fee ?? 0);
-                                soGraph.Transactions.Insert(soTrans);
+                                if ((row?.Fee ?? 0) != 0)
+                                {
+                                    soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+                                    soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
+                                    soTrans.OrderQty = 1;
+                                    soTrans.CuryUnitPrice = (row.Fee ?? 0);
+                                    soGraph.Transactions.Insert(soTrans);
+                                }
                                 #endregion
 
                                 #region Update Tax
