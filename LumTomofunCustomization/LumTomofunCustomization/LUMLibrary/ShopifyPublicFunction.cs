@@ -46,20 +46,31 @@ namespace LumTomofunCustomization.LUMLibrary
 
         public static int? GetSalesAcctID(PXGraph graph, string inventoryName, int? inventoryID, PX.Objects.SO.SOOrder mapShopifyOrder, int? customerID)
         {
-            if (inventoryName?.ToUpper() != "REFUND")
-                return InventoryItem.PK.Find(graph, inventoryID)?.SalesAcctID;
-            else if (mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open)
+            if (inventoryName?.ToUpper() == "REFUND" && mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open)
                 return PX.Objects.AR.Customer.PK.Find(graph, customerID)?.PrepaymentAcctID;
-            return null;
+            else if (inventoryName?.ToUpper() == "REFUND" && mapShopifyOrder.Status != PX.Objects.SO.SOOrderStatus.Open)
+                return null;
+            else if (inventoryName.ToUpper().Contains("EC-WHTAX") && mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open)
+                return PX.Objects.AR.Customer.PK.Find(graph, customerID)?.PrepaymentAcctID;
+            else if (inventoryName.ToUpper().Contains("EC-WHTAX") && mapShopifyOrder.Status != PX.Objects.SO.SOOrderStatus.Open)
+                return InventoryItem.PK.Find(graph, inventoryID)?.SalesAcctID;
+            else
+                return InventoryItem.PK.Find(graph, inventoryID)?.SalesAcctID;
         }
 
         public static int? GetSalesSubAcctID(PXGraph graph, string inventoryName, int? inventoryID, PX.Objects.SO.SOOrder mapShopifyOrder, int? customerID)
         {
-            if (inventoryName?.ToUpper() != "REFUND")
-                return InventoryItem.PK.Find(graph, inventoryID)?.SalesSubID;
-            else if (mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open)
+
+            if (inventoryName?.ToUpper() == "REFUND" && mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open)
                 return PX.Objects.AR.Customer.PK.Find(graph, customerID)?.PrepaymentSubID;
-            return null;
+            else if (inventoryName?.ToUpper() == "REFUND" && mapShopifyOrder.Status != PX.Objects.SO.SOOrderStatus.Open)
+                return null;
+            else if (inventoryName.ToUpper().Contains("EC-WHTAX") && mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open)
+                return PX.Objects.AR.Customer.PK.Find(graph, customerID)?.PrepaymentSubID;
+            else if (inventoryName.ToUpper().Contains("EC-WHTAX") && mapShopifyOrder.Status != PX.Objects.SO.SOOrderStatus.Open)
+                return InventoryItem.PK.Find(graph, inventoryID)?.SalesSubID;
+            else
+                return InventoryItem.PK.Find(graph, inventoryID)?.SalesSubID;
         }
     }
 }

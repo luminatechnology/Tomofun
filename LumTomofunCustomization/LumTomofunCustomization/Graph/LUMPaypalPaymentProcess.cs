@@ -274,8 +274,8 @@ namespace LumTomofunCustomization.Graph
                                     ecSOTran.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, itemCD);
                                     ecSOTran.OrderQty = 1;
                                     ecSOTran.CuryUnitPrice = ECWHTAXAmount;
-                                    newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, row.TransactionType, ecSOTran.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
-                                    newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, row.TransactionType, ecSOTran.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                    newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, itemCD, ecSOTran.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                    newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, itemCD, ecSOTran.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
                                     if (newSalesAcctID.HasValue)
                                         ecSOTran.SalesAcctID = newSalesAcctID;
                                     if (newSalesSubAcctID.HasValue)
