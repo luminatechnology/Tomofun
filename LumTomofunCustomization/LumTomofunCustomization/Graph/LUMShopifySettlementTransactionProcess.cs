@@ -78,7 +78,7 @@ namespace LumTomofunCustomization.Graph
                         // SOLine SalesSubAccount
                         int? newSalesSubAcctID = null;
                         // 以建立的Shopify Sales Order
-                        var shopifySOOrder = SelectFrom<SOOrder>
+                        var oldShopifySOOrder = SelectFrom<SOOrder>
                          .Where<SOOrder.orderType.IsEqual<P.AsString>
                            .And<SOOrder.customerOrderNbr.IsEqual<P.AsString>>>
                          .View.SelectSingleBound(baseGraph, null, "SP", row.Checkout?.Substring(1)).TopFirst;
@@ -96,8 +96,8 @@ namespace LumTomofunCustomization.Graph
 
                                 #region Header(Document)
                                 var arDoc = arGraph.Document.Cache.CreateInstance() as ARPayment;
-                                arDoc.DocType = shopifySOOrder == null ? "PMT" :
-                                                shopifySOOrder.Status == "N" ? "PPM" : "PMT";
+                                arDoc.DocType = oldShopifySOOrder == null ? "PMT" :
+                                                oldShopifySOOrder.Status == "N" ? "PPM" : "PMT";
                                 arDoc.AdjDate = row.TransactionDate;
                                 arDoc.ExtRefNbr = row.Checkout;
                                 arDoc.CustomerID = ShopifyPublicFunction.GetMarketplaceCustomer(row.Marketplace);
@@ -124,7 +124,7 @@ namespace LumTomofunCustomization.Graph
                                                           .InnerJoin<SOOrder>.On<ARTran.sOOrderNbr.IsEqual<SOOrder.orderNbr>>
                                                           .Where<SOOrder.orderNbr.IsEqual<P.AsString>
                                                             .And<SOOrder.orderType.IsEqual<P.AsString>>>
-                                                          .View.SelectSingleBound(baseGraph, null, shopifySOOrder.OrderNbr, shopifySOOrder.OrderType).TopFirst?.RefNbr;
+                                                          .View.SelectSingleBound(baseGraph, null, oldShopifySOOrder.OrderNbr, oldShopifySOOrder.OrderType).TopFirst?.RefNbr;
                                     arGraph.Adjustments.Insert(adjTrans);
                                     #endregion
                                 }
@@ -132,8 +132,8 @@ namespace LumTomofunCustomization.Graph
                                 {
                                     #region SOAdjust
                                     var adjSOTrans = arGraph.SOAdjustments.Cache.CreateInstance() as SOAdjust;
-                                    adjSOTrans.AdjdOrderType = shopifySOOrder.OrderType;
-                                    adjSOTrans.AdjdOrderNbr = shopifySOOrder.OrderNbr;
+                                    adjSOTrans.AdjdOrderType = oldShopifySOOrder.OrderType;
+                                    adjSOTrans.AdjdOrderNbr = oldShopifySOOrder.OrderNbr;
                                     arGraph.SOAdjustments.Insert(adjSOTrans);
                                     #endregion
                                 }
@@ -162,6 +162,8 @@ namespace LumTomofunCustomization.Graph
                             case "REFUND":
                             case "CHARGEBACK":
                                 #region TransactionType: REFUND/CHARGEBACK
+                                if (oldShopifySOOrder == null && row.TransactionType.ToUpper() == "REFUND")
+                                    throw new PXException($"Can not find SalesOrder");
                                 var soGraph = PXGraph.CreateInstance<SOOrderEntry>();
 
                                 #region Header
@@ -198,7 +200,7 @@ namespace LumTomofunCustomization.Graph
 
                                 #region Address
                                 var soGraph_SP = PXGraph.CreateInstance<SOOrderEntry>();
-                                soGraph_SP.Document.Current = shopifySOOrder;
+                                soGraph_SP.Document.Current = oldShopifySOOrder;
                                 if (soGraph_SP.Document.Current != null)
                                 {
                                     // Setting Shipping_Address
@@ -220,13 +222,31 @@ namespace LumTomofunCustomization.Graph
                                 #endregion
 
                                 #region SOLine
+                                var ECWHTAXAmount = (decimal?)0;
+                                // SOLine-Tax
+                                if (row.TransactionType.ToUpper() == "REFUND")
+                                {
+                                    ECWHTAXAmount = row.Amount * -1 == oldShopifySOOrder?.CuryOrderTotal ? oldShopifySOOrder?.CuryTaxTotal : oldShopifySOOrder?.CuryTaxTotal / oldShopifySOOrder?.CuryOrderTotal * row.Amount * -1;
+                                    var itemCD = $"EC-WHTAX-{row.Marketplace}";
+                                    var ecSOTran = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+                                    ecSOTran.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, itemCD);
+                                    ecSOTran.OrderQty = 1;
+                                    ecSOTran.CuryUnitPrice = ECWHTAXAmount;
+                                    newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, itemCD, ecSOTran.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                    newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, itemCD, ecSOTran.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                    if (newSalesAcctID.HasValue)
+                                        ecSOTran.SalesAcctID = newSalesAcctID;
+                                    if (newSalesSubAcctID.HasValue)
+                                        ecSOTran.SalesSubID = newSalesSubAcctID;
+                                    soGraph.Transactions.Insert(ecSOTran);
+                                }
                                 // Amount
                                 var soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                 soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, row.TransactionType);
                                 soTrans.OrderQty = 1;
-                                soTrans.CuryUnitPrice = row.Amount * -1;
-                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, row.TransactionType, soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
-                                newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, row.TransactionType, soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
+                                soTrans.CuryUnitPrice = row.Amount * -1 - ECWHTAXAmount;
+                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, row.TransactionType, soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, row.TransactionType, soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
                                 if (newSalesAcctID.HasValue)
                                     soTrans.SalesAcctID = newSalesAcctID;
                                 if (newSalesSubAcctID.HasValue)
@@ -236,13 +256,15 @@ namespace LumTomofunCustomization.Graph
                                     soTrans.TaxCategoryID = "NONTAXABLE";
                                 soGraph.Transactions.Insert(soTrans);
 
+                               
+
                                 // Fee
                                 soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                 soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
                                 soTrans.OrderQty = 1;
                                 soTrans.CuryUnitPrice = row.Fee * -1;
-                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
-                                newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, shopifySOOrder, soDoc.CustomerID);
+                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
                                 if (newSalesAcctID.HasValue)
                                     soTrans.SalesAcctID = newSalesAcctID;
                                 if (newSalesSubAcctID.HasValue)
@@ -317,7 +339,7 @@ namespace LumTomofunCustomization.Graph
 
                                 #region Address
                                 soGraph_SP = PXGraph.CreateInstance<SOOrderEntry>();
-                                soGraph_SP.Document.Current = shopifySOOrder;
+                                soGraph_SP.Document.Current = oldShopifySOOrder;
                                 if (soGraph_SP.Document.Current != null)
                                 {
                                     // Setting Shipping_Address
