@@ -69,8 +69,7 @@ namespace LumTomofunCustomization.Graph
                                       row.Description == "Dispute Fee" ? "DisputeFee" :
                                       row.Description == "Chargeback" ? "Chargeback" :
                                       row.Description == "Hold on Balance for Dispute Investigation" ? "DisputeCharge" :
-                                      row.Description == "Payment Reversal" ? "Refund" :
-                                      row.Description == "General Hold Release" ? "Order" : string.Empty;
+                                      row.Description == "Payment Reversal" ? "Refund" : string.Empty;
             }
             // Marketplace2
             if (!string.IsNullOrEmpty(row.Marketplace))
@@ -211,7 +210,7 @@ namespace LumTomofunCustomization.Graph
 
                                 #region Header
                                 var soDoc = soGraph.Document.Cache.CreateInstance() as SOOrder;
-                                soDoc.OrderType = "RT";
+                                soDoc.OrderType = "CM";
                                 soDoc.CustomerOrderNbr = row.OrderID;
                                 soDoc.OrderDate = row.TransactionDate;
                                 soDoc.RequestDate = row.TransactionDate;
@@ -450,7 +449,7 @@ namespace LumTomofunCustomization.Graph
                                 #endregion
                                 break;
                             default:
-                                throw new PXException("Transaction Type is not valid");
+                                break;
                         }
                         sc.Complete();
                     }

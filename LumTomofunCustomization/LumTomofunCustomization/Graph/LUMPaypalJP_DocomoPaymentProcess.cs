@@ -168,7 +168,7 @@ namespace LumTomofunCustomization.Graph
 
                                 #region Header
                                 var soDoc = soGraph.Document.Cache.CreateInstance() as SOOrder;
-                                soDoc.OrderType = "RT";
+                                soDoc.OrderType = "CM";
                                 soDoc.CustomerOrderNbr = row.OrderID;
                                 soDoc.OrderDate = row.TransactionDate;
                                 soDoc.RequestDate = row.TransactionDate;
@@ -282,7 +282,7 @@ namespace LumTomofunCustomization.Graph
                                 #endregion
                                 break;
                             default:
-                                throw new PXException("Transaction Type is not valid");
+                                break;
                         }
                         sc.Complete();
                     }
