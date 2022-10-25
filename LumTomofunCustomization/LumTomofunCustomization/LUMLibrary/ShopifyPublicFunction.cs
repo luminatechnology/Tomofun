@@ -46,9 +46,9 @@ namespace LumTomofunCustomization.LUMLibrary
 
         public static int? GetSalesAcctID(PXGraph graph, string inventoryName, int? inventoryID, PX.Objects.SO.SOOrder mapShopifyOrder, int? customerID)
         {
-            if (inventoryName?.ToUpper() == "REFUND" && mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open)
+            if (inventoryName.ToUpper().Contains("REFUND") && mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open)
                 return PX.Objects.AR.Customer.PK.Find(graph, customerID)?.PrepaymentAcctID;
-            else if (inventoryName?.ToUpper() == "REFUND" && mapShopifyOrder.Status != PX.Objects.SO.SOOrderStatus.Open)
+            else if (inventoryName.ToUpper().Contains("REFUND") && mapShopifyOrder.Status != PX.Objects.SO.SOOrderStatus.Open)
                 return null;
             else if (inventoryName.ToUpper().Contains("EC-WHTAX") && mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open)
                 return PX.Objects.AR.Customer.PK.Find(graph, customerID)?.PrepaymentAcctID;
@@ -61,9 +61,9 @@ namespace LumTomofunCustomization.LUMLibrary
         public static int? GetSalesSubAcctID(PXGraph graph, string inventoryName, int? inventoryID, PX.Objects.SO.SOOrder mapShopifyOrder, int? customerID)
         {
 
-            if (inventoryName?.ToUpper() == "REFUND" && mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open)
+            if (inventoryName.ToUpper().Contains("REFUND") && mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open)
                 return PX.Objects.AR.Customer.PK.Find(graph, customerID)?.PrepaymentSubID;
-            else if (inventoryName?.ToUpper() == "REFUND" && mapShopifyOrder.Status != PX.Objects.SO.SOOrderStatus.Open)
+            else if (inventoryName.ToUpper().Contains("REFUND") && mapShopifyOrder.Status != PX.Objects.SO.SOOrderStatus.Open)
                 return null;
             else if (inventoryName.ToUpper().Contains("EC-WHTAX") && mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open)
                 return PX.Objects.AR.Customer.PK.Find(graph, customerID)?.PrepaymentSubID;

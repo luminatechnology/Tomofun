@@ -242,11 +242,12 @@ namespace LumTomofunCustomization.Graph
                                 }
                                 // Amount
                                 var soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
-                                soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, row.TransactionType);
+                                var refundItemCD = row.TransactionType.ToUpper() == "REFUND" && row.Marketplace.ToUpper() == "TW" ? $"Refund-{row.Marketplace}" : row.TransactionType;
+                                soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, refundItemCD);
                                 soTrans.OrderQty = 1;
                                 soTrans.CuryUnitPrice = row.Amount * -1 - ECWHTAXAmount;
-                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, row.TransactionType, soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
-                                newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, row.TransactionType, soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, refundItemCD, soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, refundItemCD, soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
                                 if (newSalesAcctID.HasValue)
                                     soTrans.SalesAcctID = newSalesAcctID;
                                 if (newSalesSubAcctID.HasValue)

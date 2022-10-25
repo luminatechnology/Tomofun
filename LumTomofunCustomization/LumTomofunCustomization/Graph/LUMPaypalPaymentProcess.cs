@@ -69,7 +69,9 @@ namespace LumTomofunCustomization.Graph
                                       row.Description == "Dispute Fee" ? "DisputeFee" :
                                       row.Description == "Chargeback" ? "Chargeback" :
                                       row.Description == "Hold on Balance for Dispute Investigation" ? "DisputeCharge" :
-                                      row.Description == "Payment Reversal" ? "Refund" : string.Empty;
+                                      row.Description == "Payment Reversal" ? "Refund" : 
+                                      row.Description == "PayPal Checkoutによる支払い" ? "Order" : 
+                                      row.Description == "支払いの返金" ? "Refund" : string.Empty;
             }
             // Marketplace2
             if (!string.IsNullOrEmpty(row.Marketplace))
@@ -283,12 +285,13 @@ namespace LumTomofunCustomization.Graph
                                     soGraph.Transactions.Insert(ecSOTran);
                                 }
                                 // Amount
+                                var refundItemCD = row.TransactionType.ToUpper() == "REFUND" && row.Marketplace.ToUpper() == "TW" ? $"Refund-{row.Marketplace}" : row.TransactionType;
                                 var soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                 soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, row.TransactionType);
                                 soTrans.OrderQty = 1;
                                 soTrans.CuryUnitPrice = (row.Gross ?? 0) * -1 - ECWHTAXAmount;
-                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, row.TransactionType, soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
-                                newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, row.TransactionType, soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, refundItemCD, soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, refundItemCD, soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
                                 if (newSalesAcctID.HasValue)
                                     soTrans.SalesAcctID = newSalesAcctID;
                                 if (newSalesSubAcctID.HasValue)

@@ -264,9 +264,10 @@ namespace LumTomofunCustomization.Graph
                                 }
                                 else
                                 {
-                                    soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, row.TransactionType);
-                                    newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, row.TransactionType, soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
-                                    newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, row.TransactionType, soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                    var refundItemCD = row.TransactionType.ToUpper() == "REFUND" && row.Marketplace.ToUpper() == "TW" ? $"Refund-{row.Marketplace}" : row.TransactionType;
+                                    soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, refundItemCD);
+                                    newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, refundItemCD, soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
+                                    newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, refundItemCD, soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
                                     // If Inventory ID != ‘Refund’ 
                                     if (row.TransactionType?.ToUpper() != "REFUND")
                                         soTrans.TaxCategoryID = "NONTAXABLE";
