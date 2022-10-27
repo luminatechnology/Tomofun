@@ -9,14 +9,15 @@
     </px:PXDataSource>
 </asp:Content>
 <asp:Content ID="cont2" ContentPlaceHolderID="phF" runat="Server">
-    <px:PXFormView ID="form" runat="server" DataSourceID="ds" DataMember="Filter" Width="100%" Height="100px" AllowAutoHide="false">
+    <px:PXFormView ID="form" runat="server" DataSourceID="ds" DataMember="Filter" Width="100%" Height="50px" AllowAutoHide="false">
         <Template>
+            <px:PXLayoutRule runat="server" ID="CstPXLayoutRule1" StartColumn="True" ></px:PXLayoutRule>
             <px:PXDateTimeEdit runat="server" ID="edsDate" DataField="sDate" Width="180px" CommitChanges="True"></px:PXDateTimeEdit>
         </Template>
     </px:PXFormView>
 </asp:Content>
 <asp:Content ID="cont3" ContentPlaceHolderID="phG" runat="Server">
-    <px:PXGrid AllowPaging="True" SyncPosition="True" ID="grid" runat="server" DataSourceID="ds" Width="100%" Height="150px" SkinID="Primary" AllowAutoHide="false">
+    <px:PXGrid AllowPaging="True" SyncPosition="True" ID="grid" runat="server" DataSourceID="ds" Width="100%" Height="150px" SkinID="PrimaryInquire" AllowAutoHide="false" NoteIndicator="false" FilesIndicator=" false">
         <Levels>
             <px:PXGridLevel DataMember="Transaction">
                 <Columns>
@@ -37,7 +38,8 @@
             </px:PXGridLevel>
         </Levels>
         <AutoSize Container="Window" Enabled="True" MinHeight="150"></AutoSize>
-        <ActionBar>
+        <ActionBar PagerVisible="Bottom">
+            <PagerSettings Mode="NumericCompact" />
         </ActionBar>
         <Mode AllowDelete="False" AllowAddNew="False" AllowUpdate="False" />
     </px:PXGrid>
