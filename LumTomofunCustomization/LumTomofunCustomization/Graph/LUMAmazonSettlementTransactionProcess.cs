@@ -45,6 +45,23 @@ namespace LumTomofunCustomization.Graph
                 InitialData();
         }
 
+        #region Event
+        public virtual void _(Events.FieldDefaulting<SettlementFilter.fromDate> e)
+        {
+            var row = e.Row as SettlementFilter;
+            if (row != null && !row.FromDate.HasValue)
+                e.NewValue = DateTime.Now;
+        }
+
+        public virtual void _(Events.FieldDefaulting<SettlementFilter.toDate> e)
+        {
+            var row = e.Row as SettlementFilter;
+            if (row != null && !row.ToDate.HasValue)
+                e.NewValue = DateTime.Now.AddDays(1);
+        }
+
+        #endregion
+
         #region Method
 
         /// <summary> 執行Process </summary>
@@ -266,12 +283,16 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
                                     else if (row.AmountDescription == "RefundCommission")
                                     {
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
                                     else if (row.AmountDescription == "Principal" && row.Amount < 0)
                                     {
@@ -297,36 +318,57 @@ namespace LumTomofunCustomization.Graph
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
                                     else if (row.AmountDescription == "RestockingFee")
                                     {
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
                                     else if (row.AmountDescription == "Shipping")
                                     {
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
                                     else if (row.AmountDescription == "ShippingChargeback")
                                     {
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
                                     else if (row.AmountDescription == "ShippingHB")
                                     {
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
                                     else if (row.AmountDescription == "PointsReturned" || row.AmountDescription == "PointsFee")
                                     {
                                         soTrans.InventoryID = AmazonPublicFunction.GetFeeNonStockItem(row.AmountDescription);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
+                                    }
+                                    else if ((row.AmountDescription == "Tax" || row.AmountDescription == "ShippingTax" || row.AmountDescription == "TaxDiscount") || row.AmountType == "ItemWithheldTax")
+                                    {
+                                        soTrans.InventoryID = AmazonPublicFunction.GetInvetoryitemID(baseGraph, $"EC-WHTAX-{ _marketplace}");
+                                        soTrans.OrderQty = 1;
+                                        soTrans.TranDesc = row.AmountDescription;
+                                        soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
+                                        soTrans.SalesAcctID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesAcctID;
+                                        soTrans.SalesSubID = PX.Objects.IN.InventoryItem.PK.Find(soGraph, soTrans.InventoryID)?.SalesSubID;
                                     }
                                     else
                                         continue;
@@ -342,15 +384,15 @@ namespace LumTomofunCustomization.Graph
 
                                 #region Update Tax
                                 // Setting SO Tax
-                                if (!isTaxCalculate)
-                                {
-                                    soGraph.Taxes.Current = soGraph.Taxes.Current ?? soGraph.Taxes.Insert(soGraph.Taxes.Cache.CreateInstance() as SOTaxTran);
-                                    soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, _marketplace + "EC");
-                                    soGraph.Taxes.Cache.SetValueExt<SOTaxTran.curyTaxAmt>(soGraph.Taxes.Current, _marketplace == "US" ? 0 : amzTotalTax);
+                                //if (!isTaxCalculate)
+                                //{
+                                //    soGraph.Taxes.Current = soGraph.Taxes.Current ?? soGraph.Taxes.Insert(soGraph.Taxes.Cache.CreateInstance() as SOTaxTran);
+                                //    soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, _marketplace + "EC");
+                                //    soGraph.Taxes.Cache.SetValueExt<SOTaxTran.curyTaxAmt>(soGraph.Taxes.Current, amzTotalTax);
 
-                                    soGraph.Document.Cache.SetValueExt<SOOrder.curyTaxTotal>(soGraph.Document.Current, _marketplace == "US" ? 0 : amzTotalTax);
-                                    soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + (_marketplace == "US" ? 0 : amzTotalTax));
-                                }
+                                //    soGraph.Document.Cache.SetValueExt<SOOrder.curyTaxTotal>(soGraph.Document.Current, amzTotalTax);
+                                //    soGraph.Document.Cache.SetValueExt<SOOrder.curyOrderTotal>(soGraph.Document.Current, (soGraph.Document.Current?.CuryOrderTotal ?? 0) + amzTotalTax);
+                                //}
                                 #endregion
 
                                 // Sales Order Save
@@ -407,6 +449,7 @@ namespace LumTomofunCustomization.Graph
                                                           .InnerJoin<SOOrder>.On<ARTran.sOOrderNbr.IsEqual<SOOrder.orderNbr>>
                                                           .Where<ARInvoice.invoiceNbr.IsEqual<P.AsString>
                                                             .And<SOOrder.orderType.IsEqual<P.AsString>>>
+                                                          .OrderBy<Desc<ARInvoice.createdDateTime>>
                                                           .View.SelectSingleBound(baseGraph, null, amzGroupOrderData.Key.OrderID, "FA").TopFirst;
                                     if (mapInvoice == null)
                                         throw new Exception($"Can not Find Invoice (OrderID: {amzGroupOrderData.Key.OrderID})");
@@ -434,7 +477,14 @@ namespace LumTomofunCustomization.Graph
                                             if (chargeTrans.CuryTranAmt == 0 || !chargeTrans.CuryTranAmt.HasValue)
                                                 continue;
                                         }
-                                        else if ((item?.Amount ?? 0) != 0 && (item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORVAT-PRINCIPAL" || item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORTAX-PRINCIPAL" || item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORVAT-SHIPPING" || item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORTAX-OTHER" || item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORTAX-SHIPPING"))
+                                        else if ((item?.Amount ?? 0) != 0 &&
+                                            (item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORVAT-PRINCIPAL" ||
+                                             item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORTAX-PRINCIPAL" ||
+                                             item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORVAT-SHIPPING" ||
+                                             item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORTAX-OTHER" ||
+                                             item.AmountDescription?.ToUpper() == "MARKETPLACEFACILITATORTAX-SHIPPING" ||
+                                             item.AmountDescription?.ToUpper() == "LOWVALUEGOODSTAX-SHIPPING" ||
+                                             item.AmountDescription?.ToUpper() == "LOWVALUEGOODSTAX-PRINCIPAL"))
                                         {
                                             chargeTrans.EntryTypeID = "WHTAX" + _marketplace;
                                             chargeTrans.CuryTranAmt = item.Amount * -1;
@@ -454,8 +504,10 @@ namespace LumTomofunCustomization.Graph
                                     arGraph.release.Press();
                                 }
                                 #endregion
-                                #region Create Sales Order MCF
-                                else
+
+                                #region Create Sales Order MCF(Spec 1.2.2.5)
+                                // Order ID starts with ‘S’ and [Amount Description] does not contain ‘CODItemCharge’
+                                else if ((amzGroupOrderData.Key?.OrderID?.ToUpper().StartsWith("S") ?? false) && !amzGroupOrderData.Any(x => x.AmountDescription.ToUpper().Contains("CODITEMCHARGE")))
                                 {
                                     soGraph = PXGraph.CreateInstance<SOOrderEntry>();
 
@@ -561,6 +613,357 @@ namespace LumTomofunCustomization.Graph
 
                                     // Prepare Invoice
                                     PrepareInvoiceAndOverrideTax(soGraph, soDoc);
+                                }
+                                #endregion
+
+                                #region Create Sales Order MCF COD (Spec 1.2.2.3)
+                                // Order ID starts with ‘S’ and [Amount Description] contain ‘CODItemCharge’ and CODItemCharge.Amount > 0
+                                else if ((amzGroupOrderData.Key?.OrderID?.ToUpper().StartsWith("S") ?? false) && amzGroupOrderData.Any(x => x.AmountDescription.ToUpper().Contains("CODITEMCHARGE") && x.Amount > 0))
+                                {
+                                    #region Create SO Type: IN
+                                    soGraph = PXGraph.CreateInstance<SOOrderEntry>();
+
+                                    #region Header
+                                    soDoc = soGraph.Document.Cache.CreateInstance() as SOOrder;
+                                    soDoc.OrderType = "IN";
+                                    soDoc.CustomerOrderNbr = amzGroupOrderData.Key.OrderID;
+                                    soDoc.CustomerRefNbr = amzGroupOrderData.Key.MerchantOrderID;
+                                    soDoc.OrderDate = amzGroupOrderData.Key.PostedDate;
+                                    soDoc.RequestDate = amzGroupOrderData.Key.PostedDate;
+                                    soDoc.CustomerID = AmazonPublicFunction.GetMarketplaceCustomer(_marketplace);
+                                    soDoc.OrderDesc = $"Amazon ({amzGroupOrderData.Key.TransactionType}) {amzGroupOrderData.Key.OrderID}";
+                                    #endregion
+
+                                    #region User-Defined
+                                    // UserDefined - ORDERTYPE
+                                    soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERTYPE", $"Amazon MCF");
+                                    // UserDefined - MKTPLACE
+                                    soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "MKTPLACE", _marketplace);
+                                    // UserDefined - ORDERAMT
+                                    soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERAMT", amzGroupOrderData.Sum(x => (x.Amount ?? 0) * -1));
+                                    #endregion
+
+                                    // Insert SOOrder
+                                    soGraph.Document.Insert(soDoc);
+
+                                    #region Set Currency
+                                    info = CurrencyInfoAttribute.SetDefaults<SOOrder.curyInfoID>(soGraph.Document.Cache, soGraph.Document.Current);
+                                    if (info != null)
+                                        soGraph.Document.Cache.SetValueExt<SOOrder.curyID>(soGraph.Document.Current, info.CuryID);
+                                    #endregion
+
+                                    #region Address
+                                    soGraph_FA = PXGraph.CreateInstance<SOOrderEntry>();
+                                    soOrder_FAInfo = SelectFrom<SOOrder>
+                                                     .Where<SOOrder.orderType.IsEqual<P.AsString>
+                                                       .And<SOOrder.customerOrderNbr.IsEqual<P.AsString>>>
+                                                     .View.SelectSingleBound(soGraph_FA, null, "FA", amzGroupOrderData.Key.OrderID).TopFirst;
+                                    soGraph_FA.Document.Current = soOrder_FAInfo;
+                                    if (soGraph_FA.Document.Current != null)
+                                    {
+                                        // Setting Shipping_Address
+                                        var soAddress = soGraph.Shipping_Address.Current;
+                                        soGraph_FA.Shipping_Address.Current = soGraph_FA.Shipping_Address.Select();
+                                        soAddress.OverrideAddress = true;
+                                        soAddress.PostalCode = soGraph_FA.Shipping_Address.Current?.PostalCode;
+                                        soAddress.CountryID = soGraph_FA.Shipping_Address.Current?.CountryID;
+                                        soAddress.State = soGraph_FA.Shipping_Address.Current?.State;
+                                        soAddress.City = soGraph_FA.Shipping_Address.Current?.City;
+                                        soAddress.RevisionID = 1;
+                                        // Setting Shipping_Contact
+                                        var soContact = soGraph.Shipping_Contact.Current;
+                                        soGraph_FA.Shipping_Contact.Current = soGraph_FA.Shipping_Contact.Select();
+                                        soContact.OverrideContact = true;
+                                        soContact.Email = soGraph_FA.Shipping_Contact.Current?.Email;
+                                        soContact.RevisionID = 1;
+                                    }
+                                    #endregion
+
+                                    #region SOLine
+                                    foreach (var row in amzGroupOrderData)
+                                    {
+                                        PXLongOperation.SetCurrentItem(row);
+                                        var soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+                                        if ((row.Amount ?? 0) == 0)
+                                            continue;
+                                        if (row.AmountDescription.ToUpper() == "CODITEMCHARGE")
+                                        {
+                                            soTrans.InventoryID = AmazonPublicFunction.GetInvetoryitemID(baseGraph, "COD-REVENUE-JP");
+                                            soTrans.OrderQty = 1;
+                                            soTrans.TranDesc = row.AmountDescription;
+                                            soTrans.CuryUnitPrice = (row.Amount ?? 0);
+                                        }
+                                        else
+                                        {
+                                            soTrans.InventoryID = AmazonPublicFunction.GetInvetoryitemID(baseGraph, "EC-SHIPPING");
+                                            soTrans.OrderQty = 1;
+                                            soTrans.TranDesc = row.AmountDescription;
+                                            soTrans.CuryUnitPrice = (row.Amount ?? 0);
+                                        }
+                                        if (soTrans.InventoryID == null)
+                                            throw new PXException($"Can not find SOLine InventoryID (OrderType: {amzGroupOrderData.Key.TransactionType}, Amount Descr:EC-SHIPPING)");
+                                        // isTaxCalculate = true then NONTAXABLE
+                                        if (isTaxCalculate)
+                                            soTrans.TaxCategoryID = "NONTAXABLE";
+                                        soGraph.Transactions.Insert(soTrans);
+                                    }
+
+                                    #endregion
+
+                                    #region Update Tax
+                                    // Setting SO Tax
+                                    if (!isTaxCalculate)
+                                    {
+                                        soGraph.Taxes.Current = soGraph.Taxes.Current ?? soGraph.Taxes.Insert(soGraph.Taxes.Cache.CreateInstance() as SOTaxTran);
+                                        soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, _marketplace + "EC");
+                                    }
+                                    #endregion
+
+                                    // Sales Order Save
+                                    soGraph.Save.Press();
+
+                                    #region Create PaymentRefund
+                                    paymentExt = soGraph.GetExtension<CreatePaymentExt>();
+                                    paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
+                                    paymentExt.QuickPayment.Current.ExtRefNbr = amzGroupOrderData.Key.SettlementID;
+                                    paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, soDoc.OrderType == "CM" ? ARPaymentType.Refund : ARPaymentType.Payment);
+                                    paymentEntry.Document.Cache.SetValueExt<ARPayment.adjDate>(paymentEntry.Document.Current, amzGroupOrderData.Key.PostedDate);
+                                    paymentEntry.Save.Press();
+                                    paymentEntry.releaseFromHold.Press();
+                                    paymentEntry.release.Press();
+                                    #endregion
+
+                                    // Prepare Invoice
+                                    PrepareInvoiceAndOverrideTax(soGraph, soDoc);
+                                    #endregion
+
+                                    #region Create SO Type: CM
+                                    soGraph = PXGraph.CreateInstance<SOOrderEntry>();
+
+                                    #region Header
+                                    soDoc = soGraph.Document.Cache.CreateInstance() as SOOrder;
+                                    soDoc.OrderType = "CM";
+                                    soDoc.CustomerOrderNbr = amzGroupOrderData.Key.OrderID;
+                                    soDoc.CustomerRefNbr = amzGroupOrderData.Key.MerchantOrderID;
+                                    soDoc.OrderDate = amzGroupOrderData.Key.PostedDate;
+                                    soDoc.RequestDate = amzGroupOrderData.Key.PostedDate;
+                                    soDoc.CustomerID = SelectFrom<BAccount>.Where<BAccount.acctCD.IsEqual<P.AsString>>.View.Select(baseGraph, "SPFJP").TopFirst?.BAccountID;
+                                    soDoc.OrderDesc = $"Amazon ({amzGroupOrderData.Key.TransactionType}) {amzGroupOrderData.Key.OrderID}";
+                                    #endregion
+
+                                    #region User-Defined
+                                    // UserDefined - ORDERTYPE
+                                    soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERTYPE", $"Amazon MCF");
+                                    // UserDefined - MKTPLACE
+                                    soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "MKTPLACE", _marketplace);
+                                    // UserDefined - ORDERAMT
+                                    soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERAMT", amzGroupOrderData.Sum(x => (x.Amount ?? 0) * -1));
+                                    #endregion
+
+                                    // Insert SOOrder
+                                    soGraph.Document.Insert(soDoc);
+
+                                    #region Set Currency
+                                    info = CurrencyInfoAttribute.SetDefaults<SOOrder.curyInfoID>(soGraph.Document.Cache, soGraph.Document.Current);
+                                    if (info != null)
+                                        soGraph.Document.Cache.SetValueExt<SOOrder.curyID>(soGraph.Document.Current, info.CuryID);
+                                    #endregion
+
+                                    #region Address
+                                    soGraph_FA = PXGraph.CreateInstance<SOOrderEntry>();
+                                    soOrder_FAInfo = SelectFrom<SOOrder>
+                                                     .Where<SOOrder.orderType.IsEqual<P.AsString>
+                                                       .And<SOOrder.customerOrderNbr.IsEqual<P.AsString>>>
+                                                     .View.SelectSingleBound(soGraph_FA, null, "FA", amzGroupOrderData.Key.OrderID).TopFirst;
+                                    soGraph_FA.Document.Current = soOrder_FAInfo;
+                                    if (soGraph_FA.Document.Current != null)
+                                    {
+                                        // Setting Shipping_Address
+                                        var soAddress = soGraph.Shipping_Address.Current;
+                                        soGraph_FA.Shipping_Address.Current = soGraph_FA.Shipping_Address.Select();
+                                        soAddress.OverrideAddress = true;
+                                        soAddress.PostalCode = soGraph_FA.Shipping_Address.Current?.PostalCode;
+                                        soAddress.CountryID = soGraph_FA.Shipping_Address.Current?.CountryID;
+                                        soAddress.State = soGraph_FA.Shipping_Address.Current?.State;
+                                        soAddress.City = soGraph_FA.Shipping_Address.Current?.City;
+                                        soAddress.RevisionID = 1;
+                                        // Setting Shipping_Contact
+                                        var soContact = soGraph.Shipping_Contact.Current;
+                                        soGraph_FA.Shipping_Contact.Current = soGraph_FA.Shipping_Contact.Select();
+                                        soContact.OverrideContact = true;
+                                        soContact.Email = soGraph_FA.Shipping_Contact.Current?.Email;
+                                        soContact.RevisionID = 1;
+                                    }
+                                    #endregion
+
+                                    #region SOLine
+                                    foreach (var row in amzGroupOrderData)
+                                    {
+                                        PXLongOperation.SetCurrentItem(row);
+                                        if ((row.Amount ?? 0) == 0)
+                                            continue;
+                                        // Only Create SOLine when AmountDescription = CODITEMCHARGE
+                                        if (row.AmountDescription?.ToUpper() == "CODITEMCHARGE")
+                                        {
+                                            //Create SOLine: EC-SHIPPING
+                                            var soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+                                            soTrans.InventoryID = AmazonPublicFunction.GetInvetoryitemID(baseGraph, "EC-SHIPPING");
+                                            soTrans.OrderQty = 1;
+                                            soTrans.TranDesc = "COD Fee";
+                                            // Row.Amount < 0 Skip
+                                            if (row?.Amount >= 0)
+                                            {
+                                                var codFee = (row?.Amount >= 0 && row?.Amount < 30433) ? 432 :
+                                                             (row?.Amount >= 30433 && row?.Amount < 100649) ? 648 : 1080;
+                                                // 寫死CodFee
+                                                var specialOrderId = new string[] { "S03-5330878-3961409", "S03-9007355-0712609", "S03-9214071-1707817", "S03-1776840-6198246", "S03-8819813-8942245" };
+                                                if (specialOrderId.Any(x => x == amzGroupOrderData.Key.OrderID))
+                                                    codFee = 1080;
+                                                soTrans.CuryUnitPrice = codFee * -1;
+                                                if (soTrans.InventoryID == null)
+                                                    throw new PXException($"Can not find SOLine InventoryID (OrderType: {amzGroupOrderData.Key.TransactionType}, Amount Descr:COD Fee)");
+                                                // isTaxCalculate = true then NONTAXABLE
+                                                if (isTaxCalculate)
+                                                    soTrans.TaxCategoryID = "NONTAXABLE";
+                                                soGraph.Transactions.Insert(soTrans);
+                                            }
+
+                                            // Create SOLine: COD-REVENUE-JP
+                                            soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+                                            soTrans.InventoryID = AmazonPublicFunction.GetInvetoryitemID(baseGraph, "COD-REVENUE-JP");
+                                            soTrans.OrderQty = 1;
+                                            soTrans.TranDesc = row.AmountDescription;
+                                            soTrans.CuryUnitPrice = (row.Amount ?? 0);
+                                            if (soTrans.InventoryID == null)
+                                                throw new PXException($"Can not find SOLine InventoryID (OrderType: {amzGroupOrderData.Key.TransactionType}, Amount Descr:COD-REVENUE-JP)");
+                                            // isTaxCalculate = true then NONTAXABLE
+                                            if (isTaxCalculate)
+                                                soTrans.TaxCategoryID = "NONTAXABLE";
+                                            soGraph.Transactions.Insert(soTrans);
+                                        }
+                                    }
+
+                                    #endregion
+
+                                    #region Update Tax
+                                    // Setting SO Tax
+                                    if (!isTaxCalculate)
+                                    {
+                                        soGraph.Taxes.Current = soGraph.Taxes.Current ?? soGraph.Taxes.Insert(soGraph.Taxes.Cache.CreateInstance() as SOTaxTran);
+                                        soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, _marketplace + "EC");
+                                    }
+                                    #endregion
+
+                                    // Sales Order Save
+                                    soGraph.Save.Press();
+
+                                    // Prepare Invoice
+                                    PrepareInvoiceAndOverrideTax(soGraph, soDoc);
+                                    #endregion
+                                }
+                                #endregion
+
+                                #region Create Sales Order MCF COD (Spec 1.2.2.4)
+                                // Order ID starts with ‘S’ and [Amount Description] contain ‘CODItemCharge’ and CODItemCharge.Amount < 0
+                                else if ((amzGroupOrderData.Key?.OrderID?.ToUpper().StartsWith("S") ?? false) && amzGroupOrderData.Any(x => x.AmountDescription.ToUpper().Contains("CODITEMCHARGE") && x.Amount < 0))
+                                {
+                                    #region Create SO Type: CM
+                                    soGraph = PXGraph.CreateInstance<SOOrderEntry>();
+
+                                    #region Header
+                                    soDoc = soGraph.Document.Cache.CreateInstance() as SOOrder;
+                                    soDoc.OrderType = "CM";
+                                    soDoc = soGraph.Document.Cache.Insert(soDoc) as SOOrder;
+                                    soDoc.CustomerOrderNbr = amzGroupOrderData.Key.OrderID;
+                                    soDoc.CustomerRefNbr = amzGroupOrderData.Key.MerchantOrderID;
+                                    soDoc.OrderDate = amzGroupOrderData.Key.PostedDate;
+                                    soDoc.RequestDate = amzGroupOrderData.Key.PostedDate;
+                                    soDoc.CustomerID = AmazonPublicFunction.GetMarketplaceCustomer(_marketplace);
+                                    soDoc.CustomerLocationID = SelectFrom<Location>.Where<Location.locationCD.IsEqual<P.AsString>>.View.Select(baseGraph, "COD")?.TopFirst?.LocationID;
+                                    soDoc.OrderDesc = $"Amazon ({amzGroupOrderData.Key.TransactionType}) {amzGroupOrderData.Key.OrderID}";
+                                    #endregion
+
+                                    #region User-Defined
+                                    // UserDefined - ORDERTYPE
+                                    soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERTYPE", $"Amazon MCF");
+                                    // UserDefined - MKTPLACE
+                                    soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "MKTPLACE", _marketplace);
+                                    // UserDefined - ORDERAMT
+                                    soGraph.Document.Cache.SetValueExt(soDoc, PX.Objects.CS.Messages.Attribute + "ORDERAMT", amzGroupOrderData.Sum(x => (x.Amount ?? 0) * -1));
+                                    #endregion
+
+                                    // Insert SOOrder
+                                    soGraph.Document.Cache.Update(soDoc);
+                                    #region Set Currency
+                                    info = CurrencyInfoAttribute.SetDefaults<SOOrder.curyInfoID>(soGraph.Document.Cache, soGraph.Document.Current);
+                                    if (info != null)
+                                        soGraph.Document.Cache.SetValueExt<SOOrder.curyID>(soGraph.Document.Current, info.CuryID);
+                                    #endregion
+
+                                    #region SOLine
+                                    // 理論上只會有一筆
+                                    foreach (var row in amzGroupOrderData)
+                                    {
+                                        PXLongOperation.SetCurrentItem(row);
+
+                                        var codFee = (Math.Abs(row?.Amount ?? 0) >= 0 && Math.Abs(row?.Amount ?? 0) < 30433) ? 432 :
+                                                     (Math.Abs(row?.Amount ?? 0) >= 30433 && Math.Abs(row?.Amount ?? 0) < 100649) ? 648 : 1080;
+                                        // 寫死CodFee
+                                        var specialOrderId = new string[] { "S03-5330878-3961409", "S03-9007355-0712609", "S03-9214071-1707817", "S03-1776840-6198246", "S03-8819813-8942245" };
+                                        if (specialOrderId.Any(x => x == amzGroupOrderData.Key.OrderID))
+                                            codFee = 1080;
+
+                                        var soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+                                        // Insert EC-SHIPPING
+                                        if ((row.Amount ?? 0) == 0)
+                                            continue;
+                                        soTrans = soGraph.Transactions.Cache.Insert(soTrans) as SOLine;
+                                        soTrans.InventoryID = AmazonPublicFunction.GetInvetoryitemID(baseGraph, "EC-SHIPPING");
+                                        soTrans.OrderQty = 1;
+                                        soTrans.TranDesc = row.AmountDescription;
+                                        soTrans.CuryUnitPrice = codFee;
+                                        if (soTrans.InventoryID == null)
+                                            throw new PXException($"Can not find SOLine InventoryID (OrderType: {amzGroupOrderData.Key.TransactionType}, Amount Descr:EC-SHIPPING)");
+                                        soTrans.TaxCategoryID = "NONTAXABLE";
+                                        soGraph.Transactions.Cache.Update(soTrans);
+
+                                        // Insert CODREFUND
+                                        soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
+                                        if ((row.Amount ?? 0) == 0)
+                                            continue;
+                                        soTrans = soGraph.Transactions.Cache.Insert(soTrans) as SOLine;
+                                        soTrans.InventoryID = AmazonPublicFunction.GetInvetoryitemID(baseGraph, "CODREFUND");
+                                        soTrans.OrderQty = 1;
+                                        soTrans.TranDesc = row.AmountDescription;
+                                        soTrans.CuryUnitPrice = ((row.Amount ?? 0) * -1) - codFee;
+                                        if (soTrans.InventoryID == null)
+                                            throw new PXException($"Can not find SOLine InventoryID (OrderType: {amzGroupOrderData.Key.TransactionType}, Amount Descr:CODREFUND)");
+                                        // isTaxCalculate = true then NONTAXABLE
+                                        if (isTaxCalculate)
+                                            soTrans.TaxCategoryID = "NONTAXABLE";
+                                        soGraph.Transactions.Cache.Update(soTrans);
+                                        break;
+                                    }
+
+                                    #endregion
+
+                                    // Sales Order Save
+                                    soGraph.Save.Press();
+
+                                    #region Create PaymentRefund
+                                    paymentExt = soGraph.GetExtension<CreatePaymentExt>();
+                                    paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
+                                    paymentExt.QuickPayment.Current.ExtRefNbr = amzGroupOrderData.Key.SettlementID;
+                                    paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, soDoc.OrderType == "CM" ? ARPaymentType.Refund : ARPaymentType.Payment);
+                                    paymentEntry.Document.Cache.SetValueExt<ARPayment.adjDate>(paymentEntry.Document.Current, amzGroupOrderData.Key.PostedDate);
+                                    paymentEntry.Save.Press();
+                                    paymentEntry.releaseFromHold.Press();
+                                    paymentEntry.release.Press();
+                                    #endregion
+
+                                    // Prepare Invoice
+                                    PrepareInvoiceAndOverrideTax(soGraph, soDoc, false);
+                                    #endregion
                                 }
                                 #endregion
                                 #endregion
@@ -1033,7 +1436,7 @@ namespace LumTomofunCustomization.Graph
         }
 
         /// <summary> Sales Order Prepare Invoice and Override Tax </summary>
-        public virtual void PrepareInvoiceAndOverrideTax(SOOrderEntry soGraph, SOOrder soDoc)
+        public virtual void PrepareInvoiceAndOverrideTax(SOOrderEntry soGraph, SOOrder soDoc, bool IsOverrideTax = true)
         {
             // Prepare Invoice
             try
@@ -1054,7 +1457,7 @@ namespace LumTomofunCustomization.Graph
                             .TopFirst;
                 // update docDate
                 invoiceGraph.Document.SetValueExt<ARInvoice.docDate>(invoiceGraph.Document.Current, soDoc.RequestDate);
-                if (soTax != null)
+                if (soTax != null && IsOverrideTax)
                 {
                     // setting Tax
                     invoiceGraph.Taxes.Current = invoiceGraph.Taxes.Select();
@@ -1152,11 +1555,13 @@ namespace LumTomofunCustomization.Graph
     public class SettlementFilter : IBqlTable
     {
         [PXDBDate]
+        [PXDefault]
         [PXUIField(DisplayName = "From Date")]
         public virtual DateTime? FromDate { get; set; }
         public abstract class fromDate : PX.Data.BQL.BqlDateTime.Field<fromDate> { }
 
         [PXDBDate]
+        [PXDefault]
         [PXUIField(DisplayName = "To Date")]
         public virtual DateTime? ToDate { get; set; }
         public abstract class toDate : PX.Data.BQL.BqlDateTime.Field<toDate> { }

@@ -1,0 +1,29 @@
+﻿<Sql TableName="Create_v_GlobalINItemSiteHistDay" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[	IF EXISTS
+	(
+		SELECT *
+		FROM SYS.views
+		WHERE name = 'v_GlobalINItemSiteHistDay' AND SCHEMA_ID = SCHEMA_ID('dbo')
+	)
+	DROP VIEW [dbo].[v_GlobalINItemSiteHistDay]	
+	GO
+	CREATE VIEW v_GlobalINItemSiteHistDay AS
+	SELECT comp.CompanyCD,
+		   Hist.SDate,
+		   Hist.InventoryID,
+		   item.InventoryCD,
+		   item.Descr AS InventoryITemDescr,
+		   Hist.EndQty,
+		   Hist.SiteID,
+		   site.SiteCD,
+		   site.Descr AS SiteDescr,
+		   Hist.LocationID,
+		   location.LocationCD,
+		   location.Descr AS LocationDescr
+	FROM INItemSiteHistDay Hist
+	INNER JOIN Company comp ON Hist.CompanyID = comp.CompanyID
+	INNER JOIN InventoryItem item ON Hist.CompanyID = item.CompanyID AND hist.InventoryID = item.InventoryID
+	INNER JOIN INSite site ON Hist.CompanyID = site.CompanyID AND Hist.SiteID = site.SiteID
+	INNER JOIN INLocation location ON Hist.CompanyID = location.CompanyID AND Hist.LocationID = location.LocationID
+	WHERE Hist.CompanyID > 0]]></CDATA>
+</Sql>

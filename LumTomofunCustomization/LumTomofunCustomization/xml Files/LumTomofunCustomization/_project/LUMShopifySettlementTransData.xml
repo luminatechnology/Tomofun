@@ -1,3 +1,4 @@
 ﻿<Table TableName="LUMShopifySettlementTransData">
     <Column TableName="LUMShopifySettlementTransData" ColumnName="PresentmentAmount" ColumnType="decimal" AllowNull="True" DecimalPrecision="6" DecimalLength="18" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="LUMShopifySettlementTransData" ColumnName="PresentmentCurrency" ColumnType="string" AllowNull="True" MaxLength="3" DecimalPrecision="0" DecimalLength="0" IsNewColumn="True" IsUnicode="True" />
 </Table>

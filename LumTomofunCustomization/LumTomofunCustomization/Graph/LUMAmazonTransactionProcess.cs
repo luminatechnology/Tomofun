@@ -31,6 +31,24 @@ namespace LumTomofunCustomization.Graph
             });
         }
 
+        #region Event
+
+        public virtual void _(Events.RowSelected<LUMAmazonTransData> e)
+        {
+            var row = e.Row;
+            if (row != null && !row.Amount.HasValue && !string.IsNullOrEmpty(row.TransJson))
+            {
+                try
+                {
+                    var sourceData = JsonConvert.DeserializeObject<LumTomofunCustomization.API_Entity.AmazonOrder.Order>(row.TransJson);
+                    row.Amount = (decimal?)sourceData.Amount;
+                }
+                catch (Exception) { }
+            }
+        }
+
+        #endregion
+
         #region Method
 
         /// <summary> 執行Process </summary>
@@ -78,7 +96,7 @@ namespace LumTomofunCustomization.Graph
                                             .And<SOOrder.customerOrderNbr.IsEqual<P.AsString>>>
                                          .View.Select(baseGraph, "FA", amzOrder.OrderId).TopFirst;
                         // 如果之前沒有Create 過SOOrder 則Create
-                        if (oldsoOrder == null)
+                        if (oldsoOrder == null || row.TransactionType == "RE-Amazon Orders")
                         {
                             #region Create Sales Order Header(Header/Contact/Address/Tax)
                             SOOrder order = soGraph.Document.Cache.CreateInstance() as SOOrder;
@@ -342,7 +360,7 @@ namespace LumTomofunCustomization.Graph
         public void Validation(LUMAmazonTransData row)
         {
             // Valid OrderStatus
-            if(row.OrderStatus.ToLower() == "canceled")
+            if (row.OrderStatus.ToLower() == "canceled")
                 throw new Exception("Order Status can not equal Canceled");
             // Valid SalesChannel
             if (!row.SalesChannel.ToLower().StartsWith("amazon"))

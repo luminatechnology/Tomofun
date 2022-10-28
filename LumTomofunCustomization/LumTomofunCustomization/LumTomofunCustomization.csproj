@@ -109,6 +109,7 @@
     <Compile Include="Graph\LUMAmazonSettlementTransactionProcess.cs" />
     <Compile Include="Graph\LUMAmazonTransactionProcess.cs" />
     <Compile Include="Graph\LUMAmzINReconciliationProc.cs" />
+    <Compile Include="Graph\LUMDailyInventoryQuery.cs" />
     <Compile Include="Graph\LUMJPaypalJP_NPPaymentProcess.cs" />
     <Compile Include="Graph\LUMMarketplaceFeePreferenceMaint.cs" />
     <Compile Include="Graph\LUMMarketplacePreferenceMaint.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="DAC\LUMMWSPreference.cs" />
     <Compile Include="DAC\LUMForecastUploadPreference.cs" />
     <Compile Include="Graph_Extension\APInvoiceEntryExt.cs" />
+    <Compile Include="Graph_Extension\CATranEnqExt.cs" />
     <Compile Include="LUMLibrary\AmazonPublicFunction.cs" />
     <Compile Include="DAC\LUMShopifySettlementTransData.cs" />
     <Compile Include="LUMLibrary\ShopifyPublicFunction.cs" />
@@ -145,6 +147,7 @@
     <Compile Include="Graph\LUM3PLWHMappingMaint.cs" />
     <Compile Include="DAC\LUM3PLWarehouseMapping.cs" />
     <Compile Include="DAC\v_AmazonSettlementReportQuery.cs" />
+    <Compile Include="DAC\v_GlobalINItemSiteHistDay.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +160,12 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
       <Version>5.0.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\LUMLocalization\LUMLocalization\LUMLocalization.csproj">
+      <Project>{562ac1bb-169d-4a18-a84b-6237a819616a}</Project>
+      <Name>LUMLocalization</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -46,21 +46,31 @@ namespace LumTomofunCustomization.LUMLibrary
 
         public static int? GetSalesAcctID(PXGraph graph, string inventoryName, int? inventoryID, PX.Objects.SO.SOOrder mapShopifyOrder, int? customerID)
         {
-            if (inventoryName?.ToUpper() != "REFUND")
+            if (inventoryName.ToUpper().Contains("REFUND") && mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open)
+                return PX.Objects.AR.Customer.PK.Find(graph, customerID)?.PrepaymentAcctID;
+            else if (inventoryName.ToUpper().Contains("REFUND") && mapShopifyOrder.Status != PX.Objects.SO.SOOrderStatus.Open)
+                return null;
+            else if (inventoryName.ToUpper().Contains("EC-WHTAX") && mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open)
+                return PX.Objects.AR.Customer.PK.Find(graph, customerID)?.PrepaymentAcctID;
+            else if (inventoryName.ToUpper().Contains("EC-WHTAX") && mapShopifyOrder.Status != PX.Objects.SO.SOOrderStatus.Open)
                 return InventoryItem.PK.Find(graph, inventoryID)?.SalesAcctID;
             else
-            {
-                var prepaymentInfo = SelectFrom<PX.Objects.SO.SOAdjust>
-                    .Where<PX.Objects.SO.SOAdjust.adjdOrderType.IsEqual<P.AsString>
-                      .And<PX.Objects.SO.SOAdjust.adjdOrderNbr.IsEqual<P.AsString>>
-                      .And<PX.Objects.SO.SOAdjust.adjgDocType.IsEqual<P.AsString>>>
-                    .View.Select(graph, mapShopifyOrder?.OrderType, mapShopifyOrder?.OrderNbr,"PPM").TopFirst;
-                if (mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open && prepaymentInfo != null)
-                {
-                    return PX.Objects.AR.Customer.PK.Find(graph,customerID)?.PrepaymentAcctID;
-                }
-            }
-            return null;
+                return InventoryItem.PK.Find(graph, inventoryID)?.SalesAcctID;
+        }
+
+        public static int? GetSalesSubAcctID(PXGraph graph, string inventoryName, int? inventoryID, PX.Objects.SO.SOOrder mapShopifyOrder, int? customerID)
+        {
+
+            if (inventoryName.ToUpper().Contains("REFUND") && mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open)
+                return PX.Objects.AR.Customer.PK.Find(graph, customerID)?.PrepaymentSubID;
+            else if (inventoryName.ToUpper().Contains("REFUND") && mapShopifyOrder.Status != PX.Objects.SO.SOOrderStatus.Open)
+                return null;
+            else if (inventoryName.ToUpper().Contains("EC-WHTAX") && mapShopifyOrder.Status == PX.Objects.SO.SOOrderStatus.Open)
+                return PX.Objects.AR.Customer.PK.Find(graph, customerID)?.PrepaymentSubID;
+            else if (inventoryName.ToUpper().Contains("EC-WHTAX") && mapShopifyOrder.Status != PX.Objects.SO.SOOrderStatus.Open)
+                return InventoryItem.PK.Find(graph, inventoryID)?.SalesSubID;
+            else
+                return InventoryItem.PK.Find(graph, inventoryID)?.SalesSubID;
         }
     }
 }

@@ -82,6 +82,13 @@ namespace LUMTomofunCustomization.DAC
         public abstract class orderStatus : PX.Data.BQL.BqlString.Field<orderStatus> { }
         #endregion
 
+        #region Amount
+        [PXDBDecimal]
+        [PXUIField(DisplayName = "Amount")]
+        public virtual decimal? Amount { get; set; }
+        public abstract class amount : PX.Data.BQL.BqlDecimal.Field<amount> { }
+        #endregion
+
         #region TransJson
         [PXDBString(IsUnicode = true, InputMask = "")]
         [PXUIField(DisplayName = "Transaction Json")]

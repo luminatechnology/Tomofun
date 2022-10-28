@@ -22,7 +22,7 @@ namespace LUMLocalization.DAC
         #endregion
 
         #region INDate
-        [PXDBDate()]
+        [PXDBDate(IsKey = true)]
         [PXUIField(DisplayName = "IN Date")]
         public virtual DateTime? INDate { get; set; }
         public abstract class iNDate : PX.Data.BQL.BqlDateTime.Field<iNDate> { }
@@ -36,14 +36,14 @@ namespace LUMLocalization.DAC
         #endregion
 
         #region FBACenterID
-        [PXDBString(10, IsUnicode = true, InputMask = "")]
+        [PXDBString(10, IsUnicode = true, InputMask = "", IsKey = true)]
         [PXUIField(DisplayName = "Fulfillment Center ID")]
         public virtual string FBACenterID { get; set; }
         public abstract class fBACenterID : PX.Data.BQL.BqlString.Field<fBACenterID> { }
         #endregion
 
         #region ERPSku
-        [PXDBString(50, IsUnicode = true, InputMask = "")]
+        [PXDBString(50, IsUnicode = true, InputMask = "", IsKey = true)]
         [PXUIField(DisplayName = "ERP Sku")]
         public virtual string ERPSku { get; set; }
         public abstract class eRPSku : PX.Data.BQL.BqlString.Field<eRPSku> { }
@@ -57,7 +57,7 @@ namespace LUMLocalization.DAC
         #endregion
 
         #region DetailedDesc
-        [PXDBString(100, IsUnicode = true, InputMask = "")]
+        [PXDBString(100, IsUnicode = true, InputMask = "",IsKey = true)]
         [PXUIField(DisplayName = "Detailed Desc")]
         public virtual string DetailedDesc { get; set; }
         public abstract class detailedDesc : PX.Data.BQL.BqlString.Field<detailedDesc> { }
@@ -78,14 +78,14 @@ namespace LUMLocalization.DAC
         #endregion
 
         #region SiteCD
-        [PXDBString(30, IsUnicode = true, InputMask = "")]
+        [PXDBString(30, IsUnicode = true, InputMask = "", IsKey = true)]
         [PXUIField(DisplayName = "Warehouse")]
         public virtual string SiteCD { get; set; }
         public abstract class siteCD : PX.Data.BQL.BqlString.Field<siteCD> { }
         #endregion
 
         #region LocationCD
-        [PXDBString(30, IsUnicode = true, InputMask = "")]
+        [PXDBString(30, IsUnicode = true, InputMask = "", IsKey = true)]
         [PXUIField(DisplayName = "Location")]
         public virtual string LocationCD { get; set; }
         public abstract class locationCD : PX.Data.BQL.BqlString.Field<locationCD> { }

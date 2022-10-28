@@ -105,6 +105,13 @@ namespace LUMTomofunCustomization.DAC
         public abstract class presentmentAmount : PX.Data.BQL.BqlDecimal.Field<presentmentAmount> { }
         #endregion
 
+        #region PresentmentCurrency
+        [PXDBString(3)]
+        [PXUIField(DisplayName = "Presentment Currency")]
+        public virtual string PresentmentCurrency { get; set; }
+        public abstract class presentmentCurrency : PX.Data.BQL.BqlString.Field<presentmentCurrency> { }
+        #endregion
+
         #region IsProcessed
         [PXDBBool]
         [PXUIField(DisplayName = "IsProcessed")]
