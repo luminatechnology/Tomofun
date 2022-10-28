@@ -16,7 +16,7 @@ namespace LUMTomofunCustomization.DAC
 
         #region SDate
         [PXDBDate(IsKey = true)]
-        [PXUIField(DisplayName = "SDate", Visible = false)]
+        [PXUIField(DisplayName = "Start Date", Visible = false)]
         public virtual DateTime? SDate { get; set; }
         public abstract class sDate : PX.Data.BQL.BqlDateTime.Field<sDate> { }
         #endregion
@@ -30,42 +30,42 @@ namespace LUMTomofunCustomization.DAC
 
         #region InventoryCD
         [PXDBString(30, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Inventory CD")]
+        [PXUIField(DisplayName = "SKU")]
         public virtual string InventoryCD { get; set; }
         public abstract class inventoryCD : PX.Data.BQL.BqlString.Field<inventoryCD> { }
         #endregion
 
         #region InventoryITemDescr
         [PXDBString(256, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Inventory Item Descr")]
+        [PXUIField(DisplayName = "SKU Descr.")]
         public virtual string InventoryITemDescr { get; set; }
         public abstract class inventoryITemDescr : PX.Data.BQL.BqlString.Field<inventoryITemDescr> { }
         #endregion
 
         #region EndQty
         [PXDBDecimal()]
-        [PXUIField(DisplayName = "End Qty")]
+        [PXUIField(DisplayName = "End Qty.")]
         public virtual Decimal? EndQty { get; set; }
         public abstract class endQty : PX.Data.BQL.BqlDecimal.Field<endQty> { }
         #endregion
 
         #region Siteid
         [PXDBInt(IsKey = true)]
-        [PXUIField(DisplayName = "Siteid", Visible = false)]
+        [PXUIField(DisplayName = "Site ID", Visible = false)]
         public virtual int? Siteid { get; set; }
         public abstract class siteid : PX.Data.BQL.BqlInt.Field<siteid> { }
         #endregion
 
         #region SiteCD
         [PXDBString(30, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "SiteCD")]
+        [PXUIField(DisplayName = "Warehouse")]
         public virtual string SiteCD { get; set; }
         public abstract class siteCD : PX.Data.BQL.BqlString.Field<siteCD> { }
         #endregion
 
         #region SiteDescr
         [PXDBString(60, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Site Descr", Visible = false)]
+        [PXUIField(DisplayName = "Site Descr.", Visible = false)]
         public virtual string SiteDescr { get; set; }
         public abstract class siteDescr : PX.Data.BQL.BqlString.Field<siteDescr> { }
         #endregion
@@ -79,7 +79,7 @@ namespace LUMTomofunCustomization.DAC
 
         #region LocationCD
         [PXDBString(30, IsUnicode = true, InputMask = "")]
-        [PXUIField(DisplayName = "Location CD")]
+        [PXUIField(DisplayName = "Location")]
         public virtual string LocationCD { get; set; }
         public abstract class locationCD : PX.Data.BQL.BqlString.Field<locationCD> { }
         #endregion
@@ -93,14 +93,14 @@ namespace LUMTomofunCustomization.DAC
 
         #region WarehouseQty
         [PXDecimal()]
-        [PXUIField(DisplayName = "WH Qty")]
+        [PXUIField(DisplayName = "Warehouse Qty")]
         public virtual Decimal? WarehouseQty { get; set; }
         public abstract class warehouseQty : PX.Data.BQL.BqlDecimal.Field<warehouseQty> { }
         #endregion
 
         #region VarQty
         [PXDecimal()]
-        [PXUIField(DisplayName = "Var Qty")]
+        [PXUIField(DisplayName = "Variant Qty.")]
         public virtual Decimal? VarQty { get; set; }
         public abstract class varQty : PX.Data.BQL.BqlDecimal.Field<varQty> { }
         #endregion
