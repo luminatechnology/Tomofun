@@ -99,6 +99,8 @@ namespace LumTomofunCustomization.Graph
                         {
                             case "CAPTURE":
                                 #region TransactionType: CAPTURE
+                                if (oldShopifySOOrder == null)
+                                    throw new PXException("Cannot find Sales Order");
                                 if (spCashAccount == null)
                                     throw new PXException($"Can not find Cash Account ({row.CurrencyCode}SPFAMZ)");
                                 var arGraph = PXGraph.CreateInstance<ARPaymentEntry>();

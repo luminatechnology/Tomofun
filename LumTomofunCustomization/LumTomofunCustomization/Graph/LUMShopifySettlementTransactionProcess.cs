@@ -43,6 +43,7 @@ namespace LumTomofunCustomization.Graph
             PXUIFieldAttribute.SetEnabled<LUMShopifySettlementTransData.paymentMethodName>(SettlementTransaction.Cache, null, true);
             PXUIFieldAttribute.SetEnabled<LUMShopifySettlementTransData.currency>(SettlementTransaction.Cache, null, true);
             PXUIFieldAttribute.SetEnabled<LUMShopifySettlementTransData.presentmentAmount>(SettlementTransaction.Cache, null, true);
+            PXUIFieldAttribute.SetEnabled<LUMShopifySettlementTransData.presentmentCurrency>(SettlementTransaction.Cache, null, true);
             #endregion
             this.SettlementTransaction.SetProcessDelegate(delegate (List<LUMShopifySettlementTransData> list)
             {
@@ -90,6 +91,8 @@ namespace LumTomofunCustomization.Graph
                         {
                             case "CHARGE":
                                 #region TransactionType: CHARGE
+                                if (oldShopifySOOrder == null)
+                                    throw new PXException("Cannot find Sales Order");
                                 if (spCashAccount == null)
                                     throw new PXException($"Can not find Cash Account ({row.Currency}SPFSPF)");
                                 var arGraph = PXGraph.CreateInstance<ARPaymentEntry>();
@@ -470,9 +473,12 @@ namespace LumTomofunCustomization.Graph
                 if (decimal.TryParse(values["Amount"].ToString(), out _amount) && decimal.TryParse(values["PresentmentAmount"].ToString(), out _presentmentAmount))
                 {
                     var calculateResult = Math.Abs(_presentmentAmount / _amount);
-                    values["Amount"] = _amount * calculateResult;
-                    values["Fee"] = decimal.Parse(values["Fee"]?.ToString() ?? "0") * calculateResult;
-                    values["Net"] = decimal.Parse(values["Net"].ToString() ?? "0") * calculateResult;
+                    if (values["Currency"].ToString() != values["PresentmentCurrency"].ToString())
+                    {
+                        values["Amount"] = _amount * calculateResult;
+                        values["Fee"] = decimal.Parse(values["Fee"]?.ToString() ?? "0") * calculateResult;
+                        values["Net"] = decimal.Parse(values["Net"].ToString() ?? "0") * calculateResult;
+                    }
                 }
                 else
                     throw new Exception("Calculate Amount/Fee/Net Failed");
