@@ -21,12 +21,14 @@ namespace LumTomofunCustomization.Graph
         public IEnumerable transaction()
         {
             var filter = this.Filter.Current;
+
             PXView select = new PXView(this, true, Transaction.View.BqlSelect);
             Int32 totalrow = 0;
             Int32 startrow = PXView.StartRow;
             List<object> result = select.Select(PXView.Currents, PXView.Parameters,
                    PXView.Searches, PXView.SortColumns, PXView.Descendings,
-                   PXView.Filters, ref startrow, 1000000, ref totalrow);
+                   PXView.Filters,
+                   ref startrow, 1000000, ref totalrow);
             PXView.StartRow = 0;
             var vINReconciliationData = SelectFrom<vGlobalINReconciliation>
                                        .Where<vGlobalINReconciliation.iNDate.IsNotNull>
@@ -87,7 +89,14 @@ namespace LumTomofunCustomization.Graph
                                   VarQty = (rec?.WarehouseQty ?? 0) - (hist?.EndQty ?? 0)
                               };
 
-            return leftResult.Union(rightResult.Where(x => x.EndQty == 0));
+            ///<remarks> Makes the cache must have records that calculated unbound fields.</remarks>
+            foreach (v_GlobalINItemSiteHistDay row in leftResult.Union(rightResult.Where(x => x.EndQty == 0)))
+            {
+                Transaction.Cache.Insert(row);
+
+                yield return row;
+            }
+            //return leftResult.Union(rightResult.Where(x => x.EndQty == 0));
             //return leftResult.Union(rightResult).Distinct().GroupBy(x => new { x.InventoryCD ,x.EndQty ,x.SiteCD ,x.LocationCD ,x.WarehouseQty ,x.VarQty }).Select(g => g.FirstOrDefault());
         }
         #endregion
@@ -109,37 +118,60 @@ namespace LumTomofunCustomization.Graph
         #region Methods
         protected virtual void CreateGlobalINAdjustments(DateTime? filterDate)
         {
+            PXView select = new PXView(this, true, Transaction.View.BqlSelect);
+
+            int totalrow = 0, startrow = PXView.StartRow;
+
             foreach (PX.SM.UPCompany row in PX.Data.Update.PXCompanyHelper.SelectCompanies() )
             {
-                List<v_GlobalINItemSiteHistDay> curCompanyData = Transaction.Select().RowCast<v_GlobalINItemSiteHistDay>().Where(w => w.VarQty != 0m && w.CompanyCD == row.CompanyCD).OrderBy(o => o.CompanyCD).ToList();
+                // Get no manual filtering of cached records on the grid.
+                List<v_GlobalINItemSiteHistDay> curCompanyData = Transaction.Cache.Cached.RowCast<v_GlobalINItemSiteHistDay>().Where(w => w.VarQty != 0m && w.CompanyCD == row.CompanyCD).ToList();
 
-                using (new PXLoginScope($"{Accessinfo.UserName}@{row.CompanyCD}"))
+                // Get manual filtering of cache records and re-aggregate and filter.
+                var result = select.Select(PXView.Currents, PXView.Parameters, PXView.Searches, PXView.SortColumns, PXView.Descendings,
+                                           Transaction.View.GetExternalFilters(), ref startrow, PXView.MaximumRows, ref totalrow)
+                                   .OrderByDescending(o => (o as v_GlobalINItemSiteHistDay).SDate)
+                                   .GroupBy(g => new
+                                                 {
+                                                     (g as v_GlobalINItemSiteHistDay).CompanyCD,
+                                                     (g as v_GlobalINItemSiteHistDay).InventoryID,
+                                                     (g as v_GlobalINItemSiteHistDay).Siteid,
+                                                     (g as v_GlobalINItemSiteHistDay).LocationID
+                                                 })
+                                   .Where(w => w.Key.CompanyCD == row.CompanyCD).ToList();
+
+                if (result.Count > 0)
                 {
-                    INAdjustmentEntry adjustEntry = CreateInstance<INAdjustmentEntry>();
-
-                    adjustEntry.CurrentDocument.Insert(new INRegister()
+                    using (new PXLoginScope($"{Accessinfo.UserName}@{row.CompanyCD}"))
                     {
-                        DocType = INDocType.Adjustment,
-                        TranDate = filterDate,
-                        TranDesc = "IN Reconciliation"
-                    });
+                        INAdjustmentEntry adjustEntry = CreateInstance<INAdjustmentEntry>();
 
-                    for (int i = 0; i < curCompanyData.Count; i++)
-                    {
-                        INTran tran = new INTran()
+                        adjustEntry.CurrentDocument.Insert(new INRegister()
                         {
-                            InventoryID = curCompanyData[i].InventoryID,
-                            SiteID = curCompanyData[i].Siteid,
-                            LocationID = curCompanyData[i].LocationID
-                        };
+                            DocType = INDocType.Adjustment,
+                            TranDate = filterDate,
+                            TranDesc = "IN Reconciliation"
+                        });
 
-                        tran.Qty = curCompanyData[i].VarQty;
-                        //tran.ReasonCode = "INRECONCILE";
+                        var resKey = result.ToList();
 
-                        adjustEntry.transactions.Insert(tran);
+                        for (int i = 0; i < result.Count; i++)
+                        {
+                            INTran tran = new INTran()
+                            {
+                                InventoryID = resKey[i].Key.InventoryID,
+                                SiteID      = resKey[i].Key.Siteid,
+                                LocationID  = resKey[i].Key.LocationID
+                            };
+
+                            tran.Qty = curCompanyData.Find(f => f.InventoryID == tran.InventoryID && f.Siteid == tran.SiteID && f.LocationID == tran.LocationID)?.VarQty;
+                            //tran.ReasonCode = "INRECONCILE";
+
+                            adjustEntry.transactions.Insert(tran);
+                        }
+
+                        adjustEntry.Save.Press();
                     }
-
-                    adjustEntry.Save.Press();
                 }
             }   
         }

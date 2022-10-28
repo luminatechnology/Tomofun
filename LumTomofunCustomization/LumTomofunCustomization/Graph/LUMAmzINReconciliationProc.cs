@@ -18,6 +18,8 @@ namespace LUMTomofunCustomization.Graph
 {
     public class LUMAmzINReconciliationProc : PXGraph<LUMAmzINReconciliationProc>
     {
+        public const string SpcialLabel_NoItem = "*****";
+
         #region Features
         public PXCancel<SettlementFilter> Cancel;
         public PXFilter<SettlementFilter> Filter;
@@ -362,8 +364,9 @@ namespace LUMTomofunCustomization.Graph
         {
             return InventoryItem.UK.Find(this, sku)?.InventoryCD ??
                    InventoryItem.PK.Find(this, SelectFrom<INItemXRef>.Where<INItemXRef.alternateID.IsEqual<@P.AsString>
-                                                                           .And<INItemXRef.alternateType.IsEqual<INAlternateType.global>>>.View.Select(this, sku).TopFirst?.InventoryID)?.InventoryCD ??
-                   "*****";
+                                                                           .And<INItemXRef.alternateType.IsEqual<INAlternateType.global>>>
+                                                                     .View.Select(this, sku).TopFirst?.InventoryID)?.InventoryCD ??
+                   SpcialLabel_NoItem;
         }
 
         public virtual int? GetLocationIDByWarehouse(int? warehouse, string locationDescr)
