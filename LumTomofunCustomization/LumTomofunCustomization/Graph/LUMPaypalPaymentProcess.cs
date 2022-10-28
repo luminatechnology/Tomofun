@@ -130,6 +130,8 @@ namespace LumTomofunCustomization.Graph
                         {
                             case "ORDER":
                                 #region TransactionType: ORDER
+                                if (oldShopifySOOrder == null)
+                                    throw new PXException("Cannot find Sales Order");
                                 if (spCashAccount == null)
                                     throw new PXException($"Can not find Cash Account ({row.Currency}SPFPAL)");
                                 var arGraph = PXGraph.CreateInstance<ARPaymentEntry>();
@@ -349,6 +351,8 @@ namespace LumTomofunCustomization.Graph
                                 break;
                             case "DISPUTEPAY":
                                 #region TransactionType: DISPUTEPAY
+                                if (oldShopifySOOrder == null)
+                                    throw new PXException("Cannot find Sales Order");
                                 soGraph = PXGraph.CreateInstance<SOOrderEntry>();
 
                                 #region Header

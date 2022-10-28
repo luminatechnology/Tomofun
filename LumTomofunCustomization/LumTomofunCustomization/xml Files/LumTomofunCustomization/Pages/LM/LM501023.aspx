@@ -37,6 +37,7 @@
                     <px:PXGridColumn DataField="PaymentMethodName" />
                     <px:PXGridColumn DataField="Currency" />
                     <px:PXGridColumn DataField="PresentmentAmount"></px:PXGridColumn>
+                    <px:PXGridColumn DataField="PresentmentCurrency"></px:PXGridColumn>
                     <px:PXGridColumn DataField="ErrorMessage" />
                     <px:PXGridColumn DataField="CreatedDateTime" Width="130" DisplayFormat="g"></px:PXGridColumn>
                     <px:PXGridColumn DataField="CreatedByID" Width="130" DisplayFormat="g"></px:PXGridColumn>
