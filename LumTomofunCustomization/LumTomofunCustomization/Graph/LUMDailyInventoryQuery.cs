@@ -32,7 +32,7 @@ namespace LumTomofunCustomization.Graph
                                        .Where<vGlobalINReconciliation.iNDate.IsNotNull>
                                        .View.Select(this).RowCast<vGlobalINReconciliation>()
                                        .Where(x => x.INDate?.Date == filter.SDate?.Date)
-                                       .GroupBy(x => new { x.SiteCD, x.LocationCD, x.ERPSku, INDate = x.INDate?.Date })
+                                       .GroupBy(x => new { x.SiteCD, x.LocationCD, x.ERPSku, INDate = x.INDate?.Date, CompanyCD = x.CompanyCD })
                                        .Select(x => new v_GlobalINItemSiteHistDay()
                                        {
                                            InventoryCD = x.Key.ERPSku,
@@ -40,7 +40,8 @@ namespace LumTomofunCustomization.Graph
                                            LocationCD = x.Key.LocationCD,
                                            EndQty = 0,
                                            WarehouseQty = x.Sum(y => y.Qty ?? 0),
-                                           SDate = x.Key.INDate
+                                           SDate = x.Key.INDate,
+                                           CompanyCD = x.Key.CompanyCD
                                        });
             var histData = new List<v_GlobalINItemSiteHistDay>();
             foreach (var inventoryGroup in result.GroupBy(x => new { ((v_GlobalINItemSiteHistDay)x).InventoryID, ((v_GlobalINItemSiteHistDay)x).Siteid, ((v_GlobalINItemSiteHistDay)x).LocationID }))
@@ -93,7 +94,7 @@ namespace LumTomofunCustomization.Graph
 
         #region Actions
         public PXAction<DailyInventoryFilter> createINAdjust;
-        [PXProcessButton(ImageSet = "main", ImageKey = PX.Web.UI.Sprite.Main.ProcessF), PXUIField(MapEnableRights = PXCacheRights.Select, MapViewRights = PXCacheRights.Select)]
+        [PXProcessButton(CommitChanges = true), PXUIField(DisplayName = "Create IN Adjustment", MapEnableRights = PXCacheRights.Select, MapViewRights = PXCacheRights.Select)]
         protected virtual IEnumerable CreateINAdjust(PXAdapter adapter)
         {
             PXLongOperation.StartOperation(this, () =>
