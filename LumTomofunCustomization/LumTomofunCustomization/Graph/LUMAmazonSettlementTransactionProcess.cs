@@ -107,6 +107,9 @@ namespace LumTomofunCustomization.Graph
                     amzConnObjs.Add(actCompanyName, GetAmazonConnObject(actCompanyName));
                 foreach (var dic in amzConnObjs)
                 {
+                    var marketplacePreference = SelectFrom<LUMMarketplacePreference>
+                                               .Where<LUMMarketplacePreference.marketplace.IsEqual<P.AsString>>
+                                               .View.Select(baseGraph, dic.Key).TopFirst;
                     ReportManager reportManager = new ReportManager(dic.Value);
                     var SettlementOrders = reportManager.GetSettlementOrderAsync(filter.FromDate == null ? DateTime.Now.AddDays(-1).Date : filter.FromDate.Value.Date,
                                                                                filter.ToDate == null ? DateTime.Now.Date : filter.ToDate.Value.Date).Result;
@@ -125,7 +128,7 @@ namespace LumTomofunCustomization.Graph
                         trans.AmountType = item.AmountType;
                         trans.AmountDescription = item.AmountDescription;
                         trans.Amount = item.Amount;
-                        trans.PostedDate = item?.PostedDateTime;
+                        trans.PostedDate = item?.PostedDateTime?.AddHours(marketplacePreference?.TimeZone ?? 0);
                         trans.MarketPlaceName = item.MarketplaceName;
                         trans.MerchantOrderID = item.MerchantOrderId;
                         trans.MerchantOrderItemID = item.MerchantOrderItemId;
@@ -212,7 +215,7 @@ namespace LumTomofunCustomization.Graph
 
                                 #region Header
                                 var soDoc = soGraph.Document.Cache.CreateInstance() as SOOrder;
-                                soDoc.OrderType = "RT";
+                                soDoc.OrderType = "CM";
                                 soDoc.CustomerOrderNbr = amzGroupOrderData.Key.OrderID;
                                 soDoc.OrderDate = amzGroupOrderData.Key.PostedDate;
                                 soDoc.RequestDate = amzGroupOrderData.Key.PostedDate;
