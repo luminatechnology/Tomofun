@@ -23,7 +23,8 @@ namespace LUMTomofunCustomization.Graph
         #region Features
         public PXCancel<SettlementFilter> Cancel;
         public PXFilter<SettlementFilter> Filter;
-        public PXFilteredProcessing<LUMAmzINReconcilition, SettlementFilter, Where<LUMAmzINReconcilition.snapshotDate, IsNotNull>,
+        public PXFilteredProcessing<LUMAmzINReconcilition, SettlementFilter, Where<LUMAmzINReconcilition.reportID, IsNotNull,
+                                                                                   Or<LUMAmzINReconcilition.iNDate, Equal<Current<SettlementFilter.fromDate>>>>,
                                                                              OrderBy<Desc<LUMAmzINReconcilition.iNDate>>> Reconcilition;
         public PXSetup<LUMMWSPreference> Setup;
         #endregion
@@ -209,6 +210,7 @@ namespace LUMTomofunCustomization.Graph
 
                         for (int i = 0; i < reports.Count; i++)
                         {
+                            DeleteSameOrEmptyData(string.Empty);
                             DeleteSameOrEmptyData(reports[i].ReportId);
 
                             var reportData = amzConnection.Reports.GetReportFile(reports[i].ReportDocumentId);

@@ -12,39 +12,35 @@ namespace LumTomofunCustomization.Graph
 {
     public class LUMDailyInventoryQuery : PXGraph<LUMDailyInventoryQuery>
     {
+        /// <remarks> This variable is only used to call delegate data view in CreateGlobalINAdjustments() to retrieve screen redenering results. </remarks>
+        public bool Recall = false;
+
+        #region Selects & Filter
         public PXFilter<DailyInventoryFilter> Filter;
-        public SelectFrom<v_GlobalINItemSiteHistDay>
-               .Where<v_GlobalINItemSiteHistDay.sDate.IsLessEqual<DailyInventoryFilter.sDate.FromCurrent>>
-               .View Transaction;
+        public SelectFrom<v_GlobalINItemSiteHistDay>.Where<v_GlobalINItemSiteHistDay.sDate.IsLessEqual<DailyInventoryFilter.sDate.FromCurrent>>.View Transaction;
+        public SelectFrom<vGlobalINReconciliation>.Where<vGlobalINReconciliation.iNDate.IsLessEqual<DailyInventoryFilter.sDate.FromCurrent>>
+                                                  .AggregateTo<GroupBy<vGlobalINReconciliation.siteID,
+                                                                       GroupBy<vGlobalINReconciliation.locationID,
+                                                                               GroupBy<vGlobalINReconciliation.inventoryCD,
+                                                                                       GroupBy<vGlobalINReconciliation.companyCD>>>>>.View Transaction2;
+        #endregion
 
         #region Delegate Data View
         public IEnumerable transaction()
         {
             var filter = this.Filter.Current;
 
-            PXView select = new PXView(this, true, Transaction.View.BqlSelect);
-            Int32 totalrow = 0;
-            Int32 startrow = PXView.StartRow;
-            List<object> result = select.Select(PXView.Currents, PXView.Parameters,
-                   PXView.Searches, PXView.SortColumns, PXView.Descendings,
-                   PXView.Filters,
-                   ref startrow, 1000000, ref totalrow);
-            PXView.StartRow = 0;
-            var vINReconciliationData = SelectFrom<vGlobalINReconciliation>
-                                       .Where<vGlobalINReconciliation.iNDate.IsNotNull>
-                                       .View.Select(this).RowCast<vGlobalINReconciliation>()
-                                       .Where(x => x.INDate?.Date == filter.SDate?.Date)
-                                       .GroupBy(x => new { x.SiteCD, x.LocationCD, x.ERPSku, INDate = x.INDate?.Date, CompanyCD = x.CompanyCD })
-                                       .Select(x => new v_GlobalINItemSiteHistDay()
-                                       {
-                                           InventoryCD = x.Key.ERPSku,
-                                           SiteCD = x.Key.SiteCD,
-                                           LocationCD = x.Key.LocationCD,
-                                           EndQty = 0,
-                                           WarehouseQty = x.Sum(y => y.Qty ?? 0),
-                                           SDate = x.Key.INDate,
-                                           CompanyCD = x.Key.CompanyCD
-                                       });
+            int totalrow = 0, startrow = PXView.StartRow;
+            List<object> result = new PXView(this, true, Transaction.View.BqlSelect).Select(PXView.Currents, PXView.Parameters,
+                                                                                            PXView.Searches, PXView.SortColumns, PXView.Descendings,
+                                                                                            //PXView.Filters,
+                                                                                            Transaction.View.GetExternalFilters(),
+                                                                                            ref startrow, 1000000, ref totalrow);
+            if (Recall == false)
+            {
+                PXView.StartRow = 0;
+            }
+
             var histData = new List<v_GlobalINItemSiteHistDay>();
             foreach (var inventoryGroup in result.GroupBy(x => new { ((v_GlobalINItemSiteHistDay)x).InventoryID, ((v_GlobalINItemSiteHistDay)x).Siteid, ((v_GlobalINItemSiteHistDay)x).LocationID }))
             {
@@ -53,9 +49,19 @@ namespace LumTomofunCustomization.Graph
                 histData.Add(currentRow);
             }
 
+            var selects = new PXView(this, true, Transaction2.View.BqlSelect).Select(PXView.Currents, PXView.Parameters,
+                                                                                     PXView.Searches, PXView.SortColumns, PXView.Descendings,
+                                                                                     Transaction.View.GetExternalFilters(), ref startrow, 1000000, ref totalrow);
+
+            var vINReconciliationData = new List<vGlobalINReconciliation>();
+            foreach (vGlobalINReconciliation row in selects)
+            {
+                vINReconciliationData.Add(row);
+            }
+
             var leftResult = from hist in histData
                              join rec in vINReconciliationData on new { A = hist.SiteCD?.Trim(), B = hist?.LocationCD?.Trim(), C = hist?.InventoryCD?.Trim(), D = hist?.SDate?.Date } equals
-                                                                  new { A = rec.SiteCD?.Trim(), B = rec?.LocationCD?.Trim(), C = rec?.InventoryCD?.Trim(), D = rec?.SDate?.Date } into temp
+                                                                  new { A = rec.SiteCD?.Trim(), B = rec?.LocationCD?.Trim(), C = rec?.InventoryCD?.Trim(), D = rec?.INDate?.Date } into temp
                              from rec in temp.DefaultIfEmpty()
                              select new v_GlobalINItemSiteHistDay()
                              {
@@ -67,12 +73,12 @@ namespace LumTomofunCustomization.Graph
                                  SiteCD = hist?.SiteCD?.Trim(),
                                  LocationID = hist?.LocationID,
                                  LocationCD = hist?.LocationCD?.Trim(),
-                                 WarehouseQty = rec?.WarehouseQty ?? 0,
+                                 WarehouseQty = rec?.Qty ?? 0,
                                  InventoryITemDescr = hist?.InventoryITemDescr,
-                                 VarQty = (rec?.WarehouseQty ?? 0) - (hist?.EndQty ?? 0)
+                                 VarQty = (rec?.Qty ?? 0) - (hist?.EndQty ?? 0)
                              };
             var rightResult = from rec in vINReconciliationData
-                              join hist in histData on new { A = rec.SiteCD?.Trim(), B = rec?.LocationCD?.Trim(), C = rec?.InventoryCD?.Trim(), D = rec?.SDate?.Date } equals
+                              join hist in histData on new { A = rec.SiteCD?.Trim(), B = rec?.LocationCD?.Trim(), C = rec?.InventoryCD?.Trim(), D = rec?.INDate?.Date } equals
                                                        new { A = hist.SiteCD?.Trim(), B = hist?.LocationCD?.Trim(), C = hist?.InventoryCD?.Trim(), D = hist?.SDate?.Date } into temp
                               from hist in temp.DefaultIfEmpty()
                               select new v_GlobalINItemSiteHistDay()
@@ -81,22 +87,15 @@ namespace LumTomofunCustomization.Graph
                                   InventoryID = rec?.InventoryID,
                                   InventoryCD = rec?.InventoryCD?.Trim(),
                                   EndQty = hist?.EndQty ?? 0,
-                                  Siteid = rec?.Siteid,
+                                  Siteid = rec?.SiteID,
                                   SiteCD = rec?.SiteCD?.Trim(),
                                   LocationID = rec?.LocationID,
                                   LocationCD = rec?.LocationCD?.Trim(),
-                                  WarehouseQty = rec?.WarehouseQty ?? 0,
-                                  VarQty = (rec?.WarehouseQty ?? 0) - (hist?.EndQty ?? 0)
+                                  WarehouseQty = rec?.Qty ?? 0,
+                                  VarQty = (rec?.Qty ?? 0) - (hist?.EndQty ?? 0)
                               };
 
-            ///<remarks> Makes the cache must have records that calculated unbound fields.</remarks>
-            foreach (v_GlobalINItemSiteHistDay row in leftResult.Union(rightResult.Where(x => x.EndQty == 0)))
-            {
-                Transaction.Cache.Insert(row);
-
-                yield return row;
-            }
-            //return leftResult.Union(rightResult.Where(x => x.EndQty == 0));
+            return leftResult.Union(rightResult.Where(x => x.EndQty == 0));
             //return leftResult.Union(rightResult).Distinct().GroupBy(x => new { x.InventoryCD ,x.EndQty ,x.SiteCD ,x.LocationCD ,x.WarehouseQty ,x.VarQty }).Select(g => g.FirstOrDefault());
         }
         #endregion
@@ -118,29 +117,12 @@ namespace LumTomofunCustomization.Graph
         #region Methods
         protected virtual void CreateGlobalINAdjustments(DateTime? filterDate)
         {
-            PXView select = new PXView(this, true, Transaction.View.BqlSelect);
-
-            int totalrow = 0, startrow = PXView.StartRow;
+            Recall = true;
+            IEnumerable<v_GlobalINItemSiteHistDay> result = (IEnumerable<v_GlobalINItemSiteHistDay>)transaction();
 
             foreach (PX.SM.UPCompany row in PX.Data.Update.PXCompanyHelper.SelectCompanies() )
             {
-                // Get no manual filtering of cached records on the grid.
-                List<v_GlobalINItemSiteHistDay> curCompanyData = Transaction.Cache.Cached.RowCast<v_GlobalINItemSiteHistDay>().Where(w => w.VarQty != 0m && w.CompanyCD == row.CompanyCD).ToList();
-
-                // Get manual filtering of cache records and re-aggregate and filter.
-                var result = select.Select(PXView.Currents, PXView.Parameters, PXView.Searches, PXView.SortColumns, PXView.Descendings,
-                                           Transaction.View.GetExternalFilters(), ref startrow, PXView.MaximumRows, ref totalrow)
-                                   .OrderByDescending(o => (o as v_GlobalINItemSiteHistDay).SDate)
-                                   .GroupBy(g => new
-                                                 {
-                                                     (g as v_GlobalINItemSiteHistDay).CompanyCD,
-                                                     (g as v_GlobalINItemSiteHistDay).InventoryID,
-                                                     (g as v_GlobalINItemSiteHistDay).Siteid,
-                                                     (g as v_GlobalINItemSiteHistDay).LocationID
-                                                 })
-                                   .Where(w => w.Key.CompanyCD == row.CompanyCD).ToList();
-
-                if (result.Count > 0)
+                if (result.Count() > 0)
                 {
                     using (new PXLoginScope($"{Accessinfo.UserName}@{row.CompanyCD}"))
                     {
@@ -155,17 +137,17 @@ namespace LumTomofunCustomization.Graph
 
                         var resKey = result.ToList();
 
-                        for (int i = 0; i < result.Count; i++)
+                        for (int i = 0; i < resKey.Count; i++)
                         {
                             INTran tran = new INTran()
                             {
-                                InventoryID = resKey[i].Key.InventoryID,
-                                SiteID      = resKey[i].Key.Siteid,
-                                LocationID  = resKey[i].Key.LocationID
+                                InventoryID = resKey[i].InventoryID,
+                                SiteID      = resKey[i].Siteid,
+                                LocationID  = resKey[i].LocationID
                             };
 
-                            tran.Qty = curCompanyData.Find(f => f.InventoryID == tran.InventoryID && f.Siteid == tran.SiteID && f.LocationID == tran.LocationID)?.VarQty;
-                            //tran.ReasonCode = "INRECONCILE";
+                            tran.Qty        = resKey[i].VarQty;
+                            tran.ReasonCode = "INRECONCILE";
 
                             adjustEntry.transactions.Insert(tran);
                         }
@@ -177,6 +159,7 @@ namespace LumTomofunCustomization.Graph
         }
         #endregion
 
+        #region Unbound DAC
         public class DailyInventoryFilter : IBqlTable
         {
             [PXDBDate]
@@ -185,5 +168,6 @@ namespace LumTomofunCustomization.Graph
             public virtual DateTime? SDate { get; set; }
             public abstract class sDate : PX.Data.BQL.BqlDateTime.Field<sDate> { }
         }
+        #endregion
     }
 }

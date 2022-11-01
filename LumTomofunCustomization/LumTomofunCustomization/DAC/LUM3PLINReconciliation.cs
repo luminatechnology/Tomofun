@@ -113,7 +113,28 @@ namespace LUMTomofunCustomization.DAC
         public virtual DateTime? INDate { get; set; }
         public abstract class iNDate : PX.Data.BQL.BqlDateTime.Field<iNDate> { }
         #endregion
-    
+
+        #region RMACode
+        [PXDBString(50, IsUnicode = true)]
+        [PXUIField(DisplayName = "RMA Code")]
+        public virtual string RMACode { get; set; }
+        public abstract class rMACode : PX.Data.BQL.BqlString.Field<rMACode> { }
+        #endregion
+
+        #region WHRemarks
+        [PXDBString(50, IsUnicode = true)]
+        [PXUIField(DisplayName = "Warehouse Remarks")]
+        public virtual string WHRemarks { get; set; }
+        public abstract class wHRemarks : PX.Data.BQL.BqlString.Field<wHRemarks> { }
+        #endregion
+
+        #region AssignSku
+        [PXDBInt()]
+        [PXUIField(DisplayName = "Assign SKU")]
+        public virtual int? AssignSku { get; set; }
+        public abstract class assignSku : PX.Data.BQL.BqlInt.Field<assignSku> { }
+        #endregion
+
         #region CreatedByID
         [PXDBCreatedByID()]
         public virtual Guid? CreatedByID { get; set; }

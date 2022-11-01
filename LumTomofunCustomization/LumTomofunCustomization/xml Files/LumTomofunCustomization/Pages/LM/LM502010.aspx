@@ -65,6 +65,9 @@
 								<px:PXGridColumn DataField="Location" Width="70" ></px:PXGridColumn>
 								<px:PXGridColumn DataField="ERPSku" Width="180" ></px:PXGridColumn>
 								<px:PXGridColumn DataField="INDate" Width="90" ></px:PXGridColumn>
+								<px:PXGridColumn DataField="RMACode" Width="120" ></px:PXGridColumn>
+								<px:PXGridColumn DataField="WHRemarks" Width="120" ></px:PXGridColumn>
+								<px:PXGridColumn DataField="AssignSku" Width="70" ></px:PXGridColumn>
 								<px:PXGridColumn DataField="CreatedByID" Width="80" ></px:PXGridColumn>
 								<px:PXGridColumn DataField="IsProcessed" Width="60" Type="CheckBox" ></px:PXGridColumn></Columns>
 							</px:PXGridLevel>
@@ -105,35 +108,6 @@
 					</px:PXGrid>
 				</Template>
 			</px:PXTabItem>
-			<%--<px:PXTabItem Text="Google Sheets">
-				<Template>
-					<px:PXGrid ID="grid4" runat="server" DataSourceID="ds" Width="100%" Height="150px" SkinID="Inquire" AllowAutoHide="false" NoteIndicator="false" FilesIndicator="false">
-						<Levels>
-							<px:PXGridLevel DataMember="GSheetsReconciliation">
-								<Columns>
-								<px:PXGridColumn DataField="CreatedDateTime" Width="90" ></px:PXGridColumn>
-								<px:PXGridColumn DataField="TranDate" Width="120" DisplayFormat="g" ></px:PXGridColumn>
-								<px:PXGridColumn DataField="Sku" Width="70" ></px:PXGridColumn>
-								<px:PXGridColumn DataField="ProductName" Width="280" ></px:PXGridColumn>
-								<px:PXGridColumn DataField="Qty" Width="100" ></px:PXGridColumn>
-								<px:PXGridColumn DataField="FBACenterID" Width="120" ></px:PXGridColumn>
-								<px:PXGridColumn DataField="DetailedDesc" Width="220" ></px:PXGridColumn>
-								<px:PXGridColumn DataField="CountryID" Width="70" ></px:PXGridColumn>
-								<px:PXGridColumn DataField="Warehouse" Width="70" ></px:PXGridColumn>
-								<px:PXGridColumn DataField="Location" Width="70" ></px:PXGridColumn>
-								<px:PXGridColumn DataField="ERPSku" Width="180" ></px:PXGridColumn>
-								<px:PXGridColumn DataField="INDate" Width="90" ></px:PXGridColumn>
-								<px:PXGridColumn DataField="CreatedByID" Width="80" ></px:PXGridColumn>
-								<px:PXGridColumn DataField="IsProcessed" Width="60" Type="CheckBox" ></px:PXGridColumn></Columns>
-							</px:PXGridLevel>
-						</Levels>
-						<AutoSize Container="Window" Enabled="True" MinHeight="150" />
-						<ActionBar PagerVisible="Bottom" >
-							<PagerSettings Mode="NumericCompact" />
-						</ActionBar>
-					</px:PXGrid>
-				</Template>
-			</px:PXTabItem>--%>
 		</Items>
 		<AutoSize Container="Window" Enabled="True" MinHeight="150" />
 	</px:PXTab>

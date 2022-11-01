@@ -316,6 +316,8 @@ namespace LUMTomofunCustomization.Graph
                                                                         string.IsNullOrEmpty(whRemarks) ? inventories.returnInventoryList[k].sku :
                                                                                                           rMACode.Contains("NEW") ? rMACode.Split('-')[2] : null;
 
+                        int assignSku = inventories.returnInventoryList[k].vasCount;
+
                         LUM3PLINReconciliation newData = new LUM3PLINReconciliation()
                         {
                             ThirdPLType = ThirdPLType.ReturnHelper,
@@ -323,13 +325,16 @@ namespace LUMTomofunCustomization.Graph
                             INDate = Accessinfo.BusinessDate,
                             Sku = sku,
                             ProductName = null,
-                            Qty = k,
+                            Qty = assignSku > 0 ? assignSku : k,
                             // If (Upper('SKU') contains 'GRADE-C' or 'GRADE C' ) or ('SKU' is not Empty and 'Warehouse Remark' is Empty) then Location = '602' else Location = 601'
                             DetailedDesc = (!string.IsNullOrEmpty(sku) && (sku.ToUpper().Contains("GRADE-C") || sku.ToUpper().Contains("GRADE C"))) ||
                                            (!string.IsNullOrEmpty(sku) && string.IsNullOrEmpty(whRemarks)) ? "NON-SELLABLE" : "SELLABLE",
                             CountryID = wHMapping?.CountryID,
                             Warehouse = wHMapping?.ERPWH,
-                            FBACenterID = key.ToString()
+                            FBACenterID = key.ToString(),
+                            RMACode = inventories.returnInventoryList[k].itemRma,
+                            WHRemarks = inventories.returnInventoryList[k].warehouseRemarks,
+                            AssignSku = assignSku
                         };
 
                         // #3, Since this 3PL only has inventory transaction records, if these fields are the same, they can only be accumulated to calculate the quantity.
