@@ -312,11 +312,11 @@ namespace LUMTomofunCustomization.Graph
                         // if 'SKU' is not Empty and 'Warehouse remark' is Empty then = 'SKU',
                         // if 'RMA Code' 有 NEW 抓 'NEW -' 之後的 SKU
                         string sku = !string.IsNullOrEmpty(whRemarks) ? whRemarks :
+                                                                        rMACode.Contains("NEW") ? rMACode.Split('-')[2] :
                                                                         !string.IsNullOrEmpty(inventories.returnInventoryList[k].sku) &&
-                                                                        string.IsNullOrEmpty(whRemarks) ? inventories.returnInventoryList[k].sku :
-                                                                                                          rMACode.Contains("NEW") ? rMACode.Split('-')[2] : null;
+                                                                        string.IsNullOrEmpty(whRemarks) ? inventories.returnInventoryList[k].sku : null;
 
-                        int assignSku = inventories.returnInventoryList[k].vasCount;
+                        int assignSku = rMACode.Contains("NEW") ? Convert.ToInt32(inventories.returnInventoryList[k].sku) : 0;
 
                         LUM3PLINReconciliation newData = new LUM3PLINReconciliation()
                         {
@@ -326,13 +326,13 @@ namespace LUMTomofunCustomization.Graph
                             Sku = sku,
                             ProductName = null,
                             Qty = assignSku > 0 ? assignSku : k,
-                            // If (Upper('SKU') contains 'GRADE-C' or 'GRADE C' ) or ('SKU' is not Empty and 'Warehouse Remark' is Empty) then Location = '602' else Location = 601'
+                            // If (Upper('SKU') contains 'GRADE-C' or 'GRADE C') or ('SKU' is not Empty and 'Warehouse Remark' is Empty) then Location = '602' else Location = 601'
                             DetailedDesc = (!string.IsNullOrEmpty(sku) && (sku.ToUpper().Contains("GRADE-C") || sku.ToUpper().Contains("GRADE C"))) ||
                                            (!string.IsNullOrEmpty(sku) && string.IsNullOrEmpty(whRemarks)) ? "NON-SELLABLE" : "SELLABLE",
                             CountryID = wHMapping?.CountryID,
                             Warehouse = wHMapping?.ERPWH,
                             FBACenterID = key.ToString(),
-                            RMACode = inventories.returnInventoryList[k].itemRma,
+                            RMACode = rMACode,
                             WHRemarks = inventories.returnInventoryList[k].warehouseRemarks,
                             AssignSku = assignSku
                         };
