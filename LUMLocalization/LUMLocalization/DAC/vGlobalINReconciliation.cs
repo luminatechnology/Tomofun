@@ -1,5 +1,6 @@
 ﻿using System;
 using PX.Data;
+using PX.Objects.IN;
 
 namespace LUMLocalization.DAC
 {
@@ -42,11 +43,17 @@ namespace LUMLocalization.DAC
         public abstract class fBACenterID : PX.Data.BQL.BqlString.Field<fBACenterID> { }
         #endregion
 
-        #region ERPSku
+        #region InventoryID
+        [PXDBInt()]
+        public virtual int? InventoryID { get; set; }
+        public abstract class inventoryID : PX.Data.BQL.BqlInt.Field<inventoryID> { }
+        #endregion
+
+        #region InventoryCD
         [PXDBString(50, IsUnicode = true, InputMask = "", IsKey = true)]
         [PXUIField(DisplayName = "ERP Sku")]
-        public virtual string ERPSku { get; set; }
-        public abstract class eRPSku : PX.Data.BQL.BqlString.Field<eRPSku> { }
+        public virtual string InventoryCD { get; set; }
+        public abstract class inventoryCD : PX.Data.BQL.BqlString.Field<inventoryCD> { }
         #endregion
 
         #region ProductName
@@ -77,11 +84,23 @@ namespace LUMLocalization.DAC
         public abstract class countryID : PX.Data.BQL.BqlString.Field<countryID> { }
         #endregion
 
+        #region SiteID
+        [PXDBInt()]
+        public virtual int? SiteID { get; set; }
+        public abstract class siteID : PX.Data.BQL.BqlInt.Field<siteID> { }
+        #endregion
+
         #region SiteCD
         [PXDBString(30, IsUnicode = true, InputMask = "", IsKey = true)]
         [PXUIField(DisplayName = "Warehouse")]
         public virtual string SiteCD { get; set; }
         public abstract class siteCD : PX.Data.BQL.BqlString.Field<siteCD> { }
+        #endregion
+
+        #region LocationID
+        [PXDBInt()]
+        public virtual int? LocationID { get; set; }
+        public abstract class locationID : PX.Data.BQL.BqlInt.Field<locationID> { }
         #endregion
 
         #region LocationCD
