@@ -299,7 +299,7 @@ namespace LumTomofunCustomization.Graph
                                     }
                                     else if (row.AmountDescription == "Principal" && row.Amount < 0)
                                     {
-                                        soTrans.InventoryID = AmazonPublicFunction.GetInvetoryitemID(soGraph, row.Sku);
+                                        soTrans.InventoryID = AmazonPublicFunction.GetInvetoryitemID(soGraph, row.Marketplace == "TW" ? "REFUND-TW" : "REFUND");
                                         soTrans.LocationID = AmazonPublicFunction.GetLocationID(customerDefWarehouse);
                                         soTrans.OrderQty = 1;
                                         soTrans.CuryUnitPrice = (row.Amount ?? 0) * -1;
@@ -307,7 +307,7 @@ namespace LumTomofunCustomization.Graph
                                     else if (row.AmountDescription == "Principal" && row.Amount > 0)
                                     {
                                         // 找Principal條件的Line
-                                        var PrincipalLine = soGraph.Transactions.Cache.Cached.RowCast<SOLine>().FirstOrDefault(x => x.InventoryID == AmazonPublicFunction.GetInvetoryitemID(soGraph, row.Sku));
+                                        var PrincipalLine = soGraph.Transactions.Cache.Cached.RowCast<SOLine>().FirstOrDefault(x => x.InventoryID == AmazonPublicFunction.GetInvetoryitemID(soGraph, row.Marketplace == "TW" ? "REFUND-TW" : "REFUND"));
                                         if (PrincipalLine != null)
                                         {
                                             PrincipalLine.ManualDisc = true;
