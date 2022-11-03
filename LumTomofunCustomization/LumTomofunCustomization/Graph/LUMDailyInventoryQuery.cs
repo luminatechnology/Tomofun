@@ -22,7 +22,7 @@ namespace LumTomofunCustomization.Graph
                                                   .AggregateTo<GroupBy<vGlobalINReconciliation.siteID,
                                                                        GroupBy<vGlobalINReconciliation.locationID,
                                                                                GroupBy<vGlobalINReconciliation.inventoryCD,
-                                                                                       GroupBy<vGlobalINReconciliation.companyCD>>>>>.View Transaction2;
+                                                                                       GroupBy<vGlobalINReconciliation.companyCD,Sum<vGlobalINReconciliation.qty>>>>>>.View Transaction2;
         #endregion
 
         #region Delegate Data View
