@@ -47,6 +47,22 @@ namespace LumTomofunCustomization.Graph
 
         #endregion
 
+        #region Action
+
+        public PXAction<MRPFilter> GenerateMRPResultQuery;
+        [PXProcessButton(CommitChanges = true), PXUIField(DisplayName = "Generate MRP Result", MapEnableRights = PXCacheRights.Select, MapViewRights = PXCacheRights.Select)]
+        protected virtual IEnumerable generateMRPResultQuery(PXAdapter adapter)
+        {
+            PXLongOperation.StartOperation(this, () =>
+            {
+                ExecuteMRPSP();
+            });
+
+            return adapter.Get();
+        }
+
+        #endregion
+
         public IEnumerable transaction()
         {
             PXView select = new PXView(this, false, Transaction.View.BqlSelect);
@@ -273,7 +289,7 @@ namespace LumTomofunCustomization.Graph
                                 _transactionExistsDays = _transactionExistsDays.Distinct().ToList();
                                 if (actDate.Value.Date == lastDate.Date ||
                                     actDate.Value.Date == startDate.Value.Date ||
-                                    _transactionExistsDays.IndexOf(actDate.Value.Date) > 0 )
+                                    _transactionExistsDays.IndexOf(actDate.Value.Date) > 0)
                                     result.TransactionExistsFlag = "Y";
                                 #endregion
 
@@ -360,6 +376,8 @@ namespace LumTomofunCustomization.Graph
 
                     // Save data
                     baseGraph.Actions.PressSave();
+
+                    ExecuteMRPSP();
                 });
             }
             catch (PXOuterException ex)
@@ -369,6 +387,20 @@ namespace LumTomofunCustomization.Graph
             catch (Exception ex)
             {
                 throw new PXOperationCompletedWithErrorException(ex.Message);
+            }
+        }
+
+        /// <summary> 執行SP將資料寫入MRPQueryResult </summary>
+        public static void ExecuteMRPSP()
+        {
+            using (new PXConnectionScope())
+            {
+                using (PXTransactionScope ts = new PXTransactionScope())
+                {
+                    /*Execute Stored Procedure*/
+                    PXDatabase.Execute("SP_MRPResult", new PXSPParameter[0]);
+                    ts.Complete();
+                }
             }
         }
 

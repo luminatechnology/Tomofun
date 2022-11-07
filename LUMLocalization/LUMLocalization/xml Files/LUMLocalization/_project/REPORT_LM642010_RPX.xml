@@ -287,23 +287,23 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 <ChildName>SOLineSplit</ChildName>
                 <Links>
                     <RelationRow>
-                        <ChildField>OrderType</ChildField>
-                        <ParentField>OrderType</ParentField>
-                    </RelationRow>
-                    <RelationRow>
                         <ChildField>OrderNbr</ChildField>
-                        <ParentField>OrderNbr</ParentField>
+                        <ParentField>OrigOrderNbr</ParentField>
                     </RelationRow>
                     <RelationRow>
-                        <ChildField>LineNbr</ChildField>
-                        <ParentField>LineNbr</ParentField>
+                        <ChildField>OrderType</ChildField>
+                        <ParentField>OrigOrderType</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>SplitLineNbr</ChildField>
+                        <ParentField>OrigSplitLineNbr</ParentField>
                     </RelationRow>
                     <RelationRow>
                         <Condition>IsNull</Condition>
                         <ParentField>SOLineSplit.POReceiptNbr</ParentField>
                     </RelationRow>
                 </Links>
-                <ParentName>SOLine</ParentName>
+                <ParentName>SOShipLine</ParentName>
             </ReportRelation>
             <ReportRelation>
                 <ChildName>POLine</ChildName>
@@ -380,7 +380,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 <ParentName>SOShipment</ParentName>
             </ReportRelation>
         </Relations>
-        <SchemaUrl>https://tomofun.acumatica.com/</SchemaUrl>
+        <SchemaUrl>http://localhost/Tomofun1/</SchemaUrl>
         <Sorting>
             <SortExp>
                 <DataField>SOShipment.ShipmentNbr</DataField>

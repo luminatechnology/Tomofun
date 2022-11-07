@@ -98,6 +98,7 @@
     <Compile Include="DAC\LUMAmazonSettlementTransData.cs" />
     <Compile Include="DAC\LUMAmazonTransData.cs" />
     <Compile Include="DAC\LUMAmzINReconcilition.cs" />
+    <Compile Include="DAC\LUMMRPQueryResult.cs" />
     <Compile Include="DAC\LUMShopifyMarketplacePreference.cs" />
     <Compile Include="DAC\LUMShopifySourceData.cs" />
     <Compile Include="DAC\LUMForecastUpload.cs" />

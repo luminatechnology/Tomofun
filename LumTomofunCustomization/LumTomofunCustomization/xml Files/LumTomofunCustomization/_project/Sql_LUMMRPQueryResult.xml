@@ -1,0 +1,21 @@
+﻿<Sql TableName="LUMMRPQueryResult" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="LUMMRPQueryResult">
+  <col name="SequenceID" type="Int" identity="true" />
+  <col name="Mrptype" type="NVarChar(50)" />
+  <col name="Sku" type="NVarChar(30)" />
+  <col name="Company" type="NVarChar(128)" nullable="true" />
+  <col name="Country" type="NVarChar(128)" nullable="true" />
+  <col name="Warehouse" type="NVarChar(30)" />
+  <col name="Date" type="DateTime" />
+  <col name="Qty" type="Decimal(18,6)" />
+  <col name="QtyWeek" type="Decimal(18,6)" nullable="true" />
+  <col name="QtyMonth" type="Decimal(18,6)" nullable="true" />
+  <col name="Revision" type="NVarChar(10)" nullable="true" />
+  <col name="CreatedByID" type="UniqueIdentifier" nullable="true" />
+  <col name="CreatedDateTime" type="DateTime" nullable="true" />
+  <col name="TransactionExistsFlag" type="NVarChar(1)" nullable="true" />
+  <index name="PK_LUMMRPQueryResult" clustered="true" primary="true" unique="true">
+    <col name="SequenceID" />
+  </index>
+</table>]]></CDATA>
+</Sql>
