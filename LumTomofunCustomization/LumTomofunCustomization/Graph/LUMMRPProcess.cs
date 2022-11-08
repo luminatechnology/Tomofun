@@ -514,7 +514,7 @@ namespace LumTomofunCustomization.Graph
                                .View.Select(this, revision).RowCast<LUMForecastUpload>().OrderByDescending(x => x.Date);
             // 找出所有有Forecast的日期
             _transactionExistsDays.AddRange(forecastData.Select(x => x.Date.Value.Date));
-            if (forecastData != null)
+            if (forecastData != null && forecastData.Count() > 0)
                 FinalProcessLastDate = new DateTime(Math.Max(FinalProcessLastDate.Ticks, forecastData.FirstOrDefault().Date.Value.Ticks));
             return FinalProcessLastDate;
         }
