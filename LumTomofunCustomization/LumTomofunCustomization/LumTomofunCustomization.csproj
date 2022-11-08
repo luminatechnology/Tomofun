@@ -149,6 +149,7 @@
     <Compile Include="DAC\LUM3PLWarehouseMapping.cs" />
     <Compile Include="DAC\v_AmazonSettlementReportQuery.cs" />
     <Compile Include="DAC\v_GlobalINItemSiteHistDay.cs" />
+    <Compile Include="DAC\v_ToDayInventoryAllocationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
