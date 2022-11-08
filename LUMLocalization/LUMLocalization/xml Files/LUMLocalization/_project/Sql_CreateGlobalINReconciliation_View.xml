@@ -50,7 +50,7 @@ SELECT c.CompanyCD,
 			WHEN t.ThirdPLType = 'F' THEN 'FedEx'
 			WHEN t.ThirdPLType = 'G' THEN 'Google Sheets' END AS Source
 FROM LUM3PLINReconciliation t
-INNER JOIN Company c ON c.CompanyID = t.CompanyID
+INNER JOIN Company c ON c.CompanyID = (SELECT TOP 1 CompanyID FROM LUMShopifyMarketplacePreference WHERE LUMShopifyMarketplacePreference.Marketplace = t.CountryID)
 LEFT OUTER JOIN InventoryItem i ON i.CompanyID = t.CompanyID AND i.InventoryCD = t.ERPSku
 LEFT OUTER JOIN INSite s ON s.CompanyID = t.CompanyID AND s.SiteID = t.Warehouse
 LEFT OUTER JOIN INLocation l ON l.CompanyID = t.CompanyID AND l.LocationID = t.Location
