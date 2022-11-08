@@ -277,6 +277,8 @@ namespace LUMTomofunCustomization.Graph
             // #1, get all the defined warehouses and calculate how many pages of transaction records each warehouse has.
             for (int i = 0; i < countries?.countries?.Count; i++)
             {
+                //if (countries?.countries[i].countryCode != "gbr") { continue; }
+
                 var warehouses = LUMAPIHelper.DeserializeJSONString<ReturnHelperEntity.WarehouseRoot>(GetRHAllCountriesWarehouse(setup.RHAuthzToken, setup.RHApiKey, setup.RHApiToken, countries?.countries[i].countryCode).ContentResult);
 
                 for (int j = 0; j < warehouses?.warehouses?.Count; j++)
@@ -326,7 +328,7 @@ namespace LUMTomofunCustomization.Graph
                             INDate = Accessinfo.BusinessDate,
                             Sku = sku,
                             ProductName = null,
-                            Qty = assignSku > 0 ? assignSku : k,
+                            Qty = assignSku > 0 ? assignSku : 1,
                             // If (Upper('SKU') contains 'GRADE-C' or 'GRADE C') or ('SKU' is not Empty and 'Warehouse Remark' is Empty) then Location = '602' else Location = 601'
                             DetailedDesc = (!string.IsNullOrEmpty(sku) && (sku.ToUpper().Contains("GRADE-C") || sku.ToUpper().Contains("GRADE C"))) ||
                                            (!string.IsNullOrEmpty(sku) && string.IsNullOrEmpty(whRemarks) && newItem == false) ? "NON-SELLABLE" : "SELLABLE",
@@ -341,7 +343,7 @@ namespace LUMTomofunCustomization.Graph
                         // #3, Since this 3PL only has inventory transaction records, if these fields are the same, they can only be accumulated to calculate the quantity.
                         LUM3PLINReconciliation existed = lists.Find(e => e.TranDate == newData.TranDate && e.Sku == newData.Sku && e.DetailedDesc == newData.DetailedDesc &&
                                                                          e.CountryID == newData.CountryID && e.Warehouse == newData.Warehouse);
-
+                        
                         if (existed == null)
                         {
                             lists.Add(newData);
