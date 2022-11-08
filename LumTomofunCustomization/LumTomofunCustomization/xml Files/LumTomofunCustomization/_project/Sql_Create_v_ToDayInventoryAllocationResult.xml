@@ -1,0 +1,75 @@
+﻿<Sql TableName="Create_v_ToDayInventoryAllocationResult" SqlScriptPriority="11" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[-- 做出當日MRPType = '3. PO (ETA)','6. Transfer/Receipt IN (ETA)'的資料
+-- 將過去資料Group by SUM起來
+IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'v_ToDayInventoryAllocationResult' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[v_ToDayInventoryAllocationResult]	
+GO
+CREATE VIEW v_ToDayInventoryAllocationResult AS
+	WITH FirstRecordTmpTable AS (
+		SELECT CompanyID, SKU, Warehouse,MIN(Date) AS FirstRecordTime
+		FROM LUMMRPProcessResult
+		GROUP BY CompanyID, SKU, Warehouse
+	),
+	LastRecordTmpTable AS (
+		SELECT CompanyID, SKU, Warehouse,MAX(Date) AS LastRecordTime
+		FROM LUMMRPProcessResult
+		GROUP BY CompanyID, SKU, Warehouse
+	),
+	BaseInfo AS (
+		SELECT CompanyID,Revision, MAX(CreatedDatetime) AS CreatedDatetime,MAX(CreatedByID) AS CreatedByID
+		FROM LUMMRPProcessResult
+		GROUP BY CompanyID, Revision
+	),
+	MRPResult AS (
+		SELECT item.InventoryCD AS InventoryItemCD,
+			   comp.CompanyCD AS CompanyCD,
+			   address.CountryID AS AddressCountry,
+			   insite.SiteCD  AS SiteCD,
+			   result.*,
+			   base.revision AS BaseRevision,
+			   base.CreatedByID AS BaseCreatedByID,
+			   base.CreatedDatetime AS BaseCreatedDatetime
+		FROM LUMMRPProcessResult result
+		INNER JOIN Company comp  ON result.CompanyID = comp.CompanyID
+		INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
+								AND result.Warehouse = insite.SiteID
+		INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
+									 AND result.SKU = item.InventoryID
+		INNER JOIN Address address ON insite.CompanyID = address.CompanyID
+								  AND insite.AddressID = address.AddressID
+		LEFT JOIN BaseInfo base ON comp.CompanyID = base.CompanyID
+	)
+	-- Inventory Allocate Details
+	SELECT item.InventoryCD AS Sku,
+		   comp.CompanyCD AS Company,
+		   address.CountryID AS Country,
+		   insite.SiteCD  AS Warehouse,
+		   GetDate() AS Date,
+		   SUM(invDetails.Qty) AS Qty,
+		   SUM(invDetails.Qty) AS QtyWeek,
+		   SUM(invDetails.Qty) AS QtyMonth,
+		   base.revision,
+		   base.CreatedByID,
+		   base.CreatedDatetime,
+		   'Y' AS TransactionExistsFlag
+	FROM v_InventoryAllocationDetais invDetails
+	INNER JOIN Company comp  ON invDetails.CompanyID = comp.CompanyID
+	INNER JOIN INSite insite ON invDetails.CompanyID = insite.CompanyID
+							AND invDetails.SiteID = insite.SiteID
+	INNER JOIN InventoryItem item ON invDetails.CompanyID = item.CompanyID
+								 AND invDetails.InventoryID = item.InventoryID
+	INNER JOIN LUMMRPPreference ON invDetails.CompanyID = LUMMRPPreference.CompanyID
+							   AND LOWER(invDetails.AllocationType) = LOWER(LUMMRPPreference.AllocationType)
+							   AND LUMMRPPreference.GroupingType is not null
+							   AND LUMMRPPreference.GroupingType != ''
+	INNER JOIN Address address ON insite.CompanyID = address.CompanyID
+							  AND insite.AddressID = address.AddressID
+	LEFT JOIN BaseInfo base ON comp.CompanyID = base.CompanyID
+	WHERE invDetails.CompanyID > 0 and GroupingType in ('3. PO (ETA)','6. Transfer/Receipt IN (ETA)') and date <= GetDate()
+	Group by item.InventoryCD, comp.CompanyCD,address.CountryID,insite.SiteCD,base.revision,base.CreatedByID,base.CreatedDatetime]]></CDATA>
+</Sql>
