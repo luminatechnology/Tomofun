@@ -1,6 +1,7 @@
 ﻿using LUMLocalization.DAC;
 using LUMTomofunCustomization.DAC;
 using PX.Data;
+using PX.Data.BQL;
 using PX.Data.BQL.Fluent;
 using PX.Objects.IN;
 using System;
@@ -19,11 +20,12 @@ namespace LumTomofunCustomization.Graph
         public PXFilter<DailyInventoryFilter> Filter;
         public SelectFrom<v_GlobalINItemSiteHistDay>.Where<v_GlobalINItemSiteHistDay.sDate.IsLessEqual<DailyInventoryFilter.sDate.FromCurrent>>.View Transaction;
         public SelectFrom<vGlobalINReconciliation>.Where<vGlobalINReconciliation.iNDate.IsLessEqual<DailyInventoryFilter.sDate.FromCurrent>>
-                                                  .AggregateTo<GroupBy<vGlobalINReconciliation.siteID,
-                                                                       GroupBy<vGlobalINReconciliation.locationID,
+                                                  .AggregateTo<GroupBy<vGlobalINReconciliation.siteCD,
+                                                                       GroupBy<vGlobalINReconciliation.locationCD,
                                                                                GroupBy<vGlobalINReconciliation.inventoryCD,
                                                                                        GroupBy<vGlobalINReconciliation.companyCD,
-                                                                                               Sum<vGlobalINReconciliation.qty>>>>>>.View Transaction2;
+                                                                                               GroupBy<vGlobalINReconciliation.iNDate,
+                                                                                                       Sum<vGlobalINReconciliation.qty>>>>>>>.View Transaction2;
         #endregion
 
         #region Delegate Data View
@@ -133,7 +135,7 @@ namespace LumTomofunCustomization.Graph
 
                         adjustEntry.CurrentDocument.Insert(new INRegister()
                         {
-                            DocType = INDocType.Adjustment,
+                            DocType  = INDocType.Adjustment,
                             TranDate = filterDate,
                             TranDesc = "IN Reconciliation"
                         });
@@ -142,11 +144,12 @@ namespace LumTomofunCustomization.Graph
                         {
                             INTran tran = new INTran()
                             {
-                                InventoryID = resKey[i].InventoryID,
-                                SiteID      = resKey[i].Siteid,
-                                LocationID  = resKey[i].LocationID
+                                InventoryID = InventoryItem.UK.Find(adjustEntry, resKey[i].InventoryCD)?.InventoryID,
+                                SiteID      = INSite.UK.Find(adjustEntry, resKey[i].SiteCD).SiteID
                             };
 
+                            tran.LocationID = SelectFrom<INLocation>.Where<INLocation.locationCD.IsEqual<@P.AsString>
+                                                                           .And<INLocation.siteID.IsEqual<@P.AsInt>>>.View.SelectSingleBound(adjustEntry, null, resKey[i].LocationCD, tran.SiteID).TopFirst?.LocationID;
                             tran.Qty        = resKey[i].VarQty;
                             tran.ReasonCode = "INRECONCILE";
 
