@@ -22,7 +22,8 @@ namespace LumTomofunCustomization.Graph
                                                   .AggregateTo<GroupBy<vGlobalINReconciliation.siteID,
                                                                        GroupBy<vGlobalINReconciliation.locationID,
                                                                                GroupBy<vGlobalINReconciliation.inventoryCD,
-                                                                                       GroupBy<vGlobalINReconciliation.companyCD,Sum<vGlobalINReconciliation.qty>>>>>>.View Transaction2;
+                                                                                       GroupBy<vGlobalINReconciliation.companyCD,
+                                                                                               Sum<vGlobalINReconciliation.qty>>>>>>.View Transaction2;
         #endregion
 
         #region Delegate Data View
@@ -122,7 +123,9 @@ namespace LumTomofunCustomization.Graph
 
             foreach (PX.SM.UPCompany row in PX.Data.Update.PXCompanyHelper.SelectCompanies() )
             {
-                if (result.Count() > 0)
+                var resKey = result.Where(w => w.CompanyCD == row.CompanyCD).ToList();
+
+                if (resKey.Count > 0)
                 {
                     using (new PXLoginScope($"{Accessinfo.UserName}@{row.CompanyCD}"))
                     {
@@ -134,8 +137,6 @@ namespace LumTomofunCustomization.Graph
                             TranDate = filterDate,
                             TranDesc = "IN Reconciliation"
                         });
-
-                        var resKey = result.ToList();
 
                         for (int i = 0; i < resKey.Count; i++)
                         {
