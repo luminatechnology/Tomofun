@@ -57,11 +57,12 @@ namespace LumTomofunCustomization.Graph
                                                                                      Transaction.View.GetExternalFilters(), ref startrow, 1000000, ref totalrow);
 
             var vINReconciliationData = new List<vGlobalINReconciliation>();
-            foreach (vGlobalINReconciliation row in selects)
+            foreach (vGlobalINReconciliation row in selects.Where(w => (w as vGlobalINReconciliation).INDate == filter.SDate) )
             {
                 vINReconciliationData.Add(row);
             }
 
+            #region Generate Data From v_GlobalINItemSiteHistDay
             var leftResult = from hist in histData
                              join rec in vINReconciliationData on new { A = hist.SiteCD?.Trim(), B = hist?.LocationCD?.Trim(), C = hist?.InventoryCD?.Trim(), D = hist?.SDate?.Date } equals
                                                                   new { A = rec.SiteCD?.Trim(), B = rec?.LocationCD?.Trim(), C = rec?.InventoryCD?.Trim(), D = rec?.INDate?.Date } into temp
@@ -80,6 +81,9 @@ namespace LumTomofunCustomization.Graph
                                  InventoryITemDescr = hist?.InventoryITemDescr,
                                  VarQty = (rec?.Qty ?? 0) - (hist?.EndQty ?? 0)
                              };
+            #endregion
+
+            #region Generate Data From vGlobalINReconciliation
             var rightResult = from rec in vINReconciliationData
                               join hist in histData on new { A = rec.SiteCD?.Trim(), B = rec?.LocationCD?.Trim(), C = rec?.InventoryCD?.Trim(), D = rec?.INDate?.Date } equals
                                                        new { A = hist.SiteCD?.Trim(), B = hist?.LocationCD?.Trim(), C = hist?.InventoryCD?.Trim(), D = hist?.SDate?.Date } into temp
@@ -97,6 +101,7 @@ namespace LumTomofunCustomization.Graph
                                   WarehouseQty = rec?.Qty ?? 0,
                                   VarQty = (rec?.Qty ?? 0) - (hist?.EndQty ?? 0)
                               };
+            #endregion
 
             return leftResult.Union(rightResult.Where(x => x.EndQty == 0));
             //return leftResult.Union(rightResult).Distinct().GroupBy(x => new { x.InventoryCD ,x.EndQty ,x.SiteCD ,x.LocationCD ,x.WarehouseQty ,x.VarQty }).Select(g => g.FirstOrDefault());
