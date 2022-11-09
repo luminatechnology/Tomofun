@@ -1,6 +1,7 @@
 ﻿using LUMLocalization.DAC;
 using LUMTomofunCustomization.DAC;
 using PX.Data;
+using PX.Data.BQL;
 using PX.Data.BQL.Fluent;
 using PX.Objects.IN;
 using System;
@@ -19,11 +20,12 @@ namespace LumTomofunCustomization.Graph
         public PXFilter<DailyInventoryFilter> Filter;
         public SelectFrom<v_GlobalINItemSiteHistDay>.Where<v_GlobalINItemSiteHistDay.sDate.IsLessEqual<DailyInventoryFilter.sDate.FromCurrent>>.View Transaction;
         public SelectFrom<vGlobalINReconciliation>.Where<vGlobalINReconciliation.iNDate.IsLessEqual<DailyInventoryFilter.sDate.FromCurrent>>
-                                                  .AggregateTo<GroupBy<vGlobalINReconciliation.siteID,
-                                                                       GroupBy<vGlobalINReconciliation.locationID,
+                                                  .AggregateTo<GroupBy<vGlobalINReconciliation.siteCD,
+                                                                       GroupBy<vGlobalINReconciliation.locationCD,
                                                                                GroupBy<vGlobalINReconciliation.inventoryCD,
                                                                                        GroupBy<vGlobalINReconciliation.companyCD,
-                                                                                               Sum<vGlobalINReconciliation.qty>>>>>>.View Transaction2;
+                                                                                               GroupBy<vGlobalINReconciliation.iNDate,
+                                                                                                       Sum<vGlobalINReconciliation.qty>>>>>>>.View Transaction2;
         #endregion
 
         #region Delegate Data View
@@ -55,11 +57,12 @@ namespace LumTomofunCustomization.Graph
                                                                                      Transaction.View.GetExternalFilters(), ref startrow, 1000000, ref totalrow);
 
             var vINReconciliationData = new List<vGlobalINReconciliation>();
-            foreach (vGlobalINReconciliation row in selects)
+            foreach (vGlobalINReconciliation row in selects.Where(w => (w as vGlobalINReconciliation).INDate == filter.SDate) )
             {
                 vINReconciliationData.Add(row);
             }
 
+            #region Generate Data From v_GlobalINItemSiteHistDay
             var leftResult = from hist in histData
                              join rec in vINReconciliationData on new { A = hist.SiteCD?.Trim(), B = hist?.LocationCD?.Trim(), C = hist?.InventoryCD?.Trim(), D = hist?.SDate?.Date } equals
                                                                   new { A = rec.SiteCD?.Trim(), B = rec?.LocationCD?.Trim(), C = rec?.InventoryCD?.Trim(), D = rec?.INDate?.Date } into temp
@@ -78,6 +81,9 @@ namespace LumTomofunCustomization.Graph
                                  InventoryITemDescr = hist?.InventoryITemDescr,
                                  VarQty = (rec?.Qty ?? 0) - (hist?.EndQty ?? 0)
                              };
+            #endregion
+
+            #region Generate Data From vGlobalINReconciliation
             var rightResult = from rec in vINReconciliationData
                               join hist in histData on new { A = rec.SiteCD?.Trim(), B = rec?.LocationCD?.Trim(), C = rec?.InventoryCD?.Trim(), D = rec?.INDate?.Date } equals
                                                        new { A = hist.SiteCD?.Trim(), B = hist?.LocationCD?.Trim(), C = hist?.InventoryCD?.Trim(), D = hist?.SDate?.Date } into temp
@@ -95,6 +101,7 @@ namespace LumTomofunCustomization.Graph
                                   WarehouseQty = rec?.Qty ?? 0,
                                   VarQty = (rec?.Qty ?? 0) - (hist?.EndQty ?? 0)
                               };
+            #endregion
 
             return leftResult.Union(rightResult.Where(x => x.EndQty == 0));
             //return leftResult.Union(rightResult).Distinct().GroupBy(x => new { x.InventoryCD ,x.EndQty ,x.SiteCD ,x.LocationCD ,x.WarehouseQty ,x.VarQty }).Select(g => g.FirstOrDefault());
@@ -133,7 +140,7 @@ namespace LumTomofunCustomization.Graph
 
                         adjustEntry.CurrentDocument.Insert(new INRegister()
                         {
-                            DocType = INDocType.Adjustment,
+                            DocType  = INDocType.Adjustment,
                             TranDate = filterDate,
                             TranDesc = "IN Reconciliation"
                         });
@@ -142,11 +149,12 @@ namespace LumTomofunCustomization.Graph
                         {
                             INTran tran = new INTran()
                             {
-                                InventoryID = resKey[i].InventoryID,
-                                SiteID      = resKey[i].Siteid,
-                                LocationID  = resKey[i].LocationID
+                                InventoryID = InventoryItem.UK.Find(adjustEntry, resKey[i].InventoryCD)?.InventoryID,
+                                SiteID      = INSite.UK.Find(adjustEntry, resKey[i].SiteCD).SiteID
                             };
 
+                            tran.LocationID = SelectFrom<INLocation>.Where<INLocation.locationCD.IsEqual<@P.AsString>
+                                                                           .And<INLocation.siteID.IsEqual<@P.AsInt>>>.View.SelectSingleBound(adjustEntry, null, resKey[i].LocationCD, tran.SiteID).TopFirst?.LocationID;
                             tran.Qty        = resKey[i].VarQty;
                             tran.ReasonCode = "INRECONCILE";
 
