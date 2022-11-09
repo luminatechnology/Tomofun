@@ -5911,32 +5911,6 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                         </Style>
                         <Value>Tomofun Co., Ltd.</Value>
                     </TextBox>
-                    <TextBox Name="textBox10">
-                        <Excel>
-                            <row>17</row>
-                            <width>4</width>
-                        </Excel>
-                        <Location>0px, 368px</Location>
-                        <Size>304px, 16px</Size>
-                        <Style>
-                            <BorderStyle>
-                                <Left>Solid</Left>
-                                <Right>Solid</Right>
-                            </BorderStyle>
-                            <BorderWidth>
-                                <Left>1px</Left>
-                                <Right>1px</Right>
-                            </BorderWidth>
-                            <Font>
-                                <Size>10px</Size>
-                            </Font>
-                            <Padding>
-                                <Right>3px</Right>
-                            </Padding>
-                            <TextAlign>Right</TextAlign>
-                        </Style>
-                        <Value>=IIF([SOShipment.ShipmentType] = 'I', ISNULL([Location.AttributeWHTAX],''),#010;[INSite.AttributeWHVAT])</Value>
-                    </TextBox>
                     <TextBox Name="textBox11">
                         <Excel>
                             <row>18</row>
@@ -6948,7 +6922,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <width>4</width>
                         </Excel>
                         <Location>0px, 352px</Location>
-                        <Size>304px, 16px</Size>
+                        <Size>304px, 32px</Size>
                         <Style>
                             <BorderStyle>
                                 <Left>Solid</Left>
