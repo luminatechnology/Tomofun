@@ -1,0 +1,32 @@
+﻿<Sql TableName="Create_v_OpenTR" SqlScriptPriority="13" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[-- OPENTR accumulate Data
+IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'v_OpenTR' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[v_OpenTR]	
+GO
+CREATE VIEW v_OpenTR AS
+SELECT t.Company,
+	   t.StartETA,
+	   t.EndETA,
+	   t.Sku,
+	   t.Warehouse,
+	   (
+			SELECT sum([OpenQty])
+			FROM v_OpenTRSourceData
+			WHERE ETA < t.EndETA AND Company = t.Company AND Warehouse = t.Warehouse AND Sku = t.Sku
+		) AS OpenQty
+FROM(
+	SELECT t.Company,
+		   t.Sku,
+		   t.Warehouse,
+		   t.ETA AS StartETA ,
+		   isnull(min(t2.ETA), '9999/12/31') AS EndETA,
+		   t.OpenQty
+	FROM v_OpenTRSourceData t
+	LEFT JOIN v_OpenTRSourceData t2 ON t.ETA < t2.ETA AND t.Company = t2.Company AND t.Sku = t2.Sku AND t.Warehouse = t2.Warehouse
+	GROUP BY t.Company,t.Sku,t.Warehouse,t.ETA,t.OpenQty ) t]]></CDATA>
+</Sql>

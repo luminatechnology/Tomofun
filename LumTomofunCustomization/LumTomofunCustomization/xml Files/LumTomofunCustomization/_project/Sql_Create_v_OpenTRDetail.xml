@@ -1,0 +1,21 @@
+﻿<Sql TableName="Create_v_OpenTRDetail" SqlScriptPriority="14" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[-- OpenTR Data
+IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'v_OpenTRDetail' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[v_OpenTRDetail]	
+GO
+CREATE VIEW v_OpenTRDetail AS
+SELECT t.Company,
+		   t.Sku,
+		   t.Warehouse,
+		   t.ETA AS StartETA ,
+		   isnull(min(t2.ETA), '9999/12/31') AS EndETA,
+		   t.OpenQty
+	FROM v_OpenTRSourceData t
+	LEFT JOIN v_OpenTRSourceData t2 ON t.ETA < t2.ETA AND t.Company = t2.Company AND t.Sku = t2.Sku AND t.Warehouse = t2.Warehouse
+	GROUP BY t.Company,t.Sku,t.Warehouse,t.ETA,t.OpenQty]]></CDATA>
+</Sql>
