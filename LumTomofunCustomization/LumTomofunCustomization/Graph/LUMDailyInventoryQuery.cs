@@ -13,6 +13,8 @@ namespace LumTomofunCustomization.Graph
 {
     public class LUMDailyInventoryQuery : PXGraph<LUMDailyInventoryQuery>
     {
+        public const string NotFoundInCurTenant = "{0} [{1}] Cannot Be Found In {2} Tenant.";
+
         /// <remarks> This variable is only used to call delegate data view in CreateGlobalINAdjustments() to retrieve screen redenering results. </remarks>
         public bool Recall = false;
 
@@ -147,16 +149,26 @@ namespace LumTomofunCustomization.Graph
 
                         for (int i = 0; i < resKey.Count; i++)
                         {
-                            INTran tran = new INTran()
-                            {
-                                InventoryID = InventoryItem.UK.Find(adjustEntry, resKey[i].InventoryCD)?.InventoryID,
-                                SiteID      = INSite.UK.Find(adjustEntry, resKey[i].SiteCD).SiteID
-                            };
+                            INTran tran = new INTran();
 
-                            tran.LocationID = SelectFrom<INLocation>.Where<INLocation.locationCD.IsEqual<@P.AsString>
-                                                                           .And<INLocation.siteID.IsEqual<@P.AsInt>>>.View.SelectSingleBound(adjustEntry, null, resKey[i].LocationCD, tran.SiteID).TopFirst?.LocationID;
-                            tran.Qty        = resKey[i].VarQty;
-                            tran.ReasonCode = "INRECONCILE";
+                            tran.InventoryID = InventoryItem.UK.Find(adjustEntry, resKey[i].InventoryCD)?.InventoryID;
+                            if (tran.InventoryID == null) 
+                            {
+                                throw new PXException(string.Format(NotFoundInCurTenant, PXUIFieldAttribute.GetDisplayName<INTran.inventoryID>(adjustEntry.transactions.Cache), resKey[i].InventoryCD, row.CompanyCD));
+                            }
+                            tran.SiteID      = INSite.UK.Find(adjustEntry, resKey[i].SiteCD).SiteID;
+                            if (tran.SiteID == null) 
+                            {
+                                throw new PXException(string.Format(NotFoundInCurTenant, PXUIFieldAttribute.GetDisplayName<INTran.siteID>(adjustEntry.transactions.Cache), resKey[i].SiteCD, row.CompanyCD));
+                            }
+                            tran.LocationID  = SelectFrom<INLocation>.Where<INLocation.locationCD.IsEqual<@P.AsString>
+                                                                            .And<INLocation.siteID.IsEqual<@P.AsInt>>>.View.SelectSingleBound(adjustEntry, null, resKey[i].LocationCD, tran.SiteID).TopFirst?.LocationID;
+                            if (tran.LocationID == null) 
+                            {
+                                throw new PXException(string.Format(NotFoundInCurTenant, PXUIFieldAttribute.GetDisplayName<INTran.locationID>(adjustEntry.transactions.Cache), resKey[i].LocationCD, row.CompanyCD));
+                            }
+                            tran.Qty         = resKey[i].VarQty;
+                            tran.ReasonCode  = "INRECONCILE";
 
                             adjustEntry.transactions.Insert(tran);
                         }
