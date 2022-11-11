@@ -299,26 +299,49 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                         <ParentField>OrigSplitLineNbr</ParentField>
                     </RelationRow>
                     <RelationRow>
-                        <Condition>IsNull</Condition>
-                        <ParentField>SOLineSplit.POReceiptNbr</ParentField>
+                        <ChildField>LineNbr</ChildField>
+                        <ParentField>OrigLineNbr</ParentField>
                     </RelationRow>
                 </Links>
                 <ParentName>SOShipLine</ParentName>
+            </ReportRelation>
+            <ReportRelation>
+                <ChildAlias>ParentSOLineSplit</ChildAlias>
+                <ChildName>SOLineSplit</ChildName>
+                <Links>
+                    <RelationRow>
+                        <ChildField>ParentSOLineSplit.OrderNbr</ChildField>
+                        <ParentField>OrderNbr</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>ParentSOLineSplit.OrderType</ChildField>
+                        <ParentField>OrderType</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>ParentSOLineSplit.LineNbr</ChildField>
+                        <ParentField>LineNbr</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>ParentSOLineSplit.SplitLineNbr</ChildField>
+                        <ParentField>ParentSplitLineNbr</ParentField>
+                    </RelationRow>
+                </Links>
+                <ParentName>SOLineSplit</ParentName>
             </ReportRelation>
             <ReportRelation>
                 <ChildName>POLine</ChildName>
                 <Links>
                     <RelationRow>
                         <ChildField>OrderType</ChildField>
-                        <ParentField>POType</ParentField>
+                        <ParentField>ParentSOLineSplit.POType</ParentField>
                     </RelationRow>
                     <RelationRow>
                         <ChildField>OrderNbr</ChildField>
-                        <ParentField>PONbr</ParentField>
+                        <ParentField>ParentSOLineSplit.PONbr</ParentField>
                     </RelationRow>
                     <RelationRow>
                         <ChildField>LineNbr</ChildField>
-                        <ParentField>POLineNbr</ParentField>
+                        <ParentField>ParentSOLineSplit.POLineNbr</ParentField>
                     </RelationRow>
                 </Links>
                 <ParentName>SOLineSplit</ParentName>
@@ -7190,32 +7213,6 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                         </Style>
                         <Value>Tomofun Co., Ltd.</Value>
                     </TextBox>
-                    <TextBox Name="textBox10">
-                        <Excel>
-                            <row>17</row>
-                            <width>4</width>
-                        </Excel>
-                        <Location>0px, 392px</Location>
-                        <Size>304px, 16px</Size>
-                        <Style>
-                            <BorderStyle>
-                                <Left>Solid</Left>
-                                <Right>Solid</Right>
-                            </BorderStyle>
-                            <BorderWidth>
-                                <Left>1px</Left>
-                                <Right>1px</Right>
-                            </BorderWidth>
-                            <Font>
-                                <Size>10px</Size>
-                            </Font>
-                            <Padding>
-                                <Right>3px</Right>
-                            </Padding>
-                            <TextAlign>Right</TextAlign>
-                        </Style>
-                        <Value>=IIF([SOShipment.ShipmentType] = 'I', ISNULL([Location.AttributeWHTAX],''),#010;[INSite.AttributeWHVAT])</Value>
-                    </TextBox>
                     <TextBox Name="textBox11">
                         <Excel>
                             <row>18</row>
@@ -8437,7 +8434,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                             <width>4</width>
                         </Excel>
                         <Location>0px, 376px</Location>
-                        <Size>304px, 16px</Size>
+                        <Size>304px, 32px</Size>
                         <Style>
                             <BorderStyle>
                                 <Left>Solid</Left>

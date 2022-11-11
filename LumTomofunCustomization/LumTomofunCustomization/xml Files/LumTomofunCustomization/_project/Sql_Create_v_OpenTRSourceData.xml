@@ -1,0 +1,31 @@
+﻿<Sql TableName="Create_v_OpenTRSourceData" SqlScriptPriority="12" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[-- OpenTR Source Data
+IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'v_OpenTRSourceData' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[v_OpenTRSourceData]	
+GO
+CREATE VIEW v_OpenTRSourceData AS
+WITH TRSourceData as(
+	SELECT Company.CompanyCD AS Company,
+		   InventoryItem.InventoryCD AS Sku,
+		   INSite.SiteCD Warehouse,
+		   CASE WHEN CAST(DateAdd(day, CAST(ISNULL(CSAnswers.Value,90) as int) , SOLine.RequestDate) AS Date) < CAST(GetDate() AS Date) THEN 
+			CAST(GetDate() AS Date)
+		   ELSE
+			CAST(DateAdd(day, CAST(ISNULL(CSAnswers.Value,90) as int) , SOLine.RequestDate) AS Date) END AS ETA,
+		   SOLine.OpenQty
+	FROM SOOrder SOOrder
+	LEFT JOIN Company Company ON SOOrder.CompanyID = Company.CompanyID
+	LEFT JOIN SOLine SOLine ON SOOrder.CompanyID = SOLine.CompanyID AND SOOrder.OrderNbr = SOLine.OrderNbr AND SOOrder.OrderType = SOLine.OrderType AND SOLine.CompanyID > 0
+	LEFT JOIN INSite INSite ON SOOrder.CompanyID = INSite.CompanyID AND SOOrder.DestinationSiteID = INSite.SiteID AND INSite.CompanyID > 0
+	LEFT JOIN InventoryItem InventoryItem ON SOLine.CompanyID = InventoryItem.CompanyID AND SOLine.InventoryID = InventoryItem.InventoryID AND InventoryItem.CompanyID > 0
+	LEFT JOIN CSAnswers ON INSite.CompanyID = CSAnswers.CompanyID AND INsite.NoteID = CSAnswers.RefNoteID AND CSAnswers.AttributeID = 'WHLEADTIME' AND CSAnswers.CompanyID > 0
+	WHERE SOOrder.OrderType = 'TR' AND SOline.OpenQty > 0 AND SOOrder.Status != 'L' AND SOOrder.CompanyID > 0)
+SELECT Company,Sku,Warehouse,CAST(ETA AS datetime) AS ETA ,SUM(OpenQty) AS OpenQty
+FROM TRSourceData
+GROUP BY Company,Sku,Warehouse,ETA]]></CDATA>
+</Sql>

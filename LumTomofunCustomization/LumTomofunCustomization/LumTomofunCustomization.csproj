@@ -150,6 +150,9 @@
     <Compile Include="DAC\v_AmazonSettlementReportQuery.cs" />
     <Compile Include="DAC\v_GlobalINItemSiteHistDay.cs" />
     <Compile Include="DAC\v_ToDayInventoryAllocationResult.cs" />
+    <Compile Include="DAC\v_OpenTRSourceData.cs" />
+    <Compile Include="DAC\v_OpenTR.cs" />
+    <Compile Include="DAC\v_OpenTRDetail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
