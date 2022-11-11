@@ -1,4 +1,4 @@
-﻿<Sql TableName="Create_SP_MRPQueryResult" SqlScriptPriority="10" CustomScript="#CDATA">
+﻿<Sql TableName="Create_SP_MRPQueryResult" SqlScriptPriority="15" CustomScript="#CDATA">
     <CDATA name="CustomScript"><![CDATA[IF EXISTS
 (
 	SELECT *
@@ -56,9 +56,9 @@ BEGIN
 								  AND insite.AddressID = address.AddressID
 		LEFT JOIN BaseInfo base ON comp.CompanyID = base.CompanyID
 	)
-
-	-- Forecast
+	-- Insert Data
 	INSERT INTO [dbo].[LUMMRPQueryResult]
+	-- Forecast
 	SELECT MRPType,
 		   item.InventoryCD AS SKU,
 		   comp.CompanyCD AS Company,
@@ -249,5 +249,23 @@ BEGIN
 							  AND insite.AddressID = address.AddressID
 	LEFT JOIN BaseInfo base ON comp.CompanyID = base.CompanyID
 	WHERE invDetails.CompanyID > 0
+	-- OpenTR
+	UNION
+	SELECT '6. Transfer/Receipt IN (ETA)' AS GroupingType,
+		   OpenTR.Sku AS Sku,
+		   OpenTR.Company AS Company,
+		   '' AS Country,
+		   OpenTR.WareHouse AS Warehouse,
+		   OpenTR.ETA AS Date,
+		   OpenTR.OpenQty AS Qty,
+		   OpenTR.OpenQty AS QtyWeek,
+		   OpenTR.OpenQty AS QtyMonth,
+		   base.revision,
+		   base.CreatedByID,
+		   base.CreatedDatetime,
+		   'Y' AS TransactionExistsFlag
+	FROM v_OpenTRSourceData OpenTR
+	LEFT JOIN Company  comp ON OpenTR.Company = comp.CompanyCD
+	LEFT JOIN BaseInfo base ON comp.CompanyID = base.CompanyID
 END]]></CDATA>
 </Sql>
