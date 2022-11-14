@@ -254,7 +254,7 @@ BEGIN
 	SELECT '6A. Transfer/Receipt IN (ETA)' AS GroupingType,
 		   OpenTR.Sku AS Sku,
 		   OpenTR.Company AS Company,
-		   '' AS Country,
+		   address.CountryID AS Country,
 		   OpenTR.WareHouse AS Warehouse,
 		   OpenTR.ETA AS Date,
 		   OpenTR.OpenQty AS Qty,
@@ -266,6 +266,10 @@ BEGIN
 		   'Y' AS TransactionExistsFlag
 	FROM v_OpenTRSourceData OpenTR
 	LEFT JOIN Company  comp ON OpenTR.Company = comp.CompanyCD
+	LEFT JOIN INSite insite ON comp.CompanyID = insite.CompanyID 
+						   AND OpenTR.Warehouse = insite.SiteCD
+	INNER JOIN Address address ON insite.CompanyID = address.CompanyID
+							  AND insite.AddressID = address.AddressID
 	LEFT JOIN BaseInfo base ON comp.CompanyID = base.CompanyID
 	WHERE comp.CompanyID > 0 AND base.Revision IS NOT NULL
 END]]></CDATA>
