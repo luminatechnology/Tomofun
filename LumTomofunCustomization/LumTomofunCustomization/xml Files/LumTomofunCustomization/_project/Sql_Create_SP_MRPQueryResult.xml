@@ -251,7 +251,7 @@ BEGIN
 	WHERE invDetails.CompanyID > 0
 	-- OpenTR
 	UNION
-	SELECT '6. Transfer/Receipt IN (ETA)' AS GroupingType,
+	SELECT '6A. Transfer/Receipt IN (ETA)' AS GroupingType,
 		   OpenTR.Sku AS Sku,
 		   OpenTR.Company AS Company,
 		   '' AS Country,
@@ -267,5 +267,6 @@ BEGIN
 	FROM v_OpenTRSourceData OpenTR
 	LEFT JOIN Company  comp ON OpenTR.Company = comp.CompanyCD
 	LEFT JOIN BaseInfo base ON comp.CompanyID = base.CompanyID
+	WHERE comp.CompanyID > 0 AND base.Revision IS NOT NULL
 END]]></CDATA>
 </Sql>
