@@ -393,7 +393,7 @@ namespace LumTomofunCustomization.Graph
         /// <summary> 執行SP將資料寫入MRPQueryResult </summary>
         public static void ExecuteMRPSP()
         {
-            using (new PXCommandScope(600))
+            using (new PXCommandScope(1800))
             {
                 using (PXTransactionScope ts = new PXTransactionScope())
                 {
