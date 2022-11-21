@@ -1,4 +1,4 @@
-﻿<Sql TableName="Create_SP_MRPQueryResult" SqlScriptPriority="10" CustomScript="#CDATA">
+﻿<Sql TableName="Create_SP_MRPQueryResult" SqlScriptPriority="15" CustomScript="#CDATA">
     <CDATA name="CustomScript"><![CDATA[IF EXISTS
 (
 	SELECT *
@@ -25,16 +25,19 @@ BEGIN
 	WITH FirstRecordTmpTable AS (
 		SELECT CompanyID, SKU, Warehouse,MIN(Date) AS FirstRecordTime
 		FROM LUMMRPProcessResult
+		WHERE COMPANYID > 0
 		GROUP BY CompanyID, SKU, Warehouse
 	),
 	LastRecordTmpTable AS (
 		SELECT CompanyID, SKU, Warehouse,MAX(Date) AS LastRecordTime
 		FROM LUMMRPProcessResult
+		WHERE COMPANYID > 0
 		GROUP BY CompanyID, SKU, Warehouse
 	),
 	BaseInfo AS (
 		SELECT CompanyID,Revision, MAX(CreatedDatetime) AS CreatedDatetime,MAX(CreatedByID) AS CreatedByID
 		FROM LUMMRPProcessResult
+		WHERE COMPANYID > 0
 		GROUP BY CompanyID, Revision
 	),
 	MRPResult AS (
@@ -50,15 +53,19 @@ BEGIN
 		INNER JOIN Company comp  ON result.CompanyID = comp.CompanyID
 		INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
 								AND result.Warehouse = insite.SiteID
+								AND insite.CompanyID > 0
 		INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
 									 AND result.SKU = item.InventoryID
+									 AND item.CompanyID > 0
 		INNER JOIN Address address ON insite.CompanyID = address.CompanyID
 								  AND insite.AddressID = address.AddressID
+								  AND address.CompanyID > 0
 		LEFT JOIN BaseInfo base ON comp.CompanyID = base.CompanyID
+		WHERE result.CompanyID > 0
 	)
-
-	-- Forecast
+	-- Insert Data
 	INSERT INTO [dbo].[LUMMRPQueryResult]
+	-- Forecast
 	SELECT MRPType,
 		   item.InventoryCD AS SKU,
 		   comp.CompanyCD AS Company,
@@ -76,10 +83,13 @@ BEGIN
 	INNER JOIN Company comp  ON forecast.Company = comp.CompanyCD
 	INNER JOIN INSite insite ON comp.CompanyID = insite.CompanyID
 							AND forecast.Warehouse = insite.SiteCD
+							AND insite.CompanyID > 0
 	INNER JOIN InventoryItem item ON comp.CompanyID = item.CompanyID
 								 AND forecast.SKU = item.InventoryCD
+								 AND item.CompanyID > 0
 	INNER JOIN Address address ON insite.CompanyID = address.CompanyID
 							  AND insite.AddressID = address.AddressID
+							  AND address.CompanyID > 0
 	LEFT JOIN BaseInfo base ON comp.CompanyID = base.CompanyID
 	WHERE comp.CompanyID > 0
 	---- MRP Result (Open SO Date-1)
@@ -239,15 +249,41 @@ BEGIN
 	INNER JOIN Company comp  ON invDetails.CompanyID = comp.CompanyID
 	INNER JOIN INSite insite ON invDetails.CompanyID = insite.CompanyID
 							AND invDetails.SiteID = insite.SiteID
+							AND insite.CompanyID > 0
 	INNER JOIN InventoryItem item ON invDetails.CompanyID = item.CompanyID
 								 AND invDetails.InventoryID = item.InventoryID
+								 AND item.CompanyID > 0
 	INNER JOIN LUMMRPPreference ON invDetails.CompanyID = LUMMRPPreference.CompanyID
 							   AND LOWER(invDetails.AllocationType) = LOWER(LUMMRPPreference.AllocationType)
 							   AND LUMMRPPreference.GroupingType is not null
 							   AND LUMMRPPreference.GroupingType != ''
 	INNER JOIN Address address ON insite.CompanyID = address.CompanyID
 							  AND insite.AddressID = address.AddressID
+							  AND address.CompanyID > 0
 	LEFT JOIN BaseInfo base ON comp.CompanyID = base.CompanyID
 	WHERE invDetails.CompanyID > 0
+	-- OpenTR
+	UNION
+	SELECT '6A. Transfer/Receipt IN (ETA)' AS GroupingType,
+		   OpenTR.Sku AS Sku,
+		   OpenTR.Company AS Company,
+		   address.CountryID AS Country,
+		   OpenTR.WareHouse AS Warehouse,
+		   OpenTR.ETA AS Date,
+		   OpenTR.OpenQty AS Qty,
+		   OpenTR.OpenQty AS QtyWeek,
+		   OpenTR.OpenQty AS QtyMonth,
+		   base.revision,
+		   base.CreatedByID,
+		   base.CreatedDatetime,
+		   'Y' AS TransactionExistsFlag
+	FROM v_OpenTRSourceData OpenTR
+	LEFT JOIN Company  comp ON OpenTR.Company = comp.CompanyCD
+	LEFT JOIN INSite insite ON comp.CompanyID = insite.CompanyID 
+						   AND OpenTR.Warehouse = insite.SiteCD
+	INNER JOIN Address address ON insite.CompanyID = address.CompanyID
+							  AND insite.AddressID = address.AddressID
+	LEFT JOIN BaseInfo base ON comp.CompanyID = base.CompanyID
+	WHERE comp.CompanyID > 0 AND base.Revision IS NOT NULL
 END]]></CDATA>
 </Sql>

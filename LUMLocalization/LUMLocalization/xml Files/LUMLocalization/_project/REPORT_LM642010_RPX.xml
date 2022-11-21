@@ -403,7 +403,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 <ParentName>SOShipment</ParentName>
             </ReportRelation>
         </Relations>
-        <SchemaUrl>http://localhost/Tomofun1/</SchemaUrl>
+        <SchemaUrl>https://tomofun.acumatica.com/</SchemaUrl>
         <Sorting>
             <SortExp>
                 <DataField>SOShipment.ShipmentNbr</DataField>
@@ -8395,6 +8395,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Right>1px</Right>
                             </BorderWidth>
                             <Font>
+                                <Name>Microsoft YaHei UI</Name>
                                 <Size>10px</Size>
                             </Font>
                             <Padding>

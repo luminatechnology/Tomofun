@@ -1,0 +1,77 @@
+﻿<Sql TableName="Create_v_MRPStockInitial" SqlScriptPriority="16" CustomScript="#CDATA">
+    <CDATA name="CustomScript"><![CDATA[IF EXISTS
+(
+	SELECT *
+	FROM SYS.views
+	WHERE name = 'v_MRPStockInitial' AND SCHEMA_ID = SCHEMA_ID('dbo')
+)
+DROP VIEW [dbo].[v_MRPStockInitial]	
+GO
+CREATE VIEW v_MRPStockInitial AS
+	WITH FirstRecordTmpTable AS (
+		SELECT CompanyID, SKU, Warehouse,MIN(Date) AS FirstRecordTime
+		FROM LUMMRPProcessResult
+		WHERE COMPANYID > 0
+		GROUP BY CompanyID, SKU, Warehouse
+	),
+	LastRecordTmpTable AS (
+		SELECT CompanyID, SKU, Warehouse,MAX(Date) AS LastRecordTime
+		FROM LUMMRPProcessResult
+		WHERE COMPANYID > 0
+		GROUP BY CompanyID, SKU, Warehouse
+	),
+	BaseInfo AS (
+		SELECT CompanyID,Revision, MAX(CreatedDatetime) AS CreatedDatetime,MAX(CreatedByID) AS CreatedByID
+		FROM LUMMRPProcessResult
+		WHERE COMPANYID > 0
+		GROUP BY CompanyID, Revision
+	),
+	MRPResult AS (
+		SELECT item.InventoryCD AS InventoryItemCD,
+			   comp.CompanyCD AS CompanyCD,
+			   address.CountryID AS AddressCountry,
+			   insite.SiteCD  AS SiteCD,
+			   result.*,
+			   base.revision AS BaseRevision,
+			   base.CreatedByID AS BaseCreatedByID,
+			   base.CreatedDatetime AS BaseCreatedDatetime
+		FROM LUMMRPProcessResult result
+		INNER JOIN Company comp  ON result.CompanyID = comp.CompanyID
+		INNER JOIN INSite insite ON result.CompanyID = insite.CompanyID
+								AND result.Warehouse = insite.SiteID
+								AND insite.CompanyID > 0
+		INNER JOIN InventoryItem item ON result.CompanyID = item.CompanyID
+									 AND result.SKU = item.InventoryID
+									 AND item.CompanyID > 0
+		INNER JOIN Address address ON insite.CompanyID = address.CompanyID
+								  AND insite.AddressID = address.AddressID
+								  AND address.CompanyID > 0
+		LEFT JOIN BaseInfo base ON comp.CompanyID = base.CompanyID
+		WHERE result.CompanyID > 0
+	)
+SELECT 'Stock Initial' AS MRPType,
+		   result.InventoryItemCD AS Sku,
+		   result.CompanyCD AS Company,
+		   result.AddressCountry AS Country,
+		   result.SiteCD AS Warehouse,
+		   Date,
+		   StockInitial AS Qty,
+		   CASE 
+			WHEN tmp.FirstRecordTime IS NOT NULL THEN StockInitial
+			WHEN tmp.FirstRecordTime IS NULL AND DatePart(WeekDay,Date)-1 = 0 THEN StockInitial
+		   ELSE null END AS QtyWeek,
+		   CASE
+			WHEN tmp.FirstRecordTime IS NOT NULL THEN StockInitial
+			WHEN tmp.FirstRecordTime IS NULL AND CAST(result.DATE AS Date) = CAST(DATEADD(MM,DATEDIFF(MM, 0, result.Date),0) AS Date) THEN StockInitial
+		   ELSE null END AS QtyMonth,
+		   result.BaseRevision AS Revision,
+		   result.BaseCreatedByID AS CreatedByID,
+		   result.BaseCreatedDatetime AS CreatedDatetime,
+		   result.TransactionExistsFlag
+	FROM MRPResult result
+	LEFT JOIN FirstRecordTmpTable tmp ON result.CompanyID = tmp.CompanyID
+									 AND result.Sku = tmp.Sku
+									 AND result.Warehouse = tmp.Warehouse
+									 AND result.Date = tmp.FirstRecordTime
+	WHERE result.StockInitial is not null and result.CompanyID > 0]]></CDATA>
+</Sql>
