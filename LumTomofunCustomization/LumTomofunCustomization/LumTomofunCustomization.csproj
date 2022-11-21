@@ -153,6 +153,7 @@
     <Compile Include="DAC\v_OpenTRSourceData.cs" />
     <Compile Include="DAC\v_OpenTR.cs" />
     <Compile Include="DAC\v_OpenTRDetail.cs" />
+    <Compile Include="DAC\v_MRPStockInitial.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
