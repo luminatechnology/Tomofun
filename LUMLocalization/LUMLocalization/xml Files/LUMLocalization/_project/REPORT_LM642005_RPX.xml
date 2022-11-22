@@ -7580,6 +7580,32 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 <Footers>
                     <Footer Name="groupFooterSection1">
                         <Height>4.2328cm</Height>
+                        <Variables>
+                            <ReportVariable>
+                                <Name>BasePallet</Name>
+                                <ValueExpr>=Substring([SOShipment.AttributePLTSIZE],0,InStr([SOShipment.AttributePLTSIZE],' '))</ValueExpr>
+                            </ReportVariable>
+                            <ReportVariable>
+                                <Name>PalletX1</Name>
+                                <ValueExpr>=InStr( $BasePallet, 'x')</ValueExpr>
+                            </ReportVariable>
+                            <ReportVariable>
+                                <Name>PalletX2</Name>
+                                <ValueExpr>=InStr(Substring($BasePallet,$PalletX1+1,Len($BasePallet) - $PalletX1 - 1),'x')+$PalletX1+1</ValueExpr>
+                            </ReportVariable>
+                            <ReportVariable>
+                                <Name>NumPallet1</Name>
+                                <ValueExpr>=CDec(Substring($BasePallet,0,$PalletX1))</ValueExpr>
+                            </ReportVariable>
+                            <ReportVariable>
+                                <Name>NumPallet2</Name>
+                                <ValueExpr>=CDec(Substring($BasePallet,$PalletX1+1,$PalletX2-$PalletX1-1))</ValueExpr>
+                            </ReportVariable>
+                            <ReportVariable>
+                                <Name>NumPallet3</Name>
+                                <ValueExpr>=CDec(Substring($BasePallet,$PalletX2+1,Len($BasePallet)-$PalletX2-1))</ValueExpr>
+                            </ReportVariable>
+                        </Variables>
                         <Items>
                             <Line Name="line1">
                                 <Excel>
@@ -7875,7 +7901,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                         <Size>10px</Size>
                                     </Font>
                                 </Style>
-                                <Value>='Volume (CBM) ' + (100 * 120 * 157.5 / 1000000) * CInt($SumTotalCTNS) / 30</Value>
+                                <Value>='Volume (CBM) ' + $NumPallet1 * $NumPallet2 * $NumPallet3 / 1000000 * CInt($SumTotalCTNS) / 30</Value>
                             </TextBox>
                             <TextBox Name="textBox79">
                                 <Excel>
