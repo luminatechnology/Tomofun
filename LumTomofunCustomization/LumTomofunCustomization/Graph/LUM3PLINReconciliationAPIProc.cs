@@ -277,7 +277,7 @@ namespace LUMTomofunCustomization.Graph
             // #1, get all the defined warehouses and calculate how many pages of transaction records each warehouse has.
             for (int i = 0; i < countries?.countries?.Count; i++)
             {
-                if (countries?.countries[i].countryCode != "chn") { continue; }
+                //if (countries?.countries[i].countryCode != "chn") { continue; }
 
                 var warehouses = LUMAPIHelper.DeserializeJSONString<ReturnHelperEntity.WarehouseRoot>(GetRHAllCountriesWarehouse(setup.RHAuthzToken, setup.RHApiKey, setup.RHApiToken, countries?.countries[i].countryCode).ContentResult);
 
