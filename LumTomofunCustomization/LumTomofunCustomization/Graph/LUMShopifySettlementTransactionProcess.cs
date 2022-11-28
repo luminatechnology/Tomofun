@@ -266,7 +266,7 @@ namespace LumTomofunCustomization.Graph
                                     soTrans = soGraph.Transactions.Cache.CreateInstance() as SOLine;
                                     soTrans.InventoryID = ShopifyPublicFunction.GetInvetoryitemID(soGraph, "EC-COMMISSION");
                                     soTrans.OrderQty = 1;
-                                    soTrans.CuryUnitPrice = row.Fee * -1;
+                                    soTrans.CuryUnitPrice = row.Fee * 1;
                                     newSalesAcctID = ShopifyPublicFunction.GetSalesAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
                                     newSalesSubAcctID = ShopifyPublicFunction.GetSalesSubAcctID(soGraph, "EC-COMMISSION", soTrans.InventoryID, oldShopifySOOrder, soDoc.CustomerID);
                                     if (newSalesAcctID.HasValue)
