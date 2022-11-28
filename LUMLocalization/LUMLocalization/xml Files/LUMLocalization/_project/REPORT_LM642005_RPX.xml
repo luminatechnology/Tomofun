@@ -7901,7 +7901,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                         <Size>10px</Size>
                                     </Font>
                                 </Style>
-                                <Value>='Volume (CBM) ' + $NumPallet1 * $NumPallet2 * $NumPallet3 / 1000000 * CInt($SumTotalCTNS) / 30</Value>
+                                <Value>='Volume (CBM) ' + Format( '{0:0.00}',$NumPallet1 * $NumPallet2 * $NumPallet3 / 1000000 * CInt($SumTotalCTNS) / 30)</Value>
                             </TextBox>
                             <TextBox Name="textBox79">
                                 <Excel>
