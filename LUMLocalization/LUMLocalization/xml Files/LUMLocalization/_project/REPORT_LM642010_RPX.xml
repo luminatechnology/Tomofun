@@ -284,6 +284,20 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 <ParentName>SOShipLine</ParentName>
             </ReportRelation>
             <ReportRelation>
+                <ChildName>SOShipLineSplit</ChildName>
+                <Links>
+                    <RelationRow>
+                        <ChildField>ShipmentNbr</ChildField>
+                        <ParentField>ShipmentNbr</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>LineNbr</ChildField>
+                        <ParentField>LineNbr</ParentField>
+                    </RelationRow>
+                </Links>
+                <ParentName>SOShipLine</ParentName>
+            </ReportRelation>
+            <ReportRelation>
                 <ChildName>SOLineSplit</ChildName>
                 <Links>
                     <RelationRow>
@@ -295,53 +309,30 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                         <ParentField>OrigOrderType</ParentField>
                     </RelationRow>
                     <RelationRow>
-                        <ChildField>SplitLineNbr</ChildField>
-                        <ParentField>OrigSplitLineNbr</ParentField>
-                    </RelationRow>
-                    <RelationRow>
                         <ChildField>LineNbr</ChildField>
                         <ParentField>OrigLineNbr</ParentField>
                     </RelationRow>
-                </Links>
-                <ParentName>SOShipLine</ParentName>
-            </ReportRelation>
-            <ReportRelation>
-                <ChildAlias>ParentSOLineSplit</ChildAlias>
-                <ChildName>SOLineSplit</ChildName>
-                <Links>
                     <RelationRow>
-                        <ChildField>ParentSOLineSplit.OrderNbr</ChildField>
-                        <ParentField>OrderNbr</ParentField>
-                    </RelationRow>
-                    <RelationRow>
-                        <ChildField>ParentSOLineSplit.OrderType</ChildField>
-                        <ParentField>OrderType</ParentField>
-                    </RelationRow>
-                    <RelationRow>
-                        <ChildField>ParentSOLineSplit.LineNbr</ChildField>
-                        <ParentField>LineNbr</ParentField>
-                    </RelationRow>
-                    <RelationRow>
-                        <ChildField>ParentSOLineSplit.SplitLineNbr</ChildField>
-                        <ParentField>ParentSplitLineNbr</ParentField>
+                        <Condition>IsNull</Condition>
+                        <ParentField>SOLineSplit.ParentSplitLineNbr</ParentField>
                     </RelationRow>
                 </Links>
-                <ParentName>SOLineSplit</ParentName>
+                <ParentName>SOShipLineSplit</ParentName>
             </ReportRelation>
             <ReportRelation>
                 <ChildName>POLine</ChildName>
                 <Links>
                     <RelationRow>
                         <ChildField>OrderType</ChildField>
-                        <ParentField>ParentSOLineSplit.POType</ParentField>
+                        <ParentField>POType</ParentField>
                     </RelationRow>
                     <RelationRow>
                         <ChildField>OrderNbr</ChildField>
-                        <ParentField>ParentSOLineSplit.PONbr</ParentField>
+                        <ParentField>PONbr</ParentField>
                     </RelationRow>
                     <RelationRow>
                         <ChildField>LineNbr</ChildField>
-                        <ParentField>ParentSOLineSplit.POLineNbr</ParentField>
+                        <ParentField>POLineNbr</ParentField>
                     </RelationRow>
                 </Links>
                 <ParentName>SOLineSplit</ParentName>
@@ -403,7 +394,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 <ParentName>SOShipment</ParentName>
             </ReportRelation>
         </Relations>
-        <SchemaUrl>https://tomofun.acumatica.com/</SchemaUrl>
+        <SchemaUrl>http://localhost/Tomofun1/</SchemaUrl>
         <Sorting>
             <SortExp>
                 <DataField>SOShipment.ShipmentNbr</DataField>
@@ -7181,6 +7172,199 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                     </ReportField>
                 </Fields>
                 <FullName>PX.Objects.CR.Location</FullName>
+            </ReportTable>
+            <ReportTable Name="SOShipLineSplit">
+                <Fields>
+                    <ReportField Name="AssignedNbr">
+                    </ReportField>
+                    <ReportField Name="BasePackedQty">
+                        <DataType>Decimal</DataType>
+                    </ReportField>
+                    <ReportField Name="BasePickedQty">
+                        <DataType>Decimal</DataType>
+                    </ReportField>
+                    <ReportField Name="BaseQty">
+                        <DataType>Decimal</DataType>
+                    </ReportField>
+                    <ReportField Name="Confirmed">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                    <ReportField Name="CreatedByID">
+                    </ReportField>
+                    <ReportField Name="CreatedByID_Creator_displayName">
+                    </ReportField>
+                    <ReportField Name="CreatedByID_Creator_Username">
+                    </ReportField>
+                    <ReportField Name="CreatedByID_description">
+                    </ReportField>
+                    <ReportField Name="CreatedByScreenID">
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime">
+                        <DataType>DateTime</DataType>
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime_Day">
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime_Hour">
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime_Month">
+                    </ReportField>
+                    <ReportField Name="CreatedDateTime_Quarter">
+                    </ReportField>
+                    <ReportField Name="ExpireDate">
+                        <DataType>DateTime</DataType>
+                    </ReportField>
+                    <ReportField Name="ExpireDate_Day">
+                    </ReportField>
+                    <ReportField Name="ExpireDate_Hour">
+                    </ReportField>
+                    <ReportField Name="ExpireDate_Month">
+                    </ReportField>
+                    <ReportField Name="ExpireDate_Quarter">
+                    </ReportField>
+                    <ReportField Name="HasGeneratedLotSerialNbr">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                    <ReportField Name="InventoryID">
+                    </ReportField>
+                    <ReportField Name="InventoryID_description">
+                    </ReportField>
+                    <ReportField Name="InventoryID_InventoryItem_descr">
+                    </ReportField>
+                    <ReportField Name="InventoryID_Segment1">
+                    </ReportField>
+                    <ReportField Name="InvtMult">
+                        <DataType>Int16</DataType>
+                    </ReportField>
+                    <ReportField Name="IsComponentItem">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                    <ReportField Name="IsIntercompany">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                    <ReportField Name="IsStockItem">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                    <ReportField Name="IsUnassigned">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                    <ReportField Name="LastLotSerialNbr">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByID">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByID_description">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByID_Modifier_displayName">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByID_Modifier_Username">
+                    </ReportField>
+                    <ReportField Name="LastModifiedByScreenID">
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime">
+                        <DataType>DateTime</DataType>
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime_Day">
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime_Hour">
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime_Month">
+                    </ReportField>
+                    <ReportField Name="LastModifiedDateTime_Quarter">
+                    </ReportField>
+                    <ReportField Name="LineNbr">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="LineType">
+                    </ReportField>
+                    <ReportField Name="LocationID">
+                    </ReportField>
+                    <ReportField Name="LocationID_description">
+                    </ReportField>
+                    <ReportField Name="LocationID_INLocation_descr">
+                    </ReportField>
+                    <ReportField Name="LocationID_Segment1">
+                    </ReportField>
+                    <ReportField Name="LotSerClassID">
+                    </ReportField>
+                    <ReportField Name="LotSerialNbr">
+                    </ReportField>
+                    <ReportField Name="Operation">
+                    </ReportField>
+                    <ReportField Name="OriginalLotSerialNbr">
+                    </ReportField>
+                    <ReportField Name="OrigLineNbr">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="OrigOrderNbr">
+                    </ReportField>
+                    <ReportField Name="OrigOrderType">
+                    </ReportField>
+                    <ReportField Name="OrigPlanType">
+                    </ReportField>
+                    <ReportField Name="OrigSplitLineNbr">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="PackedQty">
+                        <DataType>Decimal</DataType>
+                    </ReportField>
+                    <ReportField Name="PickedQty">
+                        <DataType>Decimal</DataType>
+                    </ReportField>
+                    <ReportField Name="PlanID">
+                        <DataType>Int64</DataType>
+                    </ReportField>
+                    <ReportField Name="PlanType">
+                    </ReportField>
+                    <ReportField Name="ProjectID">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="Qty">
+                        <DataType>Decimal</DataType>
+                    </ReportField>
+                    <ReportField Name="Released">
+                        <DataType>Boolean</DataType>
+                    </ReportField>
+                    <ReportField Name="ShipDate">
+                        <DataType>DateTime</DataType>
+                    </ReportField>
+                    <ReportField Name="ShipDate_Day">
+                    </ReportField>
+                    <ReportField Name="ShipDate_Hour">
+                    </ReportField>
+                    <ReportField Name="ShipDate_Month">
+                    </ReportField>
+                    <ReportField Name="ShipDate_Quarter">
+                    </ReportField>
+                    <ReportField Name="ShipmentNbr">
+                    </ReportField>
+                    <ReportField Name="SiteID">
+                    </ReportField>
+                    <ReportField Name="SiteID_description">
+                    </ReportField>
+                    <ReportField Name="SiteID_INSite_descr">
+                    </ReportField>
+                    <ReportField Name="SiteID_Segment1">
+                    </ReportField>
+                    <ReportField Name="SplitLineNbr">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="SubItemID">
+                    </ReportField>
+                    <ReportField Name="SubItemID_Segment1">
+                    </ReportField>
+                    <ReportField Name="TaskID">
+                        <DataType>Int32</DataType>
+                    </ReportField>
+                    <ReportField Name="TranDate">
+                        <DataType>DateTime</DataType>
+                    </ReportField>
+                    <ReportField Name="TranType">
+                    </ReportField>
+                    <ReportField Name="tstamp">
+                    </ReportField>
+                    <ReportField Name="UOM">
+                    </ReportField>
+                </Fields>
+                <FullName>PX.Objects.SO.SOShipLineSplit</FullName>
             </ReportTable>
         </Tables>
         <Version>20201103</Version>

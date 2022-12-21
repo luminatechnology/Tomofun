@@ -362,6 +362,21 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 </Links>
                 <ParentName>SOShipment</ParentName>
             </ReportRelation>
+            <ReportRelation>
+                <ChildAlias>COOCombo</ChildAlias>
+                <ChildName>CSAttributeDetail</ChildName>
+                <Links>
+                    <RelationRow>
+                        <ChildField>ValueID</ChildField>
+                        <ParentField>AttributeCOO</ParentField>
+                    </RelationRow>
+                    <RelationRow>
+                        <ChildField>AttributeID</ChildField>
+                        <ParentField>='COO'</ParentField>
+                    </RelationRow>
+                </Links>
+                <ParentName>SOShipment</ParentName>
+            </ReportRelation>
         </Relations>
         <SchemaUrl>http://localhost/Tomofun1/</SchemaUrl>
         <Tables>
@@ -7360,12 +7375,13 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                         <Value>='PLT No. 1-' + Ceiling(CDec($SumTotalCTNS) / CDec($CartonsPerPallet))</Value>
                     </TextBox>
                     <TextBox Name="textBox90">
+                        <CanGrow>True</CanGrow>
                         <Excel>
                             <row>9</row>
                         </Excel>
                         <Location>0px, 120px</Location>
-                        <Size>224px, 16px</Size>
-                        <Value>='MADE IN ' + UCase(IsNull([InventoryItem.CountryOfOrigin_description], ''))</Value>
+                        <Size>384px, 16px</Size>
+                        <Value>='MADE IN ' + UCASE(IsNull([COOCombo.Description], ''))</Value>
                     </TextBox>
                     <TextBox Name="textBox91">
                         <Excel>
@@ -7901,7 +7917,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                         <Size>10px</Size>
                                     </Font>
                                 </Style>
-                                <Value>='Volume (CBM) ' + Format( '{0:0.00}',$NumPallet1 * $NumPallet2 * $NumPallet3 / 1000000 * CInt($SumTotalCTNS) / 30)</Value>
+                                <Value>='Volume (CBM) ' + Format('{0:0.00}',$NumPallet1 * $NumPallet2 * $NumPallet3 / 1000000 * CInt($SumTotalCTNS) / 30)</Value>
                             </TextBox>
                             <TextBox Name="textBox79">
                                 <Excel>
