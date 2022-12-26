@@ -15,7 +15,7 @@ namespace LUMTomofunCustomization.DAC
         #endregion
 
         #region TransSequenceNumber
-        [PXDBIdentity()]
+        [PXDBIdentity(IsKey = true)]
         [PXUIField(DisplayName = "Trans Sequence Number")]
         public virtual int? TransSequenceNumber { get; set; }
         public abstract class transSequenceNumber : PX.Data.BQL.BqlInt.Field<transSequenceNumber> { }
@@ -78,15 +78,17 @@ namespace LUMTomofunCustomization.DAC
         #endregion
 
         #region Checkout
-        [PXDBString(100, IsUnicode = true, InputMask = "", IsKey = true)]
+        [PXDBString(100, IsUnicode = true, InputMask = "")]
         [PXUIField(DisplayName = "Checkout")]
+        [PXDefault]
         public virtual string Checkout { get; set; }
         public abstract class checkout : PX.Data.BQL.BqlString.Field<checkout> { }
         #endregion
 
         #region PaymentMethodName
-        [PXDBString(200, IsUnicode = true, InputMask = "", IsKey = true)]
+        [PXDBString(200, IsUnicode = true, InputMask = "")]
         [PXUIField(DisplayName = "Payment Method Name")]
+        [PXDefault]
         public virtual string PaymentMethodName { get; set; }
         public abstract class paymentMethodName : PX.Data.BQL.BqlString.Field<paymentMethodName> { }
         #endregion
