@@ -378,7 +378,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 <ParentName>SOShipment</ParentName>
             </ReportRelation>
         </Relations>
-        <SchemaUrl>http://localhost/Tomofun1/</SchemaUrl>
+        <SchemaUrl>https://tomofun.acumatica.com/</SchemaUrl>
         <Tables>
             <ReportTable Name="SOShipmentAddress">
                 <Fields>
@@ -6905,7 +6905,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                                 <Left>1px</Left>
                             </Padding>
                         </Style>
-                        <Value>='Contact Person: ' + IsNull([SOShipmentContact.Attention], '')</Value>
+                        <Value>='Contact Person: ' + IsNull([Contact.Attention], '')</Value>
                     </TextBox>
                     <TextBox Name="textBox83">
                         <Excel>
