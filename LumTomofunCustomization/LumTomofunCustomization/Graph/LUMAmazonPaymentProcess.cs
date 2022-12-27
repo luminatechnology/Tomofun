@@ -59,6 +59,24 @@ namespace LumTomofunCustomization.Graph
 
         #endregion
 
+        #region Action
+        public PXAction<LUMAmazonPaymentTransData> deleteRecord;
+        [PXButton]
+        [PXUIField(DisplayName = "Delete All Payment", MapEnableRights = PXCacheRights.Delete, MapViewRights = PXCacheRights.Delete)]
+        public virtual IEnumerable DeleteRecord(PXAdapter adapter)
+        {
+            WebDialogResult result = this.PaymentTransactions.Ask(ActionsMessages.Warning, PXMessages.LocalizeFormatNoPrefix("Do you want to delete data?"),
+                MessageButtons.OKCancel, MessageIcon.Warning, true);
+            if (result != WebDialogResult.OK)
+                return adapter.Get();
+
+            PXDatabase.Delete<LUMAmazonPaymentTransData>();
+            this.PaymentTransactions.Cache.Clear();
+            return adapter.Get();
+        }
+
+        #endregion
+
         #region Method
 
         public static void GoProcessing(List<LUMAmazonPaymentTransData> list)
