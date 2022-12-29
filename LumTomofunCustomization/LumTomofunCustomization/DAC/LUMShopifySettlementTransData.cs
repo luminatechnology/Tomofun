@@ -29,7 +29,7 @@ namespace LUMTomofunCustomization.DAC
         #endregion
 
         #region TransactionDate
-        [PXDBDate(IsKey = true)]
+        [PXDBDate(IsKey = true, UseTimeZone = false)]
         [PXUIField(DisplayName = "Transaction Date")]
         public virtual DateTime? TransactionDate { get; set; }
         public abstract class transactionDate : PX.Data.BQL.BqlDateTime.Field<transactionDate> { }
@@ -50,7 +50,7 @@ namespace LUMTomofunCustomization.DAC
         #endregion
 
         #region PayoutDate
-        [PXDBDate(IsKey = true)]
+        [PXDBDate(IsKey = true,UseTimeZone = false)]
         [PXUIField(DisplayName = "Payout Date")]
         public virtual DateTime? PayoutDate { get; set; }
         public abstract class payoutDate : PX.Data.BQL.BqlDateTime.Field<payoutDate> { }

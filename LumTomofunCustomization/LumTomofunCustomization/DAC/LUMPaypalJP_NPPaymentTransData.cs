@@ -28,7 +28,7 @@ namespace LUMTomofunCustomization.DAC
         #endregion
 
         #region TransactionDate
-        [PXDBDate()]
+        [PXDBDate(UseTimeZone = false)]
         [PXUIField(DisplayName = "NP取引ID")]
         public virtual DateTime? TransactionDate { get; set; }
         public abstract class transactionDate : PX.Data.BQL.BqlDateTime.Field<transactionDate> { }
