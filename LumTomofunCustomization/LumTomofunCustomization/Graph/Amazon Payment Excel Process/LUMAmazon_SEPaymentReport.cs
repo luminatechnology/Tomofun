@@ -69,7 +69,7 @@ namespace LumTomofunCustomization.Graph
             #endregion
             this.PaymentTransactions.SetProcessDelegate(delegate (List<LUMAmazonSEPaymentReport> list)
             {
-                //GoProcessing(list);
+                GoProcessing(list);
             });
         }
 

@@ -10,16 +10,18 @@
         </CallbackCommands>
     </px:PXDataSource>
 </asp:Content>
-<%--<asp:Content ID="cont2" ContentPlaceHolderID="phF" runat="Server">
-    <px:PXFormView ID="form" runat="server" DataSourceID="ds" DataMember="Setup" Width="100%" Height="50px" AllowAutoHide="false">
+<asp:Content ID="cont2" ContentPlaceHolderID="phF" runat="Server">
+    <px:PXFormView ID="form" runat="server" DataSourceID="ds" DataMember="Filter" Width="100%" Height="50px" AllowAutoHide="false">
         <Template>
-            <px:PXCheckBox runat="server" ID="edWithAttachment" DataField="WithAttachment" CommitChanges="true"></px:PXCheckBox>
-            <px:PXSelector runat="server" ID="edRevision" DataField="Revision" Width="150px"></px:PXSelector>
+            <px:PXTextEdit ID="edApiTotal" runat="server" DataField="ApiTotal"></px:PXTextEdit>
         </Template>
     </px:PXFormView>
-</asp:Content>--%>
+</asp:Content>
 <asp:Content ID="cont3" ContentPlaceHolderID="phG" runat="Server">
     <px:PXGrid SyncPosition="True" ID="grid" runat="server" DataSourceID="ds" Width="100%" Height="150px" SkinID="Primary" AllowAutoHide="false" PageSize="500">
+        <CallbackCommands>
+            <Refresh RepaintControlsIDs="form" />
+        </CallbackCommands>
         <Levels>
             <px:PXGridLevel DataMember="PaymentTransactions">
                 <Columns>

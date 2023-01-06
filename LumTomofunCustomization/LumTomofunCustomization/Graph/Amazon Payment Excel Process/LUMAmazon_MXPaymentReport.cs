@@ -15,8 +15,35 @@ namespace LumTomofunCustomization.Graph
         public PXSave<LUMAmazonMXPaymentReport> Save;
         public PXCancel<LUMAmazonMXPaymentReport> Cancel;
 
+        public PXFilter<AmazonPaymentUploadFileter> Filter;
         [PXImport(typeof(LUMAmazonMXPaymentReport))]
         public PXProcessing<LUMAmazonMXPaymentReport> PaymentTransactions;
+
+        protected virtual IEnumerable filter()
+        {
+            AmazonPaymentUploadFileter filter = Filter.Current;
+            int startRow = 0;
+            int totalRows = 0;
+            if (filter != null)
+            {
+                filter.ApiTotal = 0; //reset total to zero 
+                var cmd = PaymentTransactions.View.BqlSelect.AggregateNew<Aggregate<Sum<LUMAmazonMXPaymentReport.api_total>>>();// add aggregation to the existing BQL
+                foreach (LUMAmazonMXPaymentReport row in
+                        new PXView(this, false, cmd).Select(null, //pass filter context to the grid view delegate
+                        null,
+                        null,
+                        null,
+                        null,
+                        PaymentTransactions.View.GetExternalFilters(), //Get grid user filters
+                        ref startRow,
+                        0, //get all records without regard to paging
+                        ref totalRows))
+                {
+                    filter.ApiTotal += row.Api_total ?? 0;
+                }
+            }
+            yield return filter;
+        }
 
         public LUMAmazon_MXPaymentUploadProcess()
         {
@@ -47,7 +74,7 @@ namespace LumTomofunCustomization.Graph
             #endregion
             this.PaymentTransactions.SetProcessDelegate(delegate (List<LUMAmazonMXPaymentReport> list)
             {
-                //GoProcessing(list);
+                GoProcessing(list);
             });
         }
 
@@ -105,6 +132,60 @@ namespace LumTomofunCustomization.Graph
             row.Api_coditemcharge = 0;
             row.Api_points = 0;
             #endregion
+        }
+
+        #endregion
+
+        #region Method
+        public static void GoProcessing(List<LUMAmazonMXPaymentReport> list)
+        {
+            var baseGraph = CreateInstance<LUMAmazon_MXPaymentUploadProcess>();
+            baseGraph.CreatePaymentByOrder(baseGraph, list);
+        }
+
+        /// <summary> 執行 Process Amazon payment </summary>
+        public virtual void CreatePaymentByOrder(LUMAmazon_MXPaymentUploadProcess baseGraph, List<LUMAmazonMXPaymentReport> selectedList)
+        {
+            foreach (var selectedItem in selectedList)
+            {
+                // Initial variable
+                string errorMessge = string.Empty;
+                // Setting Process Current item
+                PXProcessing.SetCurrentItem(selectedItem);
+                try
+                {
+                    // Skip 
+                    if (selectedItem.IsProcessed ?? false)
+                        continue;
+                    using (PXTransactionScope sc = new PXTransactionScope())
+                    {
+                        AmazonToAcumaticaCore<LUMAmazonMXPaymentReport>.CreatePayment(selectedItem, selectedItem.API_Marketplace, baseGraph);
+                        sc.Complete();
+                    }
+                }
+                catch (PXOuterException outerException)
+                {
+                    for (int i = 0; i < outerException.InnerFields.Length; i++)
+                        errorMessge += $"{outerException.InnerFields[i]} - {outerException.InnerMessages[i]} \r\n";
+                }
+                catch (Exception ex)
+                {
+                    errorMessge = ex.Message;
+                }
+                finally
+                {
+                    // Setting record information
+                    selectedItem.ErrorMessage = errorMessge.Length > 2048 ? errorMessge.Substring(0, 2048) : errorMessge; ;
+                    selectedItem.IsProcessed = string.IsNullOrEmpty(errorMessge);
+                    baseGraph.PaymentTransactions.Update(selectedItem);
+                    baseGraph.Actions.PressSave();
+                    // Setting Process information
+                    if (!string.IsNullOrEmpty(errorMessge))
+                        PXProcessing.SetError(errorMessge);
+                    else
+                        PXProcessing.SetProcessed();
+                }
+            }
         }
 
         #endregion
