@@ -1,0 +1,69 @@
+﻿<Sql TableName="LUMAmazonMXPaymentReport" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="LUMAmazonMXPaymentReport">
+  <col name="CompanyID" type="Int" default="Zero" />
+  <col name="SequenceNumber" type="Int" identity="true" />
+  <col name="ReportDateTime" type="NVarChar(100)" nullable="true" />
+  <col name="Settlementid" type="NVarChar(20)" nullable="true" />
+  <col name="ReportType" type="NVarChar(20)" nullable="true" />
+  <col name="OrderID" type="NVarChar(50)" nullable="true" />
+  <col name="SKU" type="NVarChar(50)" nullable="true" />
+  <col name="Description" type="NVarChar(300)" nullable="true" />
+  <col name="ProductSales" type="NVarChar(20)" nullable="true" />
+  <col name="ProductSalesTax" type="NVarChar(20)" nullable="true" />
+  <col name="ShippingCredits" type="NVarChar(20)" nullable="true" />
+  <col name="ShippingCreditsTax" type="NVarChar(20)" nullable="true" />
+  <col name="GiftWrapCredits" type="NVarChar(20)" nullable="true" />
+  <col name="GiftWrapCreditsTax" type="NVarChar(20)" nullable="true" />
+  <col name="RegulatoryFee" type="NVarChar(20)" nullable="true" />
+  <col name="TaxOnRegulatoryFee" type="NVarChar(20)" nullable="true" />
+  <col name="PromotionalRebates" type="NVarChar(20)" nullable="true" />
+  <col name="PromotionalRebatesTax" type="NVarChar(20)" nullable="true" />
+  <col name="MarketplaceWithheldTax" type="NVarChar(20)" nullable="true" />
+  <col name="SellingFees" type="NVarChar(20)" nullable="true" />
+  <col name="FBAFees" type="NVarChar(20)" nullable="true" />
+  <col name="OtherTransactionFee" type="NVarChar(20)" nullable="true" />
+  <col name="OtherFee" type="NVarChar(20)" nullable="true" />
+  <col name="Total" type="NVarChar(20)" nullable="true" />
+  <col name="API_Marketplace" type="NVarChar(2)" nullable="true" />
+  <col name="API_DATE_1" type="DateTime" nullable="true" />
+  <col name="API_DATE" type="DateTime" nullable="true" />
+  <col name="API_SETTLEMENTID" type="NVarChar(20)" nullable="true" />
+  <col name="API_TRANTYPE" type="NVarChar(20)" nullable="true" />
+  <col name="API_ORDERID" type="NVarChar(50)" nullable="true" />
+  <col name="API_SKU" type="NVarChar(50)" nullable="true" />
+  <col name="API_DESCRIPTION" type="NVarChar(300)" nullable="true" />
+  <col name="API_PRODUCTSALES" type="Decimal(18,6)" nullable="true" />
+  <col name="API_PRODUCTTAX" type="Decimal(18,6)" nullable="true" />
+  <col name="API_SHIPPING" type="Decimal(18,6)" nullable="true" />
+  <col name="API_SHIPPINGTAX" type="Decimal(18,6)" nullable="true" />
+  <col name="API_GIFTWRAP" type="Decimal(18,6)" nullable="true" />
+  <col name="API_GIFTWRAPTAX" type="Decimal(18,6)" nullable="true" />
+  <col name="API_REGULATORYFEE" type="Decimal(18,6)" nullable="true" />
+  <col name="API_TAXONREGULATORYFEE" type="Decimal(18,6)" nullable="true" />
+  <col name="API_PROMOTION" type="Decimal(18,6)" nullable="true" />
+  <col name="API_PROMOTIONTAX" type="Decimal(18,6)" nullable="true" />
+  <col name="API_WHTAX" type="Decimal(18,6)" nullable="true" />
+  <col name="API_SELLINGFEE" type="Decimal(18,6)" nullable="true" />
+  <col name="API_FBAFEE" type="Decimal(18,6)" nullable="true" />
+  <col name="API_OTHERTRANFEE" type="Decimal(18,6)" nullable="true" />
+  <col name="API_OTHERFEE" type="Decimal(18,6)" nullable="true" />
+  <col name="API_TOTAL" type="Decimal(18,6)" nullable="true" />
+  <col name="API_COD" type="Decimal(18,6)" nullable="true" />
+  <col name="API_CODFEE" type="Decimal(18,6)" nullable="true" />
+  <col name="API_CODITEMCHARGE" type="Decimal(18,6)" nullable="true" />
+  <col name="API_POINTS" type="Decimal(18,6)" nullable="true" />
+  <col name="IsProcessed" type="Bit" nullable="true" />
+  <col name="ErrorMessage" type="NVarChar(2048)" nullable="true" />
+  <col name="CreatedByID" type="UniqueIdentifier" />
+  <col name="CreatedByScreenID" type="Char(8)" />
+  <col name="CreatedDateTime" type="DateTime" />
+  <col name="LastModifiedByID" type="UniqueIdentifier" />
+  <col name="LastModifiedByScreenID" type="Char(8)" />
+  <col name="LastModifiedDateTime" type="DateTime" />
+  <col name="tstamp" type="Timestamp" />
+  <index name="PK_LUMAmazonMXPaymentReport" clustered="true" primary="true" unique="true">
+    <col name="CompanyID" />
+    <col name="SequenceNumber" />
+  </index>
+</table>]]></CDATA>
+</Sql>

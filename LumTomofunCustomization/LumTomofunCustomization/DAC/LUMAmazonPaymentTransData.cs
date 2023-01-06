@@ -29,7 +29,7 @@ namespace LUMTomofunCustomization.DAC
         #endregion
 
         #region TransactionPostedDate
-        [PXDBDate(UseTimeZone = false)]
+        [PXDBDateAndTime(UseTimeZone = true, PreserveTime = true)]
         [PXUIField(DisplayName = "Transaction Posted Date")]
         public virtual DateTime? TransactionPostedDate { get; set; }
         public abstract class transactionPostedDate : PX.Data.BQL.BqlDateTime.Field<transactionPostedDate> { }
