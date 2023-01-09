@@ -131,7 +131,7 @@ namespace LumTomofunCustomization.Graph
             row.Api_total = AmazonPublicFunction.CurrencyConvertWithCulture(CultureName, string.IsNullOrEmpty(row?.Total) ? "0" : row?.Total);
             row.Api_cod = 0;
             row.Api_codfee = 0;
-            if (row.Api_orderid.StartsWith("S") && row.Api_total == row.Api_otherfee && (Math.Abs(row.Api_total ?? 0) >= 10000 && Math.Abs(row.Api_total ?? 0) <= 90000))
+            if ((row?.Api_orderid?.StartsWith("S") ?? false) && row?.Api_total == row?.Api_otherfee && (Math.Abs(row.Api_total ?? 0) >= 10000 && Math.Abs(row.Api_total ?? 0) <= 90000))
                 row.Api_coditemcharge = row.Api_total;
             else
                 row.Api_coditemcharge = 0;
