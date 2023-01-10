@@ -32,7 +32,7 @@ namespace LumTomofunCustomization.Graph
             Int32 startrow = PXView.StartRow;
             return select.Select(PXView.Currents, PXView.Parameters,
                    PXView.Searches, PXView.SortColumns, PXView.Descendings,
-                   PXView.Filters, ref startrow, PXView.MaximumRows, ref totalrow);
+                   PXView.Filters, ref startrow, 100000, ref totalrow);
         }
 
         public bool PrepareImportRow(string viewName, IDictionary keys, IDictionary values)
