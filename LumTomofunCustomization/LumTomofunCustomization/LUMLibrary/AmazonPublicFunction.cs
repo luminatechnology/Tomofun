@@ -524,6 +524,7 @@ namespace LumTomofunCustomization.LUMLibrary
                         #region Header
                         soDoc = soGraph.Document.Cache.CreateInstance() as SOOrder;
                         soDoc.OrderType = "CM";
+                        soDoc = soGraph.Document.Cache.Insert(soDoc) as SOOrder;
                         soDoc.CustomerOrderNbr = amazonData?.Api_orderid;
                         soDoc.OrderDate = amazonData?.Api_date;
                         soDoc.RequestDate = amazonData?.Api_date;
@@ -542,7 +543,7 @@ namespace LumTomofunCustomization.LUMLibrary
                         #endregion
 
                         // Insert SOOrder
-                        soGraph.Document.Insert(soDoc);
+                        soGraph.Document.Cache.Update(soDoc);
 
                         #region Set Currency
                         info = CurrencyInfoAttribute.SetDefaults<SOOrder.curyInfoID>(soGraph.Document.Cache, soGraph.Document.Current);
@@ -560,20 +561,32 @@ namespace LumTomofunCustomization.LUMLibrary
                         if (soGraph_FA.Document.Current != null)
                         {
                             // Setting Shipping_Address
-                            var soAddress = soGraph.Shipping_Address.Current;
-                            soGraph_FA.Shipping_Address.Current = soGraph_FA.Shipping_Address.Select();
+                            var soAddress = soGraph.Shipping_Address.Current = soGraph.Shipping_Address.Select();
                             soAddress.OverrideAddress = true;
+                            soAddress = soGraph.Shipping_Address.Cache.Update(soAddress) as SOShippingAddress;
+                            if (soAddress == null)
+                            {
+                                soAddress = soGraph.Shipping_Address.Current;
+                            }
+                            soGraph_FA.Shipping_Address.Current = soGraph_FA.Shipping_Address.Select();
                             soAddress.PostalCode = soGraph_FA.Shipping_Address.Current?.PostalCode;
                             soAddress.CountryID = soGraph_FA.Shipping_Address.Current?.CountryID;
                             soAddress.State = soGraph_FA.Shipping_Address.Current?.State;
                             soAddress.City = soGraph_FA.Shipping_Address.Current?.City;
                             soAddress.RevisionID = 1;
+                            soGraph.Shipping_Address.Update(soAddress);
                             // Setting Shipping_Contact
-                            var soContact = soGraph.Shipping_Contact.Current;
-                            soGraph_FA.Shipping_Contact.Current = soGraph_FA.Shipping_Contact.Select();
+                            var soContact = soGraph.Shipping_Contact.Current = soGraph.Shipping_Contact.Select();
                             soContact.OverrideContact = true;
+                            soContact = soGraph.Shipping_Contact.Cache.Update(soContact) as SOShippingContact;
+                            if (soContact == null)
+                            {
+                                soContact = soGraph.Shipping_Contact.Current;
+                            }
+                            soGraph_FA.Shipping_Contact.Current = soGraph_FA.Shipping_Contact.Select();
                             soContact.Email = soGraph_FA.Shipping_Contact.Current?.Email;
                             soContact.RevisionID = 1;
+                            soGraph.Shipping_Contact.Update(soContact);
                         }
                         #endregion
 
@@ -589,8 +602,14 @@ namespace LumTomofunCustomization.LUMLibrary
 
                         #region Update Tax
                         // Setting SO Tax
-                        soGraph.Taxes.Current = soGraph.Taxes.Current ?? soGraph.Taxes.Insert(soGraph.Taxes.Cache.CreateInstance() as SOTaxTran);
-                        soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, isTaxCalculate ? $"{_marketplace}ECZ" : $"{_marketplace}EC");
+                        // 只有JP有兩個Tax
+                        if (soDoc?.TaxZoneID == "JPAMZCOD")
+                            soGraph.Taxes.Insert(new SOTaxTran() { TaxID = isTaxCalculate ? $"{_marketplace}ECZ" : $"{_marketplace}EC" });
+                        else
+                        {
+                            soGraph.Taxes.Current = soGraph.Taxes.Current ?? soGraph.Taxes.Insert(soGraph.Taxes.Cache.CreateInstance() as SOTaxTran);
+                            soGraph.Taxes.Cache.SetValueExt<SOTaxTran.taxID>(soGraph.Taxes.Current, isTaxCalculate ? $"{_marketplace}ECZ" : $"{_marketplace}EC");
+                        }
                         #endregion
 
                         // Sales Order Save
@@ -608,7 +627,7 @@ namespace LumTomofunCustomization.LUMLibrary
                         #endregion
 
                         // Prepare Invoice
-                        PrepareInvoiceAndOverrideTax(soGraph, soDoc);
+                        PrepareInvoiceAndOverrideTax(soGraph, soDoc, false);
                     }
                     #endregion
 
@@ -1140,6 +1159,8 @@ namespace LumTomofunCustomization.LUMLibrary
                     // Prepare Invoice
                     PrepareInvoiceAndOverrideTax(soGraph, soDoc);
                     #endregion
+                    break;
+                case "TRANSFER":
                     break;
                 default:
                     #region Transaction Type: Undefined Transactions
