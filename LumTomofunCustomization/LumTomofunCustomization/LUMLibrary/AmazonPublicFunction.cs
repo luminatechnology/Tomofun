@@ -404,6 +404,14 @@ namespace LumTomofunCustomization.LUMLibrary
                                            inventoryCD: $"API-OTHER-FEE",
                                            desc: null,
                                            unitPrice: amazonData?.Api_otherfee * -1));
+
+                    // API_POINTS
+                    if (amazonData?.Api_points != 0)
+                        soGraph.Transactions.Insert(
+                        CreateSOLineObject(soGraph,
+                                           inventoryCD: $"API-POINTS",
+                                           desc: null,
+                                           unitPrice: amazonData?.Api_points * -1));
                     #endregion
 
                     #endregion
@@ -503,6 +511,9 @@ namespace LumTomofunCustomization.LUMLibrary
                         if (amazonData?.Api_otherfee != 0)
                             arGraph.PaymentCharges.Insert(CreatePaymentCHARGESObject(arGraph, "FBAOTHER", amazonData?.Api_otherfee * -1));
 
+                        // FBAPOINTS
+                        if(amazonData?.Api_points != 0)
+                            arGraph.PaymentCharges.Insert(CreatePaymentCHARGESObject(arGraph, "FBAPOINT", amazonData?.Api_points * -1));
                         #endregion
 
                         // set payment amount to apply amount
