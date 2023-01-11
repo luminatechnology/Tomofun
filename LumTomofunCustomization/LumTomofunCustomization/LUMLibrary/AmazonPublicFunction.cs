@@ -501,15 +501,15 @@ namespace LumTomofunCustomization.LUMLibrary
 
                         // FBAFEE
                         if (amazonData?.Api_fbafee != 0)
-                            arGraph.PaymentCharges.Insert(CreatePaymentCHARGESObject(arGraph, "FBAFEE", amazonData?.Api_fbafee * -1));
+                            arGraph.PaymentCharges.Insert(CreatePaymentCHARGESObject(arGraph, "FBAFEE", (amazonData?.Api_fbafee + amazonData?.Api_otherfee) * -1));
 
                         // FBAOTHTRAN
                         if (amazonData?.Api_othertranfee != 0)
                             arGraph.PaymentCharges.Insert(CreatePaymentCHARGESObject(arGraph, "FBAOTHTRAN", amazonData?.Api_othertranfee * -1));
 
                         // FBAOTHER
-                        if (amazonData?.Api_otherfee != 0)
-                            arGraph.PaymentCharges.Insert(CreatePaymentCHARGESObject(arGraph, "FBAOTHER", amazonData?.Api_otherfee * -1));
+                        //if (amazonData?.Api_otherfee != 0)
+                        //    arGraph.PaymentCharges.Insert(CreatePaymentCHARGESObject(arGraph, "FBAOTHER", amazonData?.Api_otherfee * -1));
 
                         // FBAPOINTS
                         if(amazonData?.Api_points != 0)
