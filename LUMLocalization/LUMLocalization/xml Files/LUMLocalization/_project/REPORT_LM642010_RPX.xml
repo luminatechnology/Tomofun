@@ -316,6 +316,10 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                         <Condition>IsNull</Condition>
                         <ParentField>SOLineSplit.ParentSplitLineNbr</ParentField>
                     </RelationRow>
+                    <RelationRow>
+                        <ChildField>SplitLineNbr</ChildField>
+                        <ParentField>OrigSplitLineNbr</ParentField>
+                    </RelationRow>
                 </Links>
                 <ParentName>SOShipLineSplit</ParentName>
             </ReportRelation>
