@@ -317,8 +317,8 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                         <ParentField>SOLineSplit.ParentSplitLineNbr</ParentField>
                     </RelationRow>
                     <RelationRow>
-                        <ChildField>SplitLineNbr</ChildField>
-                        <ParentField>OrigSplitLineNbr</ParentField>
+                        <Condition>IsNotNull</Condition>
+                        <ParentField>SOLineSplit.PONbr</ParentField>
                     </RelationRow>
                 </Links>
                 <ParentName>SOShipLineSplit</ParentName>
@@ -398,7 +398,7 @@ Bn86K+E9RDPC0VxHddGh8tiPzxXR+DfgT408ZahFp2k6VKhlYBpcEV++N/wDDvwxcN+98PaZt7stnEG/
                 <ParentName>SOShipment</ParentName>
             </ReportRelation>
         </Relations>
-        <SchemaUrl>https://tomofun.acumatica.com/</SchemaUrl>
+        <SchemaUrl>http://localhost/Tomofun</SchemaUrl>
         <Sorting>
             <SortExp>
                 <DataField>SOShipment.ShipmentNbr</DataField>
