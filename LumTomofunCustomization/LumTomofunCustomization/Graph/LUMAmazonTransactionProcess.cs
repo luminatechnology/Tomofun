@@ -83,7 +83,15 @@ namespace LumTomofunCustomization.Graph
                         var marketplacePreference = SelectFrom<LUMMarketplacePreference>
                             .Where<LUMMarketplacePreference.marketplace.IsEqual<P.AsString>>
                             .View.Select(baseGraph, row.Marketplace).TopFirst;
-                        amzFulfillmentDate = GetFulfillmentDate(baseGraph, amzOrder.OrderId, marketplacePreference);
+                        // CreatedDatetime 和 LatestShipDate 取最早的
+                        try
+                        {
+                            amzFulfillmentDate = amzOrder?.LatestShipDate == null || row.CreatedDateTime < CalculateAmazonDateTime(amzOrder?.LatestShipDate) ? row.CreatedDateTime : CalculateAmazonDateTime(amzOrder?.LatestShipDate);
+                        }
+                        catch (Exception)
+                        {
+                            amzFulfillmentDate = row.CreatedDateTime;
+                        }
                         // Fulfillment date < 2022/07/01
                         if (amzFulfillmentDate < new DateTime(2022, 06, 01))
                             throw new Exception("Legacy Order");
