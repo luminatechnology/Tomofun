@@ -492,8 +492,12 @@ namespace LumTomofunCustomization.LUMLibrary
                             arGraph.PaymentCharges.Insert(CreatePaymentCHARGESObject(arGraph, "FBAREGULAT", amazonData?.Api_regulatoryfee * -1));
 
                         // WHTAX + Marketplace
-                        if (amazonData?.Api_taxonregulatoryfee != 0)
+                        if (amazonData?.Api_taxonregulatoryfee != 0 )
                             arGraph.PaymentCharges.Insert(CreatePaymentCHARGESObject(arGraph, $"WHTAX{_marketplace}", amazonData?.Api_taxonregulatoryfee * -1));
+
+                        // WHTAX + Marketplace
+                        if (amazonData?.Api_whtax != 0)
+                            arGraph.PaymentCharges.Insert(CreatePaymentCHARGESObject(arGraph, $"WHTAX{_marketplace}", amazonData?.Api_whtax * -1));
 
                         // FBASELLING
                         if (amazonData?.Api_sellingfee != 0)
