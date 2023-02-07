@@ -1075,7 +1075,7 @@ namespace LumTomofunCustomization.LUMLibrary
                     break;
                 case "COUPONREDEMPTIONFEE":
                 case "CHARGE BACK REFUND":
-                case "CHAREBACK REFUND":
+                case "CHARGEBACK REFUND":
                 case "FBA INVNETORY FEE":
                 case "ADJUSTMENT":
                 case "DEBT":
