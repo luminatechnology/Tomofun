@@ -492,7 +492,7 @@ namespace LumTomofunCustomization.LUMLibrary
                             arGraph.PaymentCharges.Insert(CreatePaymentCHARGESObject(arGraph, "FBAREGULAT", amazonData?.Api_regulatoryfee * -1));
 
                         // WHTAX + Marketplace
-                        if (amazonData?.Api_taxonregulatoryfee != 0 )
+                        if (amazonData?.Api_taxonregulatoryfee != 0)
                             arGraph.PaymentCharges.Insert(CreatePaymentCHARGESObject(arGraph, $"WHTAX{_marketplace}", amazonData?.Api_taxonregulatoryfee * -1));
 
                         // WHTAX + Marketplace
@@ -516,7 +516,7 @@ namespace LumTomofunCustomization.LUMLibrary
                         //    arGraph.PaymentCharges.Insert(CreatePaymentCHARGESObject(arGraph, "FBAOTHER", amazonData?.Api_otherfee * -1));
 
                         // FBAPOINTS
-                        if(amazonData?.Api_points != 0)
+                        if (amazonData?.Api_points != 0)
                             arGraph.PaymentCharges.Insert(CreatePaymentCHARGESObject(arGraph, "FBAPOINT", amazonData?.Api_points * -1));
                         #endregion
 
@@ -951,7 +951,7 @@ namespace LumTomofunCustomization.LUMLibrary
                     // API_TRAN_TYPE
                     soGraph.Transactions.Insert(
                         CreateSOLineObject(soGraph,
-                                           inventoryCD: amazonData?.Api_trantype,
+                                           inventoryCD: amazonData?.Api_trantype.Replace("_"," "),
                                            desc: null,
                                            unitPrice: Math.Abs(amazonData?.Api_total ?? 0)));
                     #endregion
@@ -1044,7 +1044,7 @@ namespace LumTomofunCustomization.LUMLibrary
                     // API_TRAN_TYPE
                     soGraph.Transactions.Insert(
                         CreateSOLineObject(soGraph,
-                                           inventoryCD: amazonData?.Api_trantype,
+                                           inventoryCD: amazonData?.Api_trantype.Replace("_", " "),
                                            desc: null,
                                            unitPrice: Math.Abs(amazonData?.Api_total ?? 0)));
                     #endregion
@@ -1075,6 +1075,7 @@ namespace LumTomofunCustomization.LUMLibrary
                     break;
                 case "COUPONREDEMPTIONFEE":
                 case "CHARGE BACK REFUND":
+                case "CHAREBACK REFUND":
                 case "FBA INVNETORY FEE":
                 case "ADJUSTMENT":
                 case "DEBT":
@@ -1146,7 +1147,7 @@ namespace LumTomofunCustomization.LUMLibrary
                     // API_TRAN_TYPE
                     soGraph.Transactions.Insert(
                         CreateSOLineObject(soGraph,
-                                           inventoryCD: amazonData?.Api_trantype,
+                                           inventoryCD: amazonData?.Api_trantype.Replace("_", " "),
                                            desc: null,
                                            unitPrice: Math.Abs(amazonData?.Api_total ?? 0)));
                     #endregion
