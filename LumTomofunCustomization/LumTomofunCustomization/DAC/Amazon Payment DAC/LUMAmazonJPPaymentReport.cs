@@ -36,7 +36,7 @@ namespace LUMTomofunCustomization.DAC
         #endregion
 
         #region ReportType
-        [PXDBString(20, IsUnicode = true, InputMask = "")]
+        [PXDBString(100, IsUnicode = true, InputMask = "")]
         [PXUIField(DisplayName = "トランザクションの種類")]
         public virtual string ReportType { get; set; }
         public abstract class reportType : PX.Data.BQL.BqlString.Field<reportType> { }
@@ -218,7 +218,7 @@ namespace LUMTomofunCustomization.DAC
         #endregion
 
         #region Api_trantype
-        [PXDBString(20, IsUnicode = true, InputMask = "")]
+        [PXDBString(100, IsUnicode = true, InputMask = "")]
         [PXUIField(DisplayName = "Api_trantype")]
         public virtual string Api_trantype { get; set; }
         public abstract class api_trantype : PX.Data.BQL.BqlString.Field<api_trantype> { }

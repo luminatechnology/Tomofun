@@ -135,7 +135,7 @@ namespace LumTomofunCustomization.LUMLibrary
                     {
                         { "Ajustement","Adjustment"},
                         { "Commande","Order"},
-                        { "Frais de service","Service Fees"},
+                        { "Frais de service","Service Fee"},
                         { "Frais de stock Expédié par Amazon","FBA inventory fee"},
                         { "Remboursement","Refund"},
                         { "Solde négatif","Debt"},
@@ -152,6 +152,7 @@ namespace LumTomofunCustomization.LUMLibrary
                         { "Ordine","Order"},
                         { "Rimborso","Refund"},
                         { "Saldo negativo","Debt"},
+                        {"Tariffa dell’Offerta", "Lightning Deal Fee"},
                         { "Tariffa dell’Offerta Lampo","Lightning Offer Rate"},
                         { "Trasferimento","Transfer"}
                     };

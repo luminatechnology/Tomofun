@@ -4,7 +4,7 @@
   <col name="SequenceNumber" type="Int" identity="true" />
   <col name="ReportDateTime" type="NVarChar(100)" nullable="true" />
   <col name="Settlementid" type="NVarChar(20)" nullable="true" />
-  <col name="ReportType" type="NVarChar(20)" nullable="true" />
+  <col name="ReportType" type="NVarChar(100)" nullable="true" />
   <col name="OrderID" type="NVarChar(50)" nullable="true" />
   <col name="SKU" type="NVarChar(50)" nullable="true" />
   <col name="Description" type="NVarChar(300)" nullable="true" />
@@ -23,7 +23,7 @@
   <col name="API_DATE_1" type="DateTime" nullable="true" />
   <col name="API_DATE" type="DateTime" nullable="true" />
   <col name="API_SETTLEMENTID" type="NVarChar(20)" nullable="true" />
-  <col name="API_TRANTYPE" type="NVarChar(20)" nullable="true" />
+  <col name="API_TRANTYPE" type="NVarChar(100)" nullable="true" />
   <col name="API_ORDERID" type="NVarChar(50)" nullable="true" />
   <col name="API_SKU" type="NVarChar(50)" nullable="true" />
   <col name="API_DESCRIPTION" type="NVarChar(300)" nullable="true" />
