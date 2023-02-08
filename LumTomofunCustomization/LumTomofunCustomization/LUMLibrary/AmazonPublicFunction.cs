@@ -1063,7 +1063,7 @@ namespace LumTomofunCustomization.LUMLibrary
                     paymentExt = soGraph.GetExtension<CreatePaymentExt>();
                     paymentExt.SetDefaultValues(paymentExt.QuickPayment.Current, soGraph.Document.Current);
                     paymentExt.QuickPayment.Current.ExtRefNbr = amazonData?.Api_settlementid;
-                    paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Refund);
+                    paymentEntry = paymentExt.CreatePayment(paymentExt.QuickPayment.Current, soGraph.Document.Current, ARPaymentType.Payment);
                     paymentEntry.Document.Cache.SetValueExt<ARPayment.adjDate>(paymentEntry.Document.Current, amazonData?.Api_date);
                     paymentEntry.Save.Press();
                     paymentEntry.releaseFromHold.Press();
