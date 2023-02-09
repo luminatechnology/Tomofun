@@ -152,8 +152,9 @@ namespace LumTomofunCustomization.LUMLibrary
                         { "Ordine","Order"},
                         { "Rimborso","Refund"},
                         { "Saldo negativo","Debt"},
-                        {"Tariffa dell’Offerta", "Lightning Deal Fee"},
-                        { "Tariffa dell’Offerta Lampo","Lightning Offer Rate"},
+                        //{"Tariffa dell’Offerta", "Lightning Deal Fee"},
+                        { "Tariffa dell’Offerta Lampo","Lightning Deal Fee"},
+                        //{ "Tariffa dell’Offerta Lampo","Lightning Offer Rate"},
                         { "Trasferimento","Transfer"}
                     };
                     break;
@@ -177,7 +178,7 @@ namespace LumTomofunCustomization.LUMLibrary
                         { "Reembolso","Refund"},
                         { "Tarifa de inventario FBA","FBA Inventory Fee"},
                         { "Tarifa de servicio","Service Fee"},
-                        { "Übertrag","Transfer"},
+                        { "Trasferir","Transfer"},
                         { "Deuda","Debt"}
                     };
                     break;
@@ -952,7 +953,7 @@ namespace LumTomofunCustomization.LUMLibrary
                     // API_TRAN_TYPE
                     soGraph.Transactions.Insert(
                         CreateSOLineObject(soGraph,
-                                           inventoryCD: amazonData?.Api_trantype.Replace("_"," "),
+                                           inventoryCD: amazonData?.Api_trantype.Replace("_", " "),
                                            desc: null,
                                            unitPrice: Math.Abs(amazonData?.Api_total ?? 0)));
                     #endregion
@@ -1077,7 +1078,7 @@ namespace LumTomofunCustomization.LUMLibrary
                 case "COUPONREDEMPTIONFEE":
                 case "CHARGE BACK REFUND":
                 case "CHARGEBACK REFUND":
-                case "FBA INVNETORY FEE":
+                case "FBA INVENTORY FEE":
                 case "ADJUSTMENT":
                 case "DEBT":
                 case "LIGHTNING DEAL FEE":
