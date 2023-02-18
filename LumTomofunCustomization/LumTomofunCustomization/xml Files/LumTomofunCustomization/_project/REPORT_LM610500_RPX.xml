@@ -422,7 +422,7 @@
                     </RelationRow>
                     <RelationRow>
                         <ChildField>LocationID</ChildField>
-                        <ParentField>DefLocationID</ParentField>
+                        <ParentField>APInvoice.VendorLocationID</ParentField>
                     </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
@@ -441,7 +441,7 @@
                     </RelationRow>
                     <RelationRow>
                         <ChildField>LocationID</ChildField>
-                        <ParentField>DefLocationID</ParentField>
+                        <ParentField>APInvoice.VendorLocationID</ParentField>
                     </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
@@ -460,7 +460,7 @@
                     </RelationRow>
                     <RelationRow>
                         <ChildField>LocationID</ChildField>
-                        <ParentField>DefLocationID</ParentField>
+                        <ParentField>APInvoice.VendorLocationID</ParentField>
                     </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
@@ -479,7 +479,7 @@
                     </RelationRow>
                     <RelationRow>
                         <ChildField>LocationID</ChildField>
-                        <ParentField>DefLocationID</ParentField>
+                        <ParentField>APInvoice.VendorLocationID</ParentField>
                     </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
@@ -498,7 +498,7 @@
                     </RelationRow>
                     <RelationRow>
                         <ChildField>LocationID</ChildField>
-                        <ParentField>DefLocationID</ParentField>
+                        <ParentField>APInvoice.VendorLocationID</ParentField>
                     </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
@@ -517,13 +517,13 @@
                     </RelationRow>
                     <RelationRow>
                         <ChildField>LocationID</ChildField>
-                        <ParentField>DefLocationID</ParentField>
+                        <ParentField>APInvoice.VendorLocationID</ParentField>
                     </RelationRow>
                 </Links>
                 <ParentName>BAccount</ParentName>
             </ReportRelation>
         </Relations>
-        <SchemaUrl>http://localhost/Tomofun1/</SchemaUrl>
+        <SchemaUrl>https://tomofun.acumatica.com/</SchemaUrl>
         <Style>
             <Font>
                 <Size>12px</Size>
