@@ -296,8 +296,9 @@ namespace LUMTomofunCustomization.Graph
 
             reconcilition.ERPSku = GetStockItemOrCrossRef(reconcilition.Sku);
             reconcilition.Location = GetLocationIDByWarehouse(reconcilition.Warehouse, list[6].ToUpper());
-            // FBA publish IN report after 12:00 am, so the snapshot date actually is one day before .
-            reconcilition.INDate = reconcilition.SnapshotDate.Value.AddDays(-1).Date;
+            // FBA publish IN report after 12:00 am, so the snapshot date actually is one day before.
+            // Since Amazon has deployed a new report to present new information, that doesn't need to subtract a day.
+            reconcilition.INDate = reconcilition.SnapshotDate.Value/*.AddDays(-1)*/.Date;
 
             if (Reconcilition.Cache.Inserted.RowCast<LUMAmzINReconcilition>().Where(w => w.INDate == reconcilition.INDate && w.Sku == reconcilition.Sku && w.FBACenterID == reconcilition.FBACenterID &&
                                                                                          w.Warehouse == reconcilition.Warehouse && w.Location == reconcilition.Location).Count() <= 0)
