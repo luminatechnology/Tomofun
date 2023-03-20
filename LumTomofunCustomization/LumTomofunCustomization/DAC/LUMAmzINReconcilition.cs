@@ -113,7 +113,7 @@ namespace LUMTomofunCustomization.DAC
         #endregion
 
         #region INDate
-        [PXDBDate()]
+        [PXDBDate(UseTimeZone = false)]
         [PXUIField(DisplayName = "IN Date")]
         public virtual DateTime? INDate { get; set; }
         public abstract class iNDate : PX.Data.BQL.BqlDateTime.Field<iNDate> { }
