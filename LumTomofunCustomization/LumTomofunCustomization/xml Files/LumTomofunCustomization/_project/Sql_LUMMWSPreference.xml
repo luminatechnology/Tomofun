@@ -4,7 +4,7 @@
   <col name="SecretKey" type="NVarChar(200)" />
   <col name="RoleArn" type="NVarChar(200)" />
   <col name="ClientID" type="NVarChar(200)" />
-  <col name="ClientSecret" type="NVarChar(200)" />
+  <col name="ClientSecret" type="NVarChar(255)" />
   <col name="USMarketplaceID" type="NVarChar(200)" nullable="true" />
   <col name="USRefreshToken" type="NVarChar(400)" nullable="true" />
   <col name="EUMarketplaceID" type="NVarChar(200)" nullable="true" />
@@ -26,10 +26,10 @@
   <col name="SGSecretKey" type="NVarChar(200)" nullable="true" />
   <col name="SGRoleArn" type="NVarChar(200)" nullable="true" />
   <col name="SGClientID" type="NVarChar(200)" nullable="true" />
-  <col name="SGClientSecret" type="NVarChar(200)" nullable="true" />
+  <col name="SGClientSecret" type="NVarChar(255)" nullable="true" />
   <col name="SGMarketplaceID" type="NVarChar(200)" nullable="true" />
   <col name="SGRefreshToken" type="NVarChar(400)" nullable="true" />
   <col name="MXClientID" type="NVarChar(200)" nullable="true" />
-  <col name="MXClientSecret" type="NVarChar(200)" nullable="true" />
+  <col name="MXClientSecret" type="NVarChar(255)" nullable="true" />
 </table>]]></CDATA>
 </Sql>

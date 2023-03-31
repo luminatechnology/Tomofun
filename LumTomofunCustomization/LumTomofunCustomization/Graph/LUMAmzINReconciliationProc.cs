@@ -3,15 +3,16 @@ using PX.Data.BQL;
 using PX.Data.BQL.Fluent;
 using PX.Objects.IN;
 using System;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using FikaAmazonAPI;
+using FikaAmazonAPI.Utils;
 using LUMTomofunCustomization.DAC;
 using LumTomofunCustomization.Graph;
-using FikaAmazonAPI;
-using FikaAmazonAPI.Parameter.Report;
-using FikaAmazonAPI.Utils;
+using LumTomofunCustomization.API_Entity;
 using static FikaAmazonAPI.Utils.Constants;
 
 namespace LUMTomofunCustomization.Graph
@@ -36,7 +37,7 @@ namespace LUMTomofunCustomization.Graph
 
             Actions.Move(nameof(Cancel), nameof(massDeletion), true);
             //Actions.Move(nameof(massDeletion), nameof(importFBAIN), true);
-            Actions.Move("ProcessAll", nameof(createAdjustment), true);
+            //Actions.Move("ProcessAll", nameof(createAdjustment), true);
 
             SettlementFilter filter = Filter.Current;
 
@@ -76,25 +77,25 @@ namespace LUMTomofunCustomization.Graph
         //    return adapter.Get();
         //}
 
-        public PXAction<SettlementFilter> createAdjustment;
-        [PXButton(CommitChanges = true), PXUIField(DisplayName = "Create In Adjustment")]
-        protected virtual IEnumerable CreateAdjustment(PXAdapter adapter)
-        {
-            PXLongOperation.StartOperation(this, delegate ()
-            {
-                CreateInvAdjustment(Reconcilition.Cache.Updated.RowCast<LUMAmzINReconcilition>().ToList());
+        //public PXAction<SettlementFilter> createAdjustment;
+        //[PXButton(CommitChanges = true), PXUIField(DisplayName = "Create In Adjustment")]
+        //protected virtual IEnumerable CreateAdjustment(PXAdapter adapter)
+        //{
+        //    PXLongOperation.StartOperation(this, delegate ()
+        //    {
+        //        CreateInvAdjustment(Reconcilition.Cache.Updated.RowCast<LUMAmzINReconcilition>().ToList());
 
-                foreach (LUMAmzINReconcilition row in Reconcilition.Cache.Updated)
-                {
-                    Reconcilition.Cache.SetValue<LUMAmzINReconcilition.isProcesses>(row, true);
-                    Reconcilition.Update(row);
-                }
+        //        foreach (LUMAmzINReconcilition row in Reconcilition.Cache.Updated)
+        //        {
+        //            Reconcilition.Cache.SetValue<LUMAmzINReconcilition.isProcesses>(row, true);
+        //            Reconcilition.Update(row);
+        //        }
 
-                this.Actions.PressSave();
-            });
+        //        this.Actions.PressSave();
+        //    });
 
-            return adapter.Get();
-        }
+        //    return adapter.Get();
+        //}
         #endregion
 
         #region Cache Attached
@@ -153,34 +154,49 @@ namespace LUMTomofunCustomization.Graph
             });
         }
 
-        public virtual List<FikaAmazonAPI.AmazonSpApiSDK.Models.Reports.Report> GetFulfillmentInventoryReports(AmazonConnection amzConnection, DateTime? filterDate, string marketPlace)
+        // Old Amazon API is expired on 2023/01/31
+        //public virtual List<FikaAmazonAPI.AmazonSpApiSDK.Models.Reports.Report> GetFulfillmentInventoryReports(AmazonConnection amzConnection, DateTime? filterDate, string marketPlace)
+        //{
+        //    var parameters = new ParameterReportList
+        //    {
+        //        //pageSize = 100, // Roy says it's optional, so it doesn't need to be specified.
+        //        reportTypes = new List<ReportTypes>()
+        //    };
+
+        //    parameters.reportTypes.Add(ReportTypes.GET_FBA_FULFILLMENT_CURRENT_INVENTORY_DATA);
+        //    parameters.marketplaceIds = new List<string>
+        //    {
+        //        marketPlace
+        //    };
+        //    parameters.createdSince = filterDate;
+        //    // Add the following parameter to make report data a little more compact.
+        //    parameters.createdUntil = filterDate.Value.AddDays(1);
+
+        //    return amzConnection.Reports.GetReports(parameters);
+        //}
+
+        private async Task<List<LedgerSummaryReportRow>> GetLedgerSummaryReport(AmazonConnection amazonConnection, DateTime fromDate, DateTime toDate, bool mpIsJP)
         {
-            var parameters = new ParameterReportList
-            {
-                //pageSize = 100, // Roy says it's optional, so it doesn't need to be specified.
-                reportTypes = new List<ReportTypes>()
-            };
+            List<LedgerSummaryReportRow> list = new List<LedgerSummaryReportRow>();
 
-            parameters.reportTypes.Add(ReportTypes.GET_FBA_FULFILLMENT_CURRENT_INVENTORY_DATA);
-            parameters.marketplaceIds = new List<string>
-            {
-                marketPlace
-            };
-            parameters.createdSince = filterDate;
-            // Add the following parameter to make report data a little more compact.
-            parameters.createdUntil = filterDate.Value.AddDays(1);
+            var reportOptions = new FikaAmazonAPI.AmazonSpApiSDK.Models.Reports.ReportOptions();
 
-            return amzConnection.Reports.GetReports(parameters);
+            reportOptions.Add("aggregatedByTimePeriod", "DAILY");
+
+            var path = await amazonConnection.Reports.CreateReportAndDownloadFileAsync(ReportTypes.GET_LEDGER_SUMMARY_VIEW_DATA, fromDate, toDate, reportOptions);
+       
+            LedgerSummaryReport report = new LedgerSummaryReport(path, amazonConnection.RefNumber, mpIsJP);
+
+            list.AddRange(report.Data);
+
+            return list; 
         }
 
-        public virtual void ImportAmzRecords(DateTime? fromDate)
+        public virtual void ImportAmzRecords(DateTime? endDate)
         {
             try
             {
                 LUMMWSPreference preference = PXSelect<LUMMWSPreference>.SelectSingleBound(this, null);
-
-                Dictionary<string, string> dicRpt = new Dictionary<string, string>();
-                Dictionary<string, List<string>> dic = new Dictionary<string, List<string>>();
 
                 string mpID = null, mP_EU_CA = null;
                 foreach (LUMMarketplacePreference mfPref in SelectFrom<LUMMarketplacePreference>.View.Select(this))
@@ -202,66 +218,27 @@ namespace LUMTomofunCustomization.Graph
                     {
                         mP_EU_CA = mpID;
 
-                        var reports = GetFulfillmentInventoryReports(amzConnection, fromDate, mpID);
-
-                        reports.RemoveAll(r => r.ReportDocumentId == null);
-
-                        List<string> lines = new List<string>();
+                        var reports = GetLedgerSummaryReport(amzConnection, endDate.Value, endDate.Value, mfPref.Marketplace == "JP").Result;
 
                         for (int i = 0; i < reports.Count; i++)
                         {
                             DeleteSameOrEmptyData(string.Empty);
-                            DeleteSameOrEmptyData(reports[i].ReportId);
 
-                            var reportData = amzConnection.Reports.GetReportFile(reports[i].ReportDocumentId);
-
-                            int dataCount = 1;
-                            // Since Jananese has special font, a condition for getting the encoding is added.
-                            using (StreamReader sr = new StreamReader(reportData, System.Text.Encoding.GetEncoding(mfPref.Marketplace == "JP" ? "Shift-JIS" : nameof(System.Text.Encoding.ASCII)), true))
+                            List<string> strList = new List<string>
                             {
-                                var data = sr.ReadToEnd().Split('\n').ToArray();
+                                reports[i].Date.ToString(),
+                                reports[i].FNSKU,
+                                reports[i].MSKU,
+                                reports[i].Title,
+                                reports[i].EndingWarehouseBalance.ToString(),
+                                string.Empty,
+                                reports[i].Disposition,
+                                reports[i].Location
+                            };
 
-                                while (data.Length > dataCount)
-                                {
-                                    lines = data[dataCount].Split('\t').ToList();
-
-                                    if (lines[0].Length <= 0)
-                                    {
-                                        break;
-                                    }
-                                    ///<remarks>Since MWS will provide content files in different formats from time to time, add the following logic to read the files.</remarks>
-                                    else if (lines.Count < 8)
-                                    {
-                                        lines = data[dataCount].Split(new string[] { "\",\"" }, StringSplitOptions.None).Select(s => s.Replace("\"", "")).ToList();
-                                        // Sometimes the column of Country will be empty.
-                                        if (lines.Count <= 7)
-                                        {
-                                            lines.Add(string.Empty);
-                                        }
-                                    }
-
-                                    string key = $"{lines[0]}-{lines[2]}-{lines[5]}-{lines[6]}";
-
-                                    if (dic.ContainsKey(key) == false)
-                                    {
-                                        dic.Add(key, lines);
-                                        dicRpt.Add(key, reports[i].ReportId);
-                                    }
-
-                                    dataCount++;
-                                }
-                            }
+                            CreateAmzINReconciliation(strList, null);
                         }
                     }
-                }
-
-                var dicList = dic.Values.ToList();
-
-                for (int i = 0; i < dicList.Count; i++)
-                {
-                    dicRpt.TryGetValue(dic.Keys.ToList()[i], out string reportID);
-
-                    CreateAmzINReconciliation(dicList[i], reportID);
                 }
 
                 this.Actions.PressSave();
