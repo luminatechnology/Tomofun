@@ -54,7 +54,5 @@ INNER JOIN Company c ON c.CompanyID = (SELECT TOP 1 CompanyID FROM LUMShopifyMar
 LEFT OUTER JOIN InventoryItem i ON i.CompanyID = t.CompanyID AND i.InventoryCD = t.ERPSku AND i.DeletedDatabaseRecord = 0
 LEFT OUTER JOIN INSite s ON s.CompanyID = t.CompanyID AND s.SiteID = t.Warehouse
 LEFT OUTER JOIN INLocation l ON l.CompanyID = t.CompanyID AND l.LocationID = t.Location
-WHERE t.CompanyID > 0 AND t.Sku IS NOT NULL
-
-SELECT * FROM InventoryItem WHERE CompanyID > 0 AND DeletedDatabaseRecord = 1]]></CDATA>
+WHERE t.CompanyID > 0 AND t.Sku IS NOT NULL]]></CDATA>
 </Sql>
