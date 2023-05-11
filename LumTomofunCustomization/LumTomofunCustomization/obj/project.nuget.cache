@@ -1,11 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "HJmwcBnofgx7J/11OpIp7/5pOSOIbVS7v26TGpucTY10VJSxCPAqGDh82cEM1EXuNfZTzlK2/UgtdbtxcS/+QA==",
+  "dgSpecHash": "oZElSZCKgQyEuLXCG7TE5AgzQ9Z5VWoq0HcpTqCWVXqWPPfQOLczNun+/pJmiB3kC71lZDgEbn86h/eJftb4GQ==",
   "success": true,
   "projectFilePath": "C:\\Program Files\\Acumatica ERP\\Tomofun\\App_Data\\Projects\\LumTomofunCustomization\\LumTomofunCustomization\\LumTomofunCustomization.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\JO3JO\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\5.0.0\\microsoft.bcl.asyncinterfaces.5.0.0.nupkg.sha512",
-    "C:\\Users\\JO3JO\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
     "C:\\Users\\JO3JO\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\5.0.0\\system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512",
     "C:\\Users\\JO3JO\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512"
   ],
