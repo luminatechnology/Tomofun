@@ -77,7 +77,7 @@ namespace LumTomofunCustomization.Graph
             this.PaymentTransactions.ParallelProcessingOptions = (options) =>
             {
                 options.IsEnabled = true;
-                options.BatchSize = 100;
+                options.BatchSize = 60;
             };
         }
 
@@ -150,6 +150,7 @@ namespace LumTomofunCustomization.Graph
         /// <summary> 執行 Process Amazon payment </summary>
         public virtual void CreatePaymentByOrder(LUMAmazon_DEPaymentUploadProcess baseGraph, List<LUMAmazonDEPaymentReport> selectedList)
         {
+            PXTrace.WriteInformation(DateTime.Now.ToString());
             foreach (var selectedItem in selectedList)
             {
                 // Initial variable
@@ -169,12 +170,14 @@ namespace LumTomofunCustomization.Graph
                 }
                 catch (PXOuterException outerException)
                 {
+                    errorMessge = outerException.StackTrace + " ||| ";
                     for (int i = 0; i < outerException.InnerFields.Length; i++)
                         errorMessge += $"{outerException.InnerFields[i]} - {outerException.InnerMessages[i]} \r\n";
                 }
                 catch (Exception ex)
                 {
-                    errorMessge = ex.Message;
+                    errorMessge = ex.StackTrace + " ||| " + ex.Message ;
+                    //errorMessge = ex.Message;
                 }
                 finally
                 {

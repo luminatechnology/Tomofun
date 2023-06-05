@@ -1,11 +1,17 @@
 ﻿using LumTomofunCustomization.LUMLibrary;
 using LUMTomofunCustomization.DAC;
+using Newtonsoft.Json;
 using PX.Data;
+using PX.Objects.AR;
+using PX.Objects.SO;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LumTomofunCustomization.Graph
@@ -75,6 +81,12 @@ namespace LumTomofunCustomization.Graph
             {
                 GoProcessing(list);
             });
+
+            this.PaymentTransactions.ParallelProcessingOptions = (options) =>
+            {
+                options.IsEnabled = true;
+                options.BatchSize = 80;
+            };
         }
 
         #region Action
@@ -100,6 +112,13 @@ namespace LumTomofunCustomization.Graph
         public virtual void _(Events.RowInserted<LUMAmazonUKPaymentReport> e)
         {
             var row = e.Row as LUMAmazonUKPaymentReport;
+
+            if(row.ReportDateTime == null)
+            {
+                this.PaymentTransactions.Cache.Delete(row);
+                return;
+            }
+
             #region API Field Binding
             row.API_Marketplace = "UK";
             var CultureName = "en-GB";
@@ -141,13 +160,34 @@ namespace LumTomofunCustomization.Graph
         {
             var baseGraph = CreateInstance<LUMAmazon_UKPaymentUploadProcess>();
             baseGraph.CreatePaymentByOrder(baseGraph, list);
+
+            //using (HttpClient client = new HttpClient())
+            //{
+            //    var eneity = new ReleaseEntity()
+            //    {
+            //        ActionName = "Release",
+            //        Customer = "AMZUK",
+            //        EndDate = DateTime.Now
+            //    };
+            //    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
+            //    client.DefaultRequestHeaders.Add("User-Agent", "Other");
+            //    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "https://api.integrator.io/v1/exports/6476e2f5ee256f2a28eb3bb2/ppJyNG2KFArpk20pEOyzCOv7eVCrFvdk/data");
+            //    request.Content = new StringContent(JsonConvert.SerializeObject(eneity), Encoding.UTF8, "application/json");
+            //    HttpResponseMessage response = client.SendAsync(request).GetAwaiter().GetResult();
+            //}
         }
 
         /// <summary> 執行 Process Amazon payment </summary>
         public virtual void CreatePaymentByOrder(LUMAmazon_UKPaymentUploadProcess baseGraph, List<LUMAmazonUKPaymentReport> selectedList)
         {
+            var soGraph = PXGraph.CreateInstance<SOOrderEntry>();
+            var arGraph = PXGraph.CreateInstance<ARPaymentEntry>();
+
             foreach (var selectedItem in selectedList)
             {
+                List<CeligoEntity> celigos = null;
+                soGraph.Clear();
+                arGraph.Clear();
                 // Initial variable
                 string errorMessge = string.Empty;
                 // Setting Process Current item
@@ -159,7 +199,7 @@ namespace LumTomofunCustomization.Graph
                         continue;
                     using (PXTransactionScope sc = new PXTransactionScope())
                     {
-                        AmazonToAcumaticaCore<LUMAmazonUKPaymentReport>.CreatePayment(selectedItem, selectedItem.API_Marketplace, baseGraph);
+                        celigos = AmazonToAcumaticaCore<LUMAmazonUKPaymentReport>.CreatePayment2(selectedItem, selectedItem.API_Marketplace, baseGraph, soGraph, arGraph);
                         sc.Complete();
                     }
                 }
@@ -183,7 +223,9 @@ namespace LumTomofunCustomization.Graph
                     if (!string.IsNullOrEmpty(errorMessge))
                         PXProcessing.SetError(errorMessge);
                     else
+                    {
                         PXProcessing.SetProcessed();
+                    }
                 }
             }
         }
@@ -200,5 +242,12 @@ namespace LumTomofunCustomization.Graph
 
         public bool RowImporting(string viewName, object row)
             => true;
+    }
+
+    public class ReleaseEntity
+    {
+        public string ActionName { get;set;}
+        public string Customer { get;set;}
+        public DateTime EndDate { get;set;}
     }
 }
