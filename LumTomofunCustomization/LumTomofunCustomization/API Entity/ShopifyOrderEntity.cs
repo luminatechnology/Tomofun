@@ -280,7 +280,7 @@ namespace LumTomofunCustomization.API_Entity.ShopifyOrder
         public object cancel_reason { get; set; }
         public object cancelled_at { get; set; }
         public string cart_token { get; set; }
-        public long checkout_id { get; set; }
+        public long? checkout_id { get; set; }
         public string checkout_token { get; set; }
         public ClientDetails client_details { get; set; }
         public DateTime? closed_at { get; set; }
@@ -308,7 +308,7 @@ namespace LumTomofunCustomization.API_Entity.ShopifyOrder
         public object landing_site_ref { get; set; }
         public object location_id { get; set; }
         public string name { get; set; }
-        public object note { get; set; }
+        public string note { get; set; }
         public List<object> note_attributes { get; set; }
         public int number { get; set; }
         public int order_number { get; set; }

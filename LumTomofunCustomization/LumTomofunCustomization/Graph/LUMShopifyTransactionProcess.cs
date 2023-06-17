@@ -80,7 +80,10 @@ namespace LumTomofunCustomization.Graph
                             #region Create Sales Order Header
                             shopifySOOrder = soGraph.Document.Cache.CreateInstance() as SOOrder;
                             shopifySOOrder.OrderType = "SP";
-                            shopifySOOrder.CustomerOrderNbr = spOrder.checkout_id.ToString();
+                            if (spOrder.checkout_id == null && spOrder.note.Contains("BwP Order #:"))
+                                shopifySOOrder.CustomerOrderNbr = spOrder.note.Replace("BwP Order #:", "").Trim();
+                            else
+                                shopifySOOrder.CustomerOrderNbr = spOrder.checkout_id?.ToString();
                             shopifySOOrder.CustomerRefNbr = spOrder.id.ToString();
                             shopifySOOrder.OrderDesc = $"Shopify Order #{spOrder.order_number}";
                             shopifySOOrder.OrderDate = spOrder.created_at.AddHours(marketplaceTimezone ?? 0);
@@ -198,7 +201,7 @@ namespace LumTomofunCustomization.Graph
                         else if (GoPrepareInvoice && shopifySOOrder != null && shopifySOOrder.Status == "N")
                         {
                             soGraph.Document.Current = shopifySOOrder;
-                            soGraph.Document.SetValueExt<SOOrder.requestDate>(soGraph.Document.Current, (row.ClosedAt??spOrder.updated_at).Value.AddHours(marketplaceTimezone ?? 0));
+                            soGraph.Document.SetValueExt<SOOrder.requestDate>(soGraph.Document.Current, (row.ClosedAt ?? spOrder.updated_at).Value.AddHours(marketplaceTimezone ?? 0));
                             PXNoteAttribute.SetNote(soGraph.Document.Cache, soGraph.Document.Current, row.TransJson);
                         }
                         // Do nothing
@@ -208,19 +211,19 @@ namespace LumTomofunCustomization.Graph
                         try
                         {
                             // 判斷是否需要Create Invoice
-                            var tagConditions = new string[] { "KOL", "REPLACE", "FAAS", "MANUAL_ORDER_CREATED", "FRAUD_FILTER" };
+                            var tagConditions = new string[] { "KOL", "REPLACE", "FAAS", "MANUAL_ORDER_CREATED", "FRAUD_FILTER", "BUY WITH PRIME" };
 
                             // JSON\Tags is not Empty and Upper(JSON\Tags) NOT INCLUDES ‘KOL’ or ‘REPLACE’ or ‘FAAS' or 'MANUAL_ORDER_CREATED'
                             if (!string.IsNullOrEmpty(spOrder.tags) && !tagConditions.Any(x => (spOrder.tags ?? "").ToUpper().Contains(x)))
                             {
                                 GoPrepareInvoice = false;
-                                row.ErrorMessage = @"JSON\Tags is not Empty and Upper(JSON\Tags) NOT INCLUDES ‘KOL’ or ‘REPLACE’ or ‘FAAS";
+                                row.ErrorMessage = @"JSON\Tags is not Empty and Upper(JSON\Tags) NOT INCLUDES ‘KOL’ or ‘REPLACE’ or ‘FAAS’ or ‘BUY WITH PRIME’";
                             }
                             // SO Order.CuryOrderTotal is 0 and Upper(JSON\Tags) DOEST NOT INCLUDE ‘KOL’ or ‘REPLACE’ or ‘FAAS’
                             else if (soGraph.Document.Current.CuryOrderTotal == 0 && !string.IsNullOrEmpty(spOrder.tags) && !tagConditions.Any(x => (spOrder.tags ?? "").ToUpper().Contains(x)))
                             {
                                 GoPrepareInvoice = false;
-                                row.ErrorMessage = @"SO Order.CuryOrderTotal is 0 and Upper(JSON\Tags) DOEST NOT INCLUDE ‘KOL’ or ‘REPLACE’ or ‘FAAS’";
+                                row.ErrorMessage = @"SO Order.CuryOrderTotal is 0 and Upper(JSON\Tags) DOEST NOT INCLUDE ‘KOL’ or ‘REPLACE’ or ‘FAAS’ or ‘BUY WITH PRIME’";
                             }
                             // Shopify Market Preference ‘Tax Calculation’ is NOT SELECTED AND ([SOOrder.AttributeORDERAMT] - [SOOrder.AttributeTAXCOLLECT] ) <> [SOOrder.CuryOrderTotal]
                             else if (!isTaxCalculate && decimal.Parse(spOrder.current_total_price) - 0 != soGraph.Document.Current.CuryOrderTotal)

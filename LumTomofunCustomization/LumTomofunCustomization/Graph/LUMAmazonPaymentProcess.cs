@@ -55,6 +55,9 @@ namespace LumTomofunCustomization.Graph
             var row = e.Row as LUMAmazonPaymentTransData;
             if (row.SellerOrderId.IndexOf("#") != -1)
                 row.OrderID = row.SellerOrderId.Substring(row.SellerOrderId.IndexOf("#") + 1);
+            // 新的Payment method 所提供的Excel SellerOrderID 不會有'#' 所以需要放入'OrderID'
+            else
+                row.OrderID = row.SellerOrderId;
         }
 
         #endregion
