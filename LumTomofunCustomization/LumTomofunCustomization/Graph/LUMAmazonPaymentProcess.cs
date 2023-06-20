@@ -130,7 +130,7 @@ namespace LumTomofunCustomization.Graph
                                 var arDoc = arGraph.Document.Cache.CreateInstance() as ARPayment;
                                 arDoc.DocType = oldShopifySOOrder == null ? "PMT" :
                                                 oldShopifySOOrder.Status == "N" ? "PPM" : "PMT";
-                                arDoc.AdjDate = row.TransactionPostedDate;
+                                arDoc.AdjDate = row.TransactionPostedDate?.Date;
                                 arDoc.ExtRefNbr = row.SettlementId;
                                 arDoc.CustomerID = ShopifyPublicFunction.GetMarketplaceCustomer(row.Marketplace);
                                 arDoc.CashAccountID = spCashAccount.CashAccountID;
