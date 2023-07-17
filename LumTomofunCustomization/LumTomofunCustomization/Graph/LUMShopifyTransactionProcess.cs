@@ -80,7 +80,7 @@ namespace LumTomofunCustomization.Graph
                             #region Create Sales Order Header
                             shopifySOOrder = soGraph.Document.Cache.CreateInstance() as SOOrder;
                             shopifySOOrder.OrderType = "SP";
-                            if (spOrder.checkout_id == null && spOrder.note.Contains("BwP Order #:"))
+                            if (spOrder.checkout_id == null && (spOrder.note?.Contains("BwP Order #:") ?? false))
                                 shopifySOOrder.CustomerOrderNbr = spOrder.note.Replace("BwP Order #:", "").Trim();
                             else
                                 shopifySOOrder.CustomerOrderNbr = spOrder.checkout_id?.ToString();
